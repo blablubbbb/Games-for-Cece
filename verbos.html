@@ -330,6 +330,23 @@
       { inf: "ir", clase: "irv", sentido: "gehen, fahren",
         formas: ["voy", "vas", "va", "vamos", "vais", "van"] },
 
+      // Einzelfälle: völlig regelmäßig – bis auf die ich-Form. Genau dort
+      // macht man den Fehler, deshalb steht die regelmäßig gebildete Form
+      // ("haco", "salo", "vo") als Falle daneben.
+      { inf: "hacer", clase: "solo", sentido: "machen, tun",
+        formas: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"],
+        falsas: [["haco"], ["hacas"], ["haca"], ["hacamos"], ["hacáis"], ["hacan"]] },
+      { inf: "salir", clase: "solo", sentido: "hinausgehen",
+        formas: ["salgo", "sales", "sale", "salimos", "salís", "salen"],
+        falsas: [["salo"], [], [], ["salemos"], ["saléis"], []] },
+      // Bei "ver" wäre fast jede gebaute Fehlform ein echtes Wort von "ir"
+      // (vas, vamos), deshalb nur die beiden sicheren: die regelmäßig
+      // gebildete ich-Form und das falsch betonte "véis" – richtig ist
+      // "veis", einsilbig und ohne Akzent.
+      { inf: "ver", clase: "solo", sentido: "sehen",
+        formas: ["veo", "ves", "ve", "vemos", "veis", "ven"],
+        falsas: [["vo"], [], [], [], ["véis"], []] },
+
       // -ar, Unidad 1
       { inf: "hablar",    clase: "ar", sentido: "sprechen" },
       { inf: "estudiar",  clase: "ar", sentido: "lernen" },
@@ -367,7 +384,7 @@
     // fragen statt nach einer einfachen Form.
     const NIVELES = {
       1: { sub: "-ar und ser",          pesos: { ser: 30, ar: 70 } },
-      2: { sub: "dazu -er und -ir",     pesos: { ser: 15, ar: 25, er: 30, ir: 30 } },
+      2: { sub: "dazu -er und -ir",     pesos: { ser: 12, ar: 20, er: 25, ir: 25, solo: 18 } },
       3: { sub: "ir und die Zukunft",   pesos: { irv: 100 }, futuro: 0.7 },
       // Bei den Gruppenverben ist der falsche Stamm die eigentliche Lektion,
       // deshalb kommt er hier öfter als in den anderen Leveln.

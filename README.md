@@ -47,7 +47,7 @@ Beim Start wird gewählt, die Wahl wird gemerkt. Nach dem Spielende geht es übe
 | | Unidad | Verben | Wie oft |
 |---|---|---|---|
 | **Nivel 1** | bis Unidad 1 | `ser` · die `-ar`-Verben | ser 30 %, -ar 70 % |
-| **Nivel 2** | bis Unidad 2 | dazu die regelmäßigen `-er`- und `-ir`-Verben | ser 15 %, -ar 25 %, -er 30 %, -ir 30 % |
+| **Nivel 2** | bis Unidad 5 | dazu die regelmäßigen `-er`/`-ir`-Verben und die drei Einzelfälle | ser 12 %, -ar 20 %, -er 25 %, -ir 25 %, Einzelfälle 18 % |
 | **Nivel 3** | bis Unidad 5 | `ir` und die nahe Zukunft `ir a` + Infinitiv | 30 % nur `ir`, 70 % ganze Wendung |
 | **Nivel 4** | bis Unidad 5 | die Gruppenverben `quiero`, `puedo` | nur Gruppenverben |
 
@@ -70,6 +70,13 @@ Nivel 2 zielt auf die eine Stelle, an der `-er` und `-ir` sich überhaupt
 unterscheiden: `comemos`/`coméis` gegen `vivimos`/`vivís`. In allen anderen
 Personen sind die Endungen gleich — das Spiel bietet dort automatisch keine
 `-er`/`-ir`-Verwechslung an, weil es keine gibt.
+
+Dazu laufen in Nivel 2 die drei **Einzelfälle** `hacer`, `salir` und `ver` mit.
+Die sind völlig regelmäßig — bis auf die ich-Form. Genau dort steht deshalb die
+regelmäßig gebildete Form als Falle daneben: `hago` gegen `haco`, `salgo` gegen
+`salo`, `veo` gegen `vo`. Bei `ver` wäre fast jede weitere gebaute Fehlform ein
+echtes Wort von `ir` (`vas`, `vamos`), deshalb gibt es dort nur noch eine:
+`véis` statt des richtigen `veis`, das einsilbig ist und keinen Akzent trägt.
 
 Nivel 3 hat zwei Sorten Aufgaben. Ohne Markierung ist einfach `ir` zu
 konjugieren (**vosotros · ir** → `vais`). Steht unter dem Verb die Marke
@@ -106,6 +113,7 @@ regelmäßig sind:
 * `-er` (Unidad 2): comer, beber, leer, aprender, esconder, responder
 * `-ir` (Unidad 2): vivir, escribir, compartir, discutir, abrir
 * unregelmäßig: `ser` (Unidad 1), `ir` (Unidad 5)
+* nur in der ich-Form unregelmäßig: `hacer`, `ver` (Unidad 2), `salir` (Unidad 4)
 * Gruppenverben `e → ie`: querer, pensar, empezar, entender, preferir, tener
 * Gruppenverben `o → ue`: poder, volver, contar, encontrar
 
