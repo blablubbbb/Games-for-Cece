@@ -357,9 +357,16 @@
       grupo.style.transform = "translateY(" + y + "px)";
     }
 
-    // Fallzeit in Sekunden: wird mit jedem Level kürzer, hört bei 2 s auf
+    // Tempo: der ganze Verlauf wird durch diesen Faktor geteilt.
+    // 1 = ursprüngliches Tempo, 3 = dreimal so viel Zeit zum Überlegen.
+    // Zum Nachregeln reicht diese eine Zahl.
+    const LENTITUD = 3;
+
+    // Fallzeit in Sekunden: wird mit jedem Level kürzer, hört beim Minimum auf.
+    // Start und Minimum wachsen mit LENTITUD mit, damit die Kurve ihre Form
+    // behält – sonst bliebe sie ewig beim Anfangstempo hängen.
     function duracion() {
-      return Math.max(2.0, 4.6 - nivel() * 0.18);
+      return LENTITUD * Math.max(2.0, 4.6 - nivel() * 0.18);
     }
     function nivel() {
       return Math.floor(aciertos / 5);
@@ -444,8 +451,12 @@
       const dt = (t - ultimoT) / 1000;
       ultimoT = t;
 
+      // Die Kachel startet bei y = -ALTO_FICHA und wird bei
+      // y = recorrido - ALTO_FICHA ausgewertet, legt also genau
+      // "recorrido" Pixel zurück. Das Tempo muss über dieselbe Strecke
+      // gerechnet werden, sonst ist die echte Fallzeit kürzer als duracion().
       const recorrido = campo.clientHeight - 24;      // bis kurz über die Kiste
-      y += (recorrido + ALTO_FICHA) / duracion() * dt;
+      y += recorrido / duracion() * dt;
       grupo.style.transform = "translateY(" + y + "px)";
 
       if (y >= recorrido - ALTO_FICHA) return resolver();
