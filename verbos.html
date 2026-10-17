@@ -57,6 +57,17 @@
     .tarea .pron { font-size: 2.1rem; font-weight: bold; line-height: 1.1; }
     .tarea .inf { font-size: 0.95rem; opacity: 0.65; margin-top: 0.1rem; }
     .tarea .inf b { font-weight: 600; opacity: 1; }
+    /* Zeigt an, dass nach der nahen Zukunft gefragt ist (ir a + Infinitiv) */
+    .tarea .tiempo {
+      display: none;
+      background: #7b3fe4;
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.1rem 0.7rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 0.3rem;
+    }
 
     #campo {
       width: min(92vw, 420px);
@@ -100,6 +111,14 @@
       box-shadow: 0 3px 0 #0003;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    /* Ganze Wendungen wie "vamos a hablar": kleiner, darf auf zwei Zeilen.
+       Die Schrift geht auf schmalen Handys mit der Bahnbreite mit, sonst
+       wird das längste Wort ("descansamos") am Rand abgeschnitten. */
+    .ficha.larga span {
+      font-size: min(0.8rem, 3.6vw);
+      line-height: 1.15;
+      padding: 0.3rem 0.15rem;
     }
 
     #cesta {
@@ -244,6 +263,7 @@
   <div class="tarea">
     <div class="pron" id="pron">–</div>
     <div class="inf"><b id="inf">–</b> · <span id="sentido">–</span></div>
+    <div class="tiempo" id="tiempo">mañana</div>
   </div>
 
   <div id="campo">
@@ -283,6 +303,7 @@
       <p>Welches Level?</p>
       <button data-nivel="1">Nivel 1<small>-ar und ser</small></button>
       <button data-nivel="2">Nivel 2<small>dazu -er und -ir</small></button>
+      <button data-nivel="3">Nivel 3<small>ir und die nahe Zukunft</small></button>
     </div>
   </div>
 
@@ -295,7 +316,17 @@
     // "ser" ist unregelmäßig und steht ausgeschrieben da, alle anderen werden
     // aus dem Stamm gebildet.
     const VERBOS = [
-      { inf: "ser", clase: "irr", sentido: "sein", formas: ["soy", "eres", "es", "somos", "sois", "son"] },
+      // Unregelmäßig: Formen ausgeschrieben, dazu erfundene, aber plausible
+      // Fehlformen pro Person – bewusst keine echten spanischen Wörter.
+      { inf: "ser", clase: "ser", sentido: "sein",
+        formas: ["soy", "eres", "es", "somos", "sois", "son"],
+        falsas: [["so","sero"], ["ses","seres"], ["sere"],
+                 ["semos","seramos"], ["séis","serís"], ["sen","seren"]] },
+
+      // "ir" braucht keine erfundenen Fehlformen: voy/vas/va/vamos/vais/van
+      // verwechselt man schon untereinander genug.
+      { inf: "ir", clase: "irv", sentido: "gehen, fahren",
+        formas: ["voy", "vas", "va", "vamos", "vais", "van"] },
 
       // -ar, Unidad 1
       { inf: "hablar",    clase: "ar", sentido: "sprechen" },
@@ -330,10 +361,16 @@
     // unregelmäßig und soll deutlich öfter kommen als ein einzelnes -ar-Verb.
     // In Nivel 2 rutscht ser etwas runter, damit Platz für das Neue ist.
     // Zum Nachregeln reichen diese Zahlen (sie sind Anteile, keine Prozente).
+    // "futuro" ist der Anteil der Aufgaben, die nach "ir a + Infinitiv"
+    // fragen statt nach einer einfachen Form.
     const NIVELES = {
-      1: { sub: "-ar und ser",      pesos: { irr: 30, ar: 70 } },
-      2: { sub: "dazu -er und -ir", pesos: { irr: 15, ar: 25, er: 30, ir: 30 } },
+      1: { sub: "-ar und ser",          pesos: { ser: 30, ar: 70 } },
+      2: { sub: "dazu -er und -ir",     pesos: { ser: 15, ar: 25, er: 30, ir: 30 } },
+      3: { sub: "ir und die Zukunft",   pesos: { irv: 100 }, futuro: 0.7 },
     };
+
+    const VERBO_IR  = VERBOS.find(v => v.clase === "irv");
+    const REGULARES = VERBOS.filter(v => !v.formas);
 
     // Anteil der Aufgaben, in denen einer der beiden Ablenker nicht eine andere
     // Person ist, sondern die gefragte Person mit einer falschen Endung –
@@ -365,26 +402,15 @@
       return TERMINACIONES[v.clase].map(t => raiz + t);
     }
 
-    // Erfundene ser-Formen pro Person: typische Fehler, aber bewusst keine
-    // echten spanischen Wörter, damit sie sich nichts Falsches einprägt.
-    // (él/ella hat nur eine – "se" und "sea" gibt es wirklich.)
-    const SER_FALSAS = [
-      ["so", "sero"],         // yo
-      ["ses", "seres"],       // tú
-      ["sere"],               // él/ella
-      ["semos", "seramos"],   // nosotros
-      ["séis", "serís"],      // vosotros
-      ["sen", "seren"],       // ellos
-    ];
-
     // Dieselbe Person, aber falsche Endung. Bei regelmäßigen Verben die Endung
     // einer anderen Gruppe – in Nivel 1 also schon die aus Nivel 2 (hablamos →
-    // hablemos, hablimos). Bei "ser" eine aus der Liste oben. Gibt null
-    // zurück, wenn es nichts Falsches gibt: die ich-Form ist in allen drei
-    // Gruppen "-o", da ist keine falsche Endung möglich.
+    // hablemos, hablimos). Bei unregelmäßigen eine aus deren "falsas"-Liste.
+    // Gibt null zurück, wenn es nichts Falsches gibt: die ich-Form ist in
+    // allen drei Gruppen "-o", da ist keine falsche Endung möglich.
     function endingFalso(v, persona, correcta) {
-      if (v.clase === "irr") {
-        const cand = SER_FALSAS[persona].filter(f => f !== correcta);
+      if (v.formas) {
+        const lista = v.falsas ? v.falsas[persona] : [];
+        const cand = lista.filter(f => f !== correcta);
         return cand.length ? cand[azar(cand.length)] : null;
       }
       const raiz = v.inf.slice(0, -2);
@@ -448,23 +474,51 @@
 
     // ---------- Eine neue Aufgabe bauen ----------
     function nuevaRonda() {
-      const verbo = verboAlAzar();
-      const formas = formasDe(verbo);
+      const nv = NIVELES[nivel];
       const persona = azar(6);
-      const correcta = formas[persona];
-
-      // Die beiden Ablenker. Normalerweise andere Personen desselben Verbs –
-      // dadurch muss sie die Endung wirklich der Person zuordnen und kann
-      // nicht über den Wortstamm raten. In einem Teil der Aufgaben ist einer
-      // davon stattdessen die gefragte Person mit falscher Endung.
+      const futuro = !!nv.futuro && Math.random() < nv.futuro;
       const senuelos = [];
-      if (Math.random() < P_ENDING_FALSO) {
-        const f = endingFalso(verbo, persona, correcta);
-        if (f) senuelos.push(f);
-      }
-      for (const f of mezclar(formas.filter(f => f !== correcta))) {
-        if (senuelos.length >= 2) break;
-        if (!senuelos.includes(f)) senuelos.push(f);
+      let verbo, correcta;
+
+      if (futuro) {
+        // "nosotros + hablar" → "vamos a hablar": nur "ir" wird konjugiert,
+        // das zweite Verb bleibt im Infinitiv. Genau da passieren die Fehler.
+        verbo = REGULARES[azar(REGULARES.length)];
+        const ir = VERBO_IR.formas;
+        correcta = ir[persona] + " a " + verbo.inf;
+
+        if (Math.random() < P_ENDING_FALSO) {
+          // Die zwei typischen Baufehler: zweites Verb mitkonjugiert
+          // ("vamos a hablamos") oder das "a" vergessen ("vamos hablar").
+          const malas = [
+            ir[persona] + " a " + formasDe(verbo)[persona],
+            ir[persona] + " " + verbo.inf,
+          ];
+          senuelos.push(malas[azar(malas.length)]);
+        }
+        // Auffüllen mit derselben Wendung in einer anderen Person
+        for (const i of mezclar([0, 1, 2, 3, 4, 5].filter(i => i !== persona))) {
+          if (senuelos.length >= 2) break;
+          const f = ir[i] + " a " + verbo.inf;
+          if (!senuelos.includes(f)) senuelos.push(f);
+        }
+      } else {
+        verbo = verboAlAzar();
+        const formas = formasDe(verbo);
+        correcta = formas[persona];
+
+        // Die beiden Ablenker. Normalerweise andere Personen desselben Verbs –
+        // dadurch muss sie die Endung wirklich der Person zuordnen und kann
+        // nicht über den Wortstamm raten. In einem Teil der Aufgaben ist einer
+        // davon stattdessen die gefragte Person mit falscher Endung.
+        if (Math.random() < P_ENDING_FALSO) {
+          const f = endingFalso(verbo, persona, correcta);
+          if (f) senuelos.push(f);
+        }
+        for (const f of mezclar(formas.filter(f => f !== correcta))) {
+          if (senuelos.length >= 2) break;
+          if (!senuelos.includes(f)) senuelos.push(f);
+        }
       }
 
       // Mischen, damit die richtige Form nicht immer an derselben Stelle liegt
@@ -474,6 +528,7 @@
       ronda = {
         verbo,
         persona,
+        futuro,
         etiqueta: etiquetas[azar(etiquetas.length)],
         formas: opciones,
         correcta: opciones.indexOf(correcta),
@@ -482,11 +537,16 @@
       document.getElementById("pron").textContent = ronda.etiqueta;
       document.getElementById("inf").textContent = verbo.inf;
       document.getElementById("sentido").textContent = verbo.sentido;
+      document.getElementById("tiempo").style.display = futuro ? "inline-block" : "none";
+
+      // Ganze Wendungen brauchen kleinere Schrift, sonst passen sie nicht
+      // auf die Kachel. Alle drei gleich, damit keine auffällt.
+      const larga = Math.max(...ronda.formas.map(f => f.length)) > 10;
 
       grupo.innerHTML = "";
       ronda.formas.forEach((f, i) => {
         const d = document.createElement("div");
-        d.className = "ficha";
+        d.className = larga ? "ficha larga" : "ficha";
         d.style.left = (i * 100 / 3) + "%";
         d.innerHTML = "<span></span>";
         d.firstChild.textContent = f;
