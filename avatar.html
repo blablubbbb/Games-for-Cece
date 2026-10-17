@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Avatar – Games for Cece</title>
+  <style>
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffd9ec, #cfd9ff);
+      background-attachment: fixed;
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.5rem 0.5rem 1rem;
+      box-sizing: border-box;
+      user-select: none; -webkit-user-select: none;
+      transition: background 0.4s, color 0.4s;
+    }
+    body.oscuro { color: #fff; }
+
+    .top {
+      width: 100%; max-width: 420px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .top a, .pill {
+      background: #fff8; border-radius: 999px; padding: 0.3rem 0.9rem;
+      font-size: 1.15rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .coin { width: 1.5em; height: 1.5em; }
+
+    /* ---------- Vorschau ---------- */
+    .escena {
+      width: min(94vw, 420px);
+      background: #fff; border-radius: 1rem; box-shadow: 0 4px 0 #0002;
+      padding: 0.6rem; box-sizing: border-box; text-align: center;
+    }
+    .escena svg { width: auto; height: min(34dvh, 230px); border-radius: 12px; }
+    .vistas { display: inline-flex; gap: 0.3rem; margin-top: 0.5rem; background: #2b1a4a12; padding: 0.2rem; border-radius: 999px; }
+    .vistas button {
+      border: none; background: none; color: #2b1a4a; font-weight: bold;
+      font-size: 0.9rem; padding: 0.35rem 0.9rem; border-radius: 999px;
+    }
+    .vistas button.sel { background: #7b3fe4; color: #fff; }
+
+    /* ---------- Rubriken ---------- */
+    .rubros {
+      width: min(94vw, 420px); margin-top: 0.6rem;
+      display: flex; gap: 0.35rem; overflow-x: auto; padding-bottom: 0.2rem;
+      scrollbar-width: none;
+    }
+    .rubros::-webkit-scrollbar { display: none; }
+    .rubros button {
+      flex: 0 0 auto; border: none; border-radius: 999px;
+      background: #fffc; color: #2b1a4a; font-weight: bold;
+      font-size: 0.88rem; padding: 0.45rem 0.85rem; box-shadow: 0 3px 0 #0002;
+    }
+    .rubros button.sel { background: #7b3fe4; color: #fff; }
+
+    /* ---------- Teile ---------- */
+    .piezas {
+      width: min(94vw, 420px); margin-top: 0.55rem;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.45rem;
+    }
+    .pieza {
+      background: #fff; border-radius: 12px; padding: 0.3rem 0.2rem 0.35rem;
+      text-align: center; box-shadow: 0 3px 0 #0002; position: relative;
+      border: 2.5px solid transparent;
+    }
+    .pieza.sel { border-color: #7b3fe4; }
+    .pieza svg { width: 100%; height: auto; display: block; border-radius: 7px; }
+    .pieza .muestra { height: 44px; border-radius: 7px; }
+    .pieza .nom { font-size: 0.64rem; margin-top: 0.15rem; line-height: 1.1; }
+    .pieza .precio {
+      font-size: 0.64rem; font-weight: bold; color: #7b3fe4;
+      display: flex; align-items: center; justify-content: center; gap: 0.12rem;
+    }
+    .pieza .precio img { width: 0.85em; height: 0.85em; }
+    .pieza.caro { opacity: 0.45; filter: grayscale(0.85); }
+    .pieza.caro .precio { color: #2b1a4a99; }
+    .pieza.sacude { animation: no 0.3s; }
+    @keyframes no { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+    /* ---------- Kaufleiste ---------- */
+    #compra {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: #2b1a4a; color: #fff; padding: 0.7rem 0.9rem;
+      display: none; align-items: center; justify-content: space-between;
+      gap: 0.6rem; z-index: 20;
+    }
+    #compra.abierta { display: flex; }
+    #compra .txt { font-size: 0.95rem; font-weight: bold; display: flex; align-items: center; gap: 0.25rem; }
+    #compra .txt img { width: 1.1em; height: 1.1em; }
+    #compra button {
+      border: none; border-radius: 999px; font-size: 1rem; font-weight: bold;
+      padding: 0.5rem 1.1rem; background: #ffd34d; color: #2b1a4a;
+    }
+    #compra button.no { background: #ffffff22; color: #fff; padding: 0.5rem 0.9rem; }
+
+    .aviso {
+      position: fixed; left: 50%; transform: translateX(-50%); bottom: 5rem;
+      background: #2b1a4ae8; color: #fff; padding: 0.6rem 1rem; border-radius: 999px;
+      font-size: 0.95rem; font-weight: bold; opacity: 0; transition: opacity 0.3s; z-index: 25;
+      pointer-events: none; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .aviso img { width: 1.2em; height: 1.2em; }
+    .aviso.ver { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+  </div>
+
+  <div class="escena">
+    <div id="vista"></div>
+    <div class="vistas">
+      <button data-vista="frente" class="sel">Vorne</button>
+      <button data-vista="lado">Von der Seite</button>
+    </div>
+  </div>
+
+  <div class="rubros" id="rubros"></div>
+  <div class="piezas" id="piezas"></div>
+
+  <div id="compra">
+    <div class="txt" id="compra-txt"></div>
+    <div>
+      <button class="no" id="compra-no">✗</button>
+      <button id="compra-si">Kaufen</button>
+    </div>
+  </div>
+
+  <div class="aviso" id="aviso"></div>
+
+  <script src="avatar.js"></script>
+  <script>
+    const elVista = document.getElementById("vista");
+    const elRubros = document.getElementById("rubros");
+    const elPiezas = document.getElementById("piezas");
+    const elCoins = document.getElementById("coins");
+    const elCompra = document.getElementById("compra");
+
+    let sel = Avatar.cargar();
+    let vista = "frente";
+    let rubro = Avatar.ORDEN[0];
+    let pendiente = null;        // Teil, nach dessen Kauf gefragt wird
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+
+    function guardarMonedas() {
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      elCoins.textContent = coins;
+    }
+
+    // ---------- Zeichnen ----------
+    function pintarVista() {
+      elVista.innerHTML = Avatar.dibujar(sel, vista);
+      // Der gekaufte Hintergrund gilt auch für diese Seite
+      const f = Avatar.buscar("fondo", sel.fondo);
+      document.body.style.background =
+        "linear-gradient(160deg, " + f.de + ", " + f.a + ") fixed";
+      document.body.classList.toggle("oscuro", !!f.oscuro);
+    }
+
+    function pintarRubros() {
+      elRubros.innerHTML = Avatar.ORDEN.map(c =>
+        '<button data-rubro="' + c + '"' + (c === rubro ? ' class="sel"' : "") + ">" +
+        Avatar.PARTES[c].nombre + "</button>").join("");
+      [...elRubros.children].forEach(b => b.addEventListener("click", () => {
+        rubro = b.dataset.rubro;
+        cerrarCompra();
+        pintarRubros(); pintarPiezas();
+        b.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+      }));
+    }
+
+    function pintarPiezas() {
+      const items = Avatar.PARTES[rubro].items;
+      elPiezas.innerHTML = items.map(it => {
+        const mio = Avatar.tiene(sel, rubro, it.id);
+        const puedo = coins >= it.precio;
+        const previa = Object.assign({}, sel);
+        previa[rubro] = it.id;
+        const dib = Avatar.dibujar(previa, "frente", { fondo: rubro === "fondo" });
+        const clases = "pieza" + (sel[rubro] === it.id ? " sel" : "") + (!mio && !puedo ? " caro" : "");
+        return '<div class="' + clases + '" data-id="' + it.id + '">' + dib +
+               '<div class="nom">' + it.nombre + "</div>" +
+               (mio ? "" : '<div class="precio">' + it.precio +
+                           '<img src="coin.svg" alt=""></div>') + "</div>";
+      }).join("");
+
+      [...elPiezas.children].forEach(d => {
+        d.addEventListener("click", () => elegir(d.dataset.id, d));
+      });
+    }
+
+    // ---------- Auswählen und kaufen ----------
+    function elegir(id, nodo) {
+      const it = Avatar.buscar(rubro, id);
+      if (Avatar.tiene(sel, rubro, id)) {
+        sel[rubro] = id;
+        Avatar.guardar(sel);
+        cerrarCompra();
+        pintarVista(); pintarPiezas();
+        return;
+      }
+      if (coins < it.precio) {
+        // Noch nicht genug Münzen – kurz wackeln, sonst passiert nichts
+        nodo.classList.add("sacude");
+        setTimeout(() => nodo.classList.remove("sacude"), 320);
+        avisar("Dafür fehlen noch " + (it.precio - coins), true);
+        return;
+      }
+      // Erst zeigen, wie es aussähe, dann fragen
+      pendiente = { rubro, id, precio: it.precio, nombre: it.nombre };
+      const previa = Object.assign({}, sel);
+      previa[rubro] = id;
+      elVista.innerHTML = Avatar.dibujar(previa, vista);
+      document.getElementById("compra-txt").innerHTML =
+        it.nombre + " für " + it.precio + ' <img src="coin.svg" alt="">';
+      elCompra.classList.add("abierta");
+      [...elPiezas.children].forEach(x => x.classList.toggle("sel", x.dataset.id === id));
+    }
+
+    function comprar() {
+      if (!pendiente) return;
+      coins -= pendiente.precio;
+      sel.compradas = (sel.compradas || []).concat(pendiente.rubro + ":" + pendiente.id);
+      sel[pendiente.rubro] = pendiente.id;
+      guardarMonedas();
+      Avatar.guardar(sel);
+      avisar("Gekauft!");
+      pendiente = null;
+      elCompra.classList.remove("abierta");
+      pintarVista(); pintarPiezas();
+    }
+
+    function cerrarCompra() {
+      if (!pendiente) return;
+      pendiente = null;
+      elCompra.classList.remove("abierta");
+      pintarVista(); pintarPiezas();
+    }
+
+    let avisoId;
+    function avisar(txt, conMoneda) {
+      const a = document.getElementById("aviso");
+      a.innerHTML = txt + (conMoneda ? ' <img src="coin.svg" alt="">' : "");
+      a.classList.add("ver");
+      clearTimeout(avisoId);
+      avisoId = setTimeout(() => a.classList.remove("ver"), 1600);
+    }
+
+    // ---------- Steuerung ----------
+    document.querySelectorAll(".vistas button").forEach(b => {
+      b.addEventListener("click", () => {
+        vista = b.dataset.vista;
+        document.querySelectorAll(".vistas button").forEach(x => x.classList.toggle("sel", x === b));
+        if (pendiente) {
+          const previa = Object.assign({}, sel);
+          previa[pendiente.rubro] = pendiente.id;
+          elVista.innerHTML = Avatar.dibujar(previa, vista);
+        } else {
+          pintarVista();
+        }
+      });
+    });
+
+    document.getElementById("compra-si").addEventListener("click", comprar);
+    document.getElementById("compra-no").addEventListener("click", cerrarCompra);
+
+    guardarMonedas();
+    pintarVista();
+    pintarRubros();
+    pintarPiezas();
+  </script>
+</body>
+</html>

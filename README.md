@@ -14,6 +14,7 @@ Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 | [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar`, `-er` und `-ir` |
 | [Einmaleins](einmaleins.html) | Mathe | Mal und Geteilt bis 100, mit Schatzkarte und Rekorden |
 | [Uhrzeit](hora.html) | Spanisch | Die Uhrzeit auf Spanisch, analog und digital |
+| [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
 sich pro Aufgabe, wie oft sie saß und wie oft nicht. Was wackelt, kommt
@@ -158,3 +159,50 @@ Die Ablenker sind die Fehler, die man als Deutsche:r wirklich macht:
   Fälle derselbe Satz mit `de la noche` statt `de la mañana` daneben. Wird
   andersherum nach der Uhr gefragt, ist der Ablenker dieselbe Zeit in der
   anderen Tageshälfte: `15:30` gegen `03:30`.
+
+### Avatar (`avatar.html`, `avatar.js`)
+
+Hier gibt sie die Münzen aus, die sie in den Spielen sammelt. Sieben Rubriken:
+Haut, Haare, Haarfarbe, Augen, Kleidung, Extra und Hintergrund.
+
+Von jeder Rubrik gehört ihr die **Grundausstattung** von Anfang an. Alles
+andere kostet Münzen, zwischen 25 und 220. Was sie sich gerade leisten kann,
+steht mit Preis da und lässt sich antippen; es wird erst am Avatar gezeigt und
+dann gefragt, ob sie es wirklich kauft. Was sie sich **noch nicht leisten
+kann, ist ausgegraut** und sagt beim Antippen, wie viele Münzen noch fehlen —
+sichtbar bleibt es trotzdem, damit es etwas zum Sparen gibt.
+
+Der gekaufte **Hintergrund** gilt für beides: für das Avatarbild und für die
+Auswahlseite selbst. Bei den dunklen (Nacht, Weltall) wird die Schrift hell.
+
+#### Zwei Ansichten aus einer Teileliste
+
+Jedes Teil wird in beiden Ansichten gezeichnet: **von vorne** zum
+Zusammenstellen und **von der Seite** (nach rechts schauend) für ein Spiel, in
+dem die Figur läuft. Die Haare liegen dabei in zwei Lagen — was hinten hängt,
+wird vor dem Kopf gezeichnet, der Rest danach, sonst landen lange Haare in der
+Seitenansicht im Gesicht.
+
+#### Für das andere Repo
+
+`avatar.js` hängt an nichts. Ein anderes Spiel auf derselben Domain lädt die
+Datei und hat denselben Avatar:
+
+```html
+<script src="avatar.js"></script>
+<script>
+  const yo = Avatar.cargar();
+  spielfigur.innerHTML = Avatar.dibujar(yo, "lado");   // oder "frente"
+</script>
+```
+
+Gespeichert wird im `localStorage`, den sich alle Seiten der Domain teilen:
+
+| Schlüssel | Inhalt |
+|---|---|
+| `cece-avatar` | `{ partes: { piel, pelo, colorPelo, ojos, ropa, extra, fondo }, compradas: ["extra:gorro", …] }` |
+| `cece-coins` | Münzen, geteilt mit allen Spielen |
+| `cece-fallos` | Fehlergedächtnis (siehe oben) |
+
+`Avatar.dibujar(sel, vista, { fondo: false })` zeichnet ohne Hintergrund —
+praktisch, wenn die Figur in einer eigenen Szene stehen soll.
