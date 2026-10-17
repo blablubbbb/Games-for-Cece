@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Verben – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.6rem;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+    .top {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .top a, .pill {
+      background: #fff8;
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: inherit;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .coin { width: 1.6em; height: 1.6em; }
+    .vidas { letter-spacing: 1px; }
+    .vidas .perdida { opacity: 0.25; }
+
+    /* Die Aufgabe: Pronomen groß, Verb klein darunter */
+    .tarea {
+      width: min(92vw, 420px);
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 0 #0002;
+      padding: 0.5rem 0.8rem 0.6rem;
+      box-sizing: border-box;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .tarea .pron { font-size: 2.1rem; font-weight: bold; line-height: 1.1; }
+    .tarea .inf { font-size: 0.95rem; opacity: 0.65; margin-top: 0.1rem; }
+    .tarea .inf b { font-weight: 600; opacity: 1; }
+
+    #campo {
+      width: min(92vw, 420px);
+      height: min(50dvh, 360px);
+      position: relative;
+      overflow: hidden;
+      background: #2b1a4a;
+      border-radius: 12px;
+      box-sizing: border-box;
+    }
+    /* Die drei Bahnen */
+    .bahn {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 33.333%;
+      border-right: 1px dashed #ffffff1a;
+      box-sizing: border-box;
+    }
+    .bahn:last-child { border-right: none; }
+
+    #grupo { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+    .ficha {
+      position: absolute;
+      width: 33.333%;
+      padding: 0 4px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+    }
+    .ficha span {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #fff;
+      border-radius: 10px;
+      padding: 0.45rem 0.2rem;
+      font-size: 1.02rem;
+      font-weight: bold;
+      box-shadow: 0 3px 0 #0003;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #cesta {
+      position: absolute;
+      bottom: 6px;
+      width: 33.333%;
+      padding: 0 4px;
+      box-sizing: border-box;
+      transition: left 0.08s;
+    }
+    #cesta div {
+      height: 16px;
+      border-radius: 8px;
+      background: #7b3fe4;
+      box-shadow: 0 3px 0 #0005, inset 0 2px 0 #fff4;
+    }
+
+    /* Rückmeldung nach dem Fangen */
+    #flash {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.2rem;
+      background: #2b1a4aee;
+      text-align: center;
+      padding: 0 1rem;
+      box-sizing: border-box;
+    }
+    #flash .marca { font-size: 2.6rem; line-height: 1; }
+    #flash .txt { color: #fff; font-size: 1.25rem; font-weight: bold; }
+    #flash .sub { color: #ffffffaa; font-size: 0.9rem; }
+
+    .controls {
+      width: min(92vw, 420px);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+      margin-top: 0.7rem;
+    }
+    .controls button {
+      height: 64px;
+      font-size: 1.9rem;
+      border: none;
+      border-radius: 16px;
+      background: #fff;
+      color: #2b1a4a;
+      box-shadow: 0 4px 0 #0003;
+      touch-action: none;
+    }
+    .controls button:active { transform: translateY(3px); box-shadow: 0 1px 0 #0003; }
+
+    .float {
+      position: fixed;
+      font-size: 2rem;
+      font-weight: bold;
+      pointer-events: none;
+      animation: up 1.2s forwards;
+      text-shadow: 0 2px 0 #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .float img { width: 2.2rem; height: 2.2rem; }
+    @keyframes up { to { transform: translateY(-80px); opacity: 0; } }
+
+    #over {
+      position: fixed; inset: 0;
+      background: #0008;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    #over .box {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1.3rem 1.5rem;
+      text-align: center;
+      max-width: 340px;
+      width: 100%;
+      box-sizing: border-box;
+      max-height: 90dvh;
+      overflow-y: auto;
+    }
+    #over h2 { margin: 0 0 0.6rem; }
+    #over .pill { justify-content: center; background: none; }
+    #over button {
+      font-size: 1.2rem;
+      padding: 0.7rem 1.4rem;
+      border: none;
+      border-radius: 999px;
+      background: #7b3fe4;
+      color: #fff;
+      margin-top: 1rem;
+    }
+    .repasar { margin-top: 0.9rem; text-align: left; }
+    .repasar h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .repasar ul { margin: 0; padding-left: 1.1rem; font-size: 0.95rem; }
+    .repasar li { margin-bottom: 0.15rem; }
+    .repasar b { color: #7b3fe4; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <div class="pill vidas" id="vidas">❤️❤️❤️</div>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+  </div>
+
+  <div class="tarea">
+    <div class="pron" id="pron">–</div>
+    <div class="inf"><b id="inf">–</b> · <span id="sentido">–</span></div>
+  </div>
+
+  <div id="campo">
+    <div class="bahn" style="left:0"></div>
+    <div class="bahn" style="left:33.333%"></div>
+    <div class="bahn" style="left:66.666%"></div>
+    <div id="grupo"></div>
+    <div id="cesta"><div></div></div>
+    <div id="flash">
+      <div class="marca" id="flash-marca"></div>
+      <div class="txt" id="flash-txt"></div>
+      <div class="sub" id="flash-sub"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="izq" aria-label="Links">◀</button>
+    <button id="der" aria-label="Rechts">▶</button>
+  </div>
+
+  <div id="over">
+    <div class="box">
+      <h2>¡Se acabó!</h2>
+      <div class="pill">In dieser Runde: <img class="coin" src="coin.svg" alt="Münzen"><span id="round">0</span></div>
+      <div class="pill">Richtig: <span id="aciertos">0</span></div>
+      <div class="repasar" id="repasar"></div>
+      <button id="again">Nochmal</button>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Die Verben ----------
+    // Nur Wortschatz, den Cece schon hatte (¡Apúntate! 1 bis Unidad 1, Texto B).
+    // "ser" ist unregelmäßig und steht ausgeschrieben da, der Rest geht auf -ar
+    // und wird aus dem Stamm gebildet.
+    const VERBOS = [
+      { inf: "ser",       sentido: "sein",            formas: ["soy", "eres", "es", "somos", "sois", "son"] },
+      { inf: "hablar",    sentido: "sprechen" },
+      { inf: "estudiar",  sentido: "lernen" },
+      { inf: "escuchar",  sentido: "hören" },
+      { inf: "mirar",     sentido: "anschauen" },
+      { inf: "tocar",     sentido: "spielen (Instrument)" },
+      { inf: "buscar",    sentido: "suchen" },
+      { inf: "charlar",   sentido: "plaudern" },
+      { inf: "tomar",     sentido: "trinken, nehmen" },
+      { inf: "quedar",    sentido: "sich verabreden" },
+      { inf: "pasar",     sentido: "verbringen" },
+      { inf: "descansar", sentido: "sich ausruhen" },
+    ];
+
+    // Die sechs Personen. Bei 3. Person und Plural wechseln die Beschriftungen
+    // ab, damit sie die Form nicht nur an "él" festmacht.
+    const PERSONAS = [
+      { etiquetas: ["yo"] },
+      { etiquetas: ["tú"] },
+      { etiquetas: ["él", "ella"] },
+      { etiquetas: ["nosotros", "nosotras"] },
+      { etiquetas: ["vosotros", "vosotras"] },
+      { etiquetas: ["ellos", "ellas"] },
+    ];
+
+    const TERMINACIONES = ["o", "as", "a", "amos", "áis", "an"];
+
+    function formasDe(v) {
+      if (v.formas) return v.formas;
+      const raiz = v.inf.slice(0, -2);        // hablar -> habl
+      return TERMINACIONES.map(t => raiz + t);
+    }
+
+    // ---------- Zustand ----------
+    const campo    = document.getElementById("campo");
+    const grupo    = document.getElementById("grupo");
+    const cesta    = document.getElementById("cesta");
+    const coinsEl  = document.getElementById("coins");
+    const vidasEl  = document.getElementById("vidas");
+    const flash    = document.getElementById("flash");
+
+    const ALTO_FICHA = 46;   // Höhe einer Wortkachel in px
+    const VIDAS_MAX  = 3;
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+    coinsEl.textContent = coins;
+
+    let bahn, ronda, y, ultimoT, corriendo, vidas, serie, aciertos, monedasRonda, fallos;
+
+    function guardarMonedas() {
+      coinsEl.textContent = coins;
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+    }
+
+    function azar(n) { return Math.floor(Math.random() * n); }
+
+    // ---------- Eine neue Aufgabe bauen ----------
+    function nuevaRonda() {
+      const verbo = VERBOS[azar(VERBOS.length)];
+      const formas = formasDe(verbo);
+      const persona = azar(6);
+
+      // Zwei Ablenker: andere Personen desselben Verbs. Dadurch muss sie
+      // wirklich die Endung zur Person zuordnen und kann nicht raten.
+      const otras = [0, 1, 2, 3, 4, 5].filter(i => i !== persona);
+      for (let i = otras.length - 1; i > 0; i--) {
+        const j = azar(i + 1);
+        [otras[i], otras[j]] = [otras[j], otras[i]];
+      }
+      const elegidas = [persona, otras[0], otras[1]];
+
+      // Mischen, damit die richtige Form nicht immer links liegt
+      for (let i = elegidas.length - 1; i > 0; i--) {
+        const j = azar(i + 1);
+        [elegidas[i], elegidas[j]] = [elegidas[j], elegidas[i]];
+      }
+
+      const etiquetas = PERSONAS[persona].etiquetas;
+      ronda = {
+        verbo,
+        persona,
+        etiqueta: etiquetas[azar(etiquetas.length)],
+        formas: elegidas.map(i => formas[i]),
+        correcta: elegidas.indexOf(persona),
+      };
+
+      document.getElementById("pron").textContent = ronda.etiqueta;
+      document.getElementById("inf").textContent = verbo.inf;
+      document.getElementById("sentido").textContent = verbo.sentido;
+
+      grupo.innerHTML = "";
+      ronda.formas.forEach((f, i) => {
+        const d = document.createElement("div");
+        d.className = "ficha";
+        d.style.left = (i * 100 / 3) + "%";
+        d.innerHTML = "<span></span>";
+        d.firstChild.textContent = f;
+        grupo.appendChild(d);
+      });
+
+      y = -ALTO_FICHA;
+      grupo.style.transform = "translateY(" + y + "px)";
+    }
+
+    // Fallzeit in Sekunden: wird mit jedem Level kürzer, hört bei 2 s auf
+    function duracion() {
+      return Math.max(2.0, 4.6 - nivel() * 0.18);
+    }
+    function nivel() {
+      return Math.floor(aciertos / 5);
+    }
+
+    function moverCesta(d) {
+      if (!corriendo) return;
+      bahn = Math.max(0, Math.min(2, bahn + d));
+      cesta.style.left = (bahn * 100 / 3) + "%";
+    }
+
+    // ---------- Fangen auswerten ----------
+    function resolver() {
+      corriendo = false;
+      const elegida = ronda.formas[bahn];
+      const correcta = ronda.formas[ronda.correcta];
+      const bien = bahn === ronda.correcta;
+
+      if (bien) {
+        aciertos++;
+        serie++;
+        let ganado = 1;
+        if (serie % 5 === 0) ganado += 3;     // Bonus für fünf in Folge
+        coins += ganado;
+        monedasRonda += ganado;
+        guardarMonedas();
+        mostrarFlotante(ganado);
+        mostrarFlash("✅", serie >= 3 ? "¡" + serie + " seguidas!" : "¡Muy bien!",
+                     ronda.etiqueta + " " + correcta);
+      } else {
+        vidas--;
+        serie = 0;
+        pintarVidas();
+        // Immer mit der Grundform der Person merken: "ellos" und "ellas" sind
+        // derselbe Fehler und sollen in der Lernliste nicht doppelt stehen.
+        const clave = PERSONAS[ronda.persona].etiquetas[0] + " " + correcta;
+        fallos.set(clave, (fallos.get(clave) || 0) + 1);
+        mostrarFlash("❌", ronda.etiqueta + " " + correcta,
+                     "Du hattest: " + elegida);
+      }
+
+      setTimeout(() => {
+        flash.style.display = "none";
+        if (vidas <= 0) return finDelJuego();
+        nuevaRonda();
+        corriendo = true;
+        ultimoT = null;
+        requestAnimationFrame(bucle);
+      }, bien ? 700 : 1500);
+    }
+
+    function mostrarFlash(marca, txt, sub) {
+      document.getElementById("flash-marca").textContent = marca;
+      document.getElementById("flash-txt").textContent = txt;
+      document.getElementById("flash-sub").textContent = sub;
+      flash.style.display = "flex";
+    }
+
+    function pintarVidas() {
+      let s = "";
+      for (let i = 0; i < VIDAS_MAX; i++) {
+        s += i < vidas ? '<span>❤️</span>' : '<span class="perdida">❤️</span>';
+      }
+      vidasEl.innerHTML = s;
+    }
+
+    function mostrarFlotante(n) {
+      const r = campo.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "float";
+      f.innerHTML = "+" + n + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 40, window.innerWidth - 120) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1200);
+    }
+
+    // ---------- Fallschleife ----------
+    function bucle(t) {
+      if (!corriendo) return;
+      if (ultimoT === null) ultimoT = t;
+      const dt = (t - ultimoT) / 1000;
+      ultimoT = t;
+
+      const recorrido = campo.clientHeight - 24;      // bis kurz über die Kiste
+      y += (recorrido + ALTO_FICHA) / duracion() * dt;
+      grupo.style.transform = "translateY(" + y + "px)";
+
+      if (y >= recorrido - ALTO_FICHA) return resolver();
+      requestAnimationFrame(bucle);
+    }
+
+    // ---------- Ende ----------
+    function finDelJuego() {
+      corriendo = false;
+      document.getElementById("round").textContent = monedasRonda;
+      document.getElementById("aciertos").textContent = aciertos;
+
+      const caja = document.getElementById("repasar");
+      if (fallos.size) {
+        const lista = [...fallos.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6)
+          .map(([clave]) => {
+            const corte = clave.indexOf(" ");
+            return "<li>" + clave.slice(0, corte) + " <b>" + clave.slice(corte + 1) + "</b></li>";
+          })
+          .join("");
+        caja.innerHTML = "<h3>Das übst du noch:</h3><ul>" + lista + "</ul>";
+      } else {
+        caja.innerHTML = "<h3>Kein einziger Fehler. ¡Genial!</h3>";
+      }
+      document.getElementById("over").style.display = "flex";
+    }
+
+    function empezar() {
+      document.getElementById("over").style.display = "none";
+      flash.style.display = "none";
+      vidas = VIDAS_MAX;
+      serie = 0;
+      aciertos = 0;
+      monedasRonda = 0;
+      fallos = new Map();
+      bahn = 1;
+      cesta.style.left = (bahn * 100 / 3) + "%";
+      pintarVidas();
+      nuevaRonda();
+      corriendo = true;
+      ultimoT = null;
+      requestAnimationFrame(bucle);
+    }
+
+    // ---------- Steuerung ----------
+    function boton(id, accion) {
+      const b = document.getElementById(id);
+      b.addEventListener("pointerdown", (e) => { e.preventDefault(); accion(); });
+    }
+    boton("izq", () => moverCesta(-1));
+    boton("der", () => moverCesta(1));
+
+    // Am Computer auch mit den Pfeiltasten
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") moverCesta(-1);
+      else if (e.key === "ArrowRight") moverCesta(1);
+      else return;
+      e.preventDefault();
+    });
+
+    // Direkt auf eine Bahn tippen geht auch
+    campo.addEventListener("pointerdown", (e) => {
+      if (!corriendo) return;
+      const r = campo.getBoundingClientRect();
+      const destino = Math.max(0, Math.min(2, Math.floor((e.clientX - r.left) / (r.width / 3))));
+      bahn = destino;
+      cesta.style.left = (bahn * 100 / 3) + "%";
+    });
+
+    document.getElementById("again").addEventListener("click", empezar);
+    empezar();
+  </script>
+</body>
+</html>
