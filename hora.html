@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>¿Qué hora es? – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.5rem; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+    .top {
+      width: 100%; max-width: 420px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .top a, .pill {
+      background: #fff8; border-radius: 999px; padding: 0.3rem 0.9rem;
+      font-size: 1.15rem; font-weight: bold; color: inherit; text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .coin { width: 1.5em; height: 1.5em; }
+    .vidas .perdida { opacity: 0.25; }
+
+    .tarea {
+      width: min(94vw, 420px);
+      background: #fff; border-radius: 1rem; box-shadow: 0 4px 0 #0002;
+      padding: 0.6rem 0.8rem; box-sizing: border-box; text-align: center;
+      position: relative;
+    }
+    .serie {
+      position: absolute; left: 0.7rem; top: 0.5rem;
+      font-size: 0.95rem; font-weight: bold; color: #7b3fe4;
+    }
+    .serie.apagada { opacity: 0.25; }
+    .pedir { font-size: 0.95rem; opacity: 0.6; margin-bottom: 0.2rem; }
+
+    /* Analoguhr */
+    .esfera { width: min(44vw, 170px); height: auto; display: block; margin: 0 auto; }
+    /* Digitaluhr */
+    .digital {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(2.6rem, 15vw, 4rem); font-weight: bold;
+      background: #2b1a4a; color: #ffd34d; border-radius: 12px;
+      padding: 0.35rem 0.6rem; display: inline-block; letter-spacing: 2px;
+      margin: 0.3rem auto;
+    }
+    /* Satz, wenn andersherum gefragt wird */
+    .frase { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: bold; padding: 0.8rem 0.2rem; }
+
+    .barra { height: 8px; border-radius: 4px; background: #2b1a4a1a; overflow: hidden; margin-top: 0.4rem; }
+    .barra div { height: 100%; width: 100%; background: #7b3fe4; transform-origin: left; }
+    .barra div.poco { background: #e4573f; }
+
+    .tarea.sacude { animation: sacudir 0.35s; }
+    @keyframes sacudir {
+      0%,100% { transform: translateX(0); } 20% { transform: translateX(-9px); }
+      40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(4px); }
+    }
+
+    /* Antworten: entweder drei Sätze untereinander oder drei Uhren nebeneinander */
+    .opciones { width: min(94vw, 420px); margin-top: 0.55rem; display: grid; gap: 0.45rem; }
+    .opciones.textos { grid-template-columns: 1fr; }
+    .opciones.relojes { grid-template-columns: repeat(3, 1fr); }
+    .opciones button {
+      border: none; border-radius: 14px; background: #fff; color: #2b1a4a;
+      box-shadow: 0 4px 0 #0003; font-weight: bold;
+      font-size: clamp(0.95rem, 4vw, 1.15rem);
+      padding: 0.7rem 0.5rem; line-height: 1.2;
+    }
+    .opciones.relojes button { padding: 0.4rem 0.2rem; }
+    .opciones.relojes svg { width: 100%; height: auto; }
+    .opciones button:active { transform: translateY(3px); box-shadow: 0 1px 0 #0003; }
+    .opciones button.bien { background: #ffd34d; }
+    .opciones button.mal  { background: #e4573f; color: #fff; }
+
+    .flota {
+      position: fixed; font-size: 1.9rem; font-weight: bold; pointer-events: none;
+      animation: subir 1.1s forwards; text-shadow: 0 2px 0 #fff;
+      display: flex; align-items: center; gap: 0.25rem; z-index: 5;
+    }
+    .flota img { width: 2rem; height: 2rem; }
+    @keyframes subir { to { transform: translateY(-80px); opacity: 0; } }
+
+    #over, #inicio {
+      position: fixed; inset: 0; background: #0008;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem; box-sizing: border-box; z-index: 10;
+    }
+    #over .box, #inicio .box {
+      background: #fff; border-radius: 1rem; padding: 1.2rem 1.3rem; text-align: center;
+      max-width: 340px; width: 100%; box-sizing: border-box; max-height: 92dvh; overflow-y: auto;
+    }
+    #over h2, #inicio h2 { margin: 0 0 0.5rem; }
+    #over .pill, #inicio .pill { justify-content: center; background: none; }
+    #over button, #inicio button {
+      font-size: 1.2rem; padding: 0.7rem 1.5rem; border: none;
+      border-radius: 999px; background: #7b3fe4; color: #fff; margin-top: 0.9rem;
+    }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.95rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.15rem 0; }
+    .marcas b { color: #7b3fe4; }
+    .repasar { margin-top: 0.8rem; text-align: left; font-size: 0.95rem; }
+    .repasar h3 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+    .repasar ul { margin: 0; padding-left: 1.1rem; }
+    .repasar b { color: #7b3fe4; }
+    .ayuda { font-size: 0.85rem; text-align: left; opacity: 0.75; margin-top: 0.5rem; }
+    .ayuda code { background: #2b1a4a0d; padding: 0 0.2rem; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <div class="pill vidas" id="vidas">❤️❤️❤️</div>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+  </div>
+
+  <div class="tarea" id="tarea">
+    <div class="serie apagada" id="serie">🔥<span id="serie-n">0</span></div>
+    <div class="pedir" id="pedir">¿Qué hora es?</div>
+    <div id="muestra"></div>
+    <div class="barra"><div id="barra"></div></div>
+  </div>
+
+  <div class="opciones textos" id="opciones"></div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>¿Qué hora es?</h2>
+      <div class="ayuda">
+        Mal zeigt eine Uhr die Zeit und du suchst den passenden Satz, mal steht
+        der Satz da und du suchst die Uhr. Die Analoguhr kommt mal mit allen
+        Zahlen, mal nur mit <code>3 6 9 12</code>, mal ganz ohne.
+      </div>
+      <div class="marcas" id="marcas-inicio"></div>
+      <button id="btn-empezar">Los geht's</button>
+    </div>
+  </div>
+
+  <div id="over">
+    <div class="box">
+      <h2>¡Se acabó!</h2>
+      <div class="pill">In dieser Runde: <img class="coin" src="coin.svg" alt="Münzen"><span id="round">0</span></div>
+      <div class="marcas" id="marcas-fin"></div>
+      <div class="repasar" id="repasar"></div>
+      <button id="btn-otra">Nochmal</button>
+    </div>
+  </div>
+
+  <script src="fallos.js"></script>
+  <script>
+    // ---------- Die Uhrzeit auf Spanisch ----------
+    // Genau die Bausteine, die in ¡Apúntate! 1 (Módulo 3) stehen:
+    // "Es la una" / "Son las ...", en punto, y cuarto, y media, menos cuarto
+    // und "y/menos" + Minutenzahl. Kein 24-Stunden-Format, keine Tageszeit.
+    const HORAS = ["doce", "una", "dos", "tres", "cuatro", "cinco", "seis",
+                   "siete", "ocho", "nueve", "diez", "once", "doce"];
+    const MINUTOS = { 5: "cinco", 10: "diez", 20: "veinte", 25: "veinticinco" };
+    const MIN_POSIBLES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+
+    // Ab 35 Minuten zählt Spanisch von der nächsten Stunde rückwärts:
+    // 3:45 ist "las cuatro menos cuarto", nicht "las tres ...".
+    function enPalabras(h, m) {
+      let hora = h, resto;
+      if (m === 0)       resto = " en punto";
+      else if (m === 15) resto = " y cuarto";
+      else if (m === 30) resto = " y media";
+      else if (m < 30)   resto = " y " + MINUTOS[m];
+      else {
+        hora = h === 12 ? 1 : h + 1;
+        resto = (m === 45) ? " menos cuarto" : " menos " + MINUTOS[60 - m];
+      }
+      return (hora === 1 ? "Es la una" : "Son las " + HORAS[hora]) + resto;
+    }
+
+    // Falsche Sätze, die wirklich jemand bilden würde
+    function senuelos(h, m) {
+      const correcta = enPalabras(h, m);
+      const cand = new Set();
+      cand.add(enPalabras(h === 12 ? 1 : h + 1, m));          // Stunde daneben
+      cand.add(enPalabras(h === 1 ? 12 : h - 1, m));
+      // y und menos vertauscht: aus 3:45 wird "las tres y cuarto".
+      // Das ist der deutsche Reflex ("Viertel vor vier" -> falsche Stunde).
+      if (m !== 0 && m !== 30) cand.add(enPalabras(h, 60 - m));
+      if (m === 15 || m === 45) cand.add(enPalabras(h, 30));  // cuarto/media
+      if (m === 30) cand.add(enPalabras(h, 15));
+      cand.delete(correcta);
+      return [...cand];
+    }
+
+    // "Son las una" oder "Es la tres" – der Artikelfehler
+    function errorArticulo(h, m) {
+      const t = enPalabras(h, m);
+      if (t.startsWith("Es la una")) return "Son las una" + t.slice(9);
+      return "Es la " + t.slice(8);
+    }
+    const P_ARTICULO = 0.25;   // so oft ist einer der Ablenker dieser Fehler
+
+    // ---------- Die Uhren zeichnen ----------
+    // variante: "todos" = alle Zahlen, "cuartos" = nur 3 6 9 12, "ninguno" = keine
+    function esferaSVG(h, m, variante, clase) {
+      const cx = 50, cy = 50;
+      let s = '<svg viewBox="0 0 100 100" class="' + (clase || "") + '">';
+      s += '<circle cx="50" cy="50" r="47" fill="#fff" stroke="#2b1a4a" stroke-width="3"/>';
+      for (let i = 0; i < 60; i++) {
+        const a = (i * 6 - 90) * Math.PI / 180;
+        const gorda = i % 5 === 0;
+        const r1 = gorda ? 39 : 42, r2 = 44;
+        s += '<line x1="' + (cx + Math.cos(a) * r1).toFixed(1) + '" y1="' + (cy + Math.sin(a) * r1).toFixed(1) +
+             '" x2="' + (cx + Math.cos(a) * r2).toFixed(1) + '" y2="' + (cy + Math.sin(a) * r2).toFixed(1) +
+             '" stroke="#2b1a4a" stroke-width="' + (gorda ? 2 : 0.8) + '" opacity="' + (gorda ? 1 : 0.4) + '"/>';
+      }
+      if (variante !== "ninguno") {
+        for (let n = 1; n <= 12; n++) {
+          if (variante === "cuartos" && n % 3 !== 0) continue;
+          const a = (n * 30 - 90) * Math.PI / 180;
+          s += '<text x="' + (cx + Math.cos(a) * 31).toFixed(1) + '" y="' + (cy + Math.sin(a) * 31 + 4).toFixed(1) +
+               '" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1a4a"' +
+               ' font-family="system-ui, sans-serif">' + n + '</text>';
+        }
+      }
+      const ah = ((h % 12) * 30 + m * 0.5 - 90) * Math.PI / 180;
+      const am = (m * 6 - 90) * Math.PI / 180;
+      s += '<line x1="50" y1="50" x2="' + (cx + Math.cos(ah) * 23).toFixed(1) + '" y2="' +
+           (cy + Math.sin(ah) * 23).toFixed(1) + '" stroke="#2b1a4a" stroke-width="4.5" stroke-linecap="round"/>';
+      s += '<line x1="50" y1="50" x2="' + (cx + Math.cos(am) * 34).toFixed(1) + '" y2="' +
+           (cy + Math.sin(am) * 34).toFixed(1) + '" stroke="#7b3fe4" stroke-width="3" stroke-linecap="round"/>';
+      s += '<circle cx="50" cy="50" r="3.2" fill="#7b3fe4"/></svg>';
+      return s;
+    }
+
+    function digitalHTML(h, m) {
+      return '<div class="digital">' + h + ":" + String(m).padStart(2, "0") + "</div>";
+    }
+
+    // ---------- Zustand ----------
+    const elMuestra = document.getElementById("muestra");
+    const elOpciones = document.getElementById("opciones");
+    const elBarra = document.getElementById("barra");
+    const elTarea = document.getElementById("tarea");
+    const elPedir = document.getElementById("pedir");
+    const elSerie = document.getElementById("serie");
+    const elSerieN = document.getElementById("serie-n");
+    const elVidas = document.getElementById("vidas");
+    const elCoins = document.getElementById("coins");
+
+    const VIDAS_MAX = 3;
+    const JUEGO = "hora";
+    const P_AL_REVES = 0.4;        // so oft: Satz steht da, Uhr ist gesucht
+    const TIEMPO = [[0, 12], [15, 8], [40, 6], [70, 5]];
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+    elCoins.textContent = coins;
+
+    let rec = { serie: 0, aciertos: 0 };
+    try { rec = Object.assign(rec, JSON.parse(localStorage.getItem("cece-hora-rec") || "{}")); } catch (e) {}
+
+    let ronda, vidas, serie, serieMax, aciertos, monedasRonda, corriendo;
+    let t0, duracionRonda, animId, fallosRonda;
+
+    function azar(n) { return Math.floor(Math.random() * n); }
+    function mezclar(a) {
+      for (let i = a.length - 1; i > 0; i--) { const j = azar(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+      return a;
+    }
+    function guardarMonedas() {
+      elCoins.textContent = coins;
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+    }
+
+    // ---------- Eine neue Aufgabe ----------
+    function nuevaRonda() {
+      // Was danebenging, kommt ein paar Aufgaben später von selbst zurück
+      let h, m;
+      const pend = Fallos.pendiente(JUEGO);
+      if (pend && /^\d+:\d+$/.test(pend)) {
+        [h, m] = pend.split(":").map(Number);
+      } else {
+        h = 1 + azar(12);
+        m = MIN_POSIBLES[azar(MIN_POSIBLES.length)];
+      }
+      const clave = h + ":" + m;
+      const correcta = enPalabras(h, m);
+
+      // Zwei Ablenker aussuchen
+      let malas = mezclar(senuelos(h, m));
+      const elegidas = [];
+      if (Math.random() < P_ARTICULO) {
+        const e = errorArticulo(h, m);
+        if (e !== correcta) elegidas.push(e);
+      }
+      for (const s of malas) {
+        if (elegidas.length >= 2) break;
+        if (!elegidas.includes(s)) elegidas.push(s);
+      }
+
+      const alReves = Math.random() < P_AL_REVES;
+      const variante = ["todos", "cuartos", "ninguno"][azar(3)];
+      const analogica = Math.random() < 0.6;
+
+      ronda = { h, m, clave, correcta, alReves, etq: correcta };
+
+      if (alReves) {
+        // Satz steht da, die passende Uhr ist gesucht.
+        // Die Ablenkeruhren sind die Zeiten hinter den falschen Sätzen.
+        elPedir.textContent = "Welche Uhr zeigt das?";
+        elMuestra.innerHTML = '<div class="frase">' + correcta + "</div>";
+        const tiempos = [[h, m]];
+        for (const s of elegidas) {
+          const t = buscarTiempo(s);
+          if (t && !tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
+        }
+        // Falls ein Ablenkersatz keine saubere Uhrzeit ergibt (beim
+        // Artikelfehler ist das so), mit anderen Zeiten auffüllen. Bewusst
+        // über eine gemischte Liste statt per Zufall, damit das hier unter
+        // keinen Umständen hängen bleibt.
+        if (tiempos.length < 3) {
+          const todas = [];
+          for (let hh = 1; hh <= 12; hh++)
+            for (const mm of MIN_POSIBLES) todas.push([hh, mm]);
+          for (const t of mezclar(todas)) {
+            if (tiempos.length >= 3) break;
+            if (!tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
+          }
+        }
+        const orden = mezclar(tiempos.slice(0, 3));
+        ronda.correctaIdx = orden.findIndex(x => x[0] === h && x[1] === m);
+        elOpciones.className = "opciones relojes";
+        elOpciones.innerHTML = orden.map(([hh, mm]) =>
+          "<button>" + esferaSVG(hh, mm, variante) + "</button>").join("");
+      } else {
+        elPedir.textContent = "¿Qué hora es?";
+        elMuestra.innerHTML = analogica ? esferaSVG(h, m, variante, "esfera") : digitalHTML(h, m);
+        const orden = mezclar([correcta, ...elegidas]);
+        ronda.correctaIdx = orden.indexOf(correcta);
+        elOpciones.className = "opciones textos";
+        elOpciones.innerHTML = orden.map(t => "<button>" + t + "</button>").join("");
+      }
+
+      [...elOpciones.children].forEach((b, i) => {
+        b.addEventListener("pointerdown", (e) => { e.preventDefault(); elegir(i); });
+      });
+
+      duracionRonda = segundos();
+      t0 = performance.now();
+      corriendo = true;
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(tictac);
+    }
+
+    // Zu einem Satz die Uhrzeit zurückrechnen (für die Ablenkeruhren)
+    function buscarTiempo(frase) {
+      for (let hh = 1; hh <= 12; hh++)
+        for (const mm of MIN_POSIBLES)
+          if (enPalabras(hh, mm) === frase) return [hh, mm];
+      return null;
+    }
+
+    function segundos() {
+      const n = aciertos;
+      if (n <= TIEMPO[0][0]) return TIEMPO[0][1];
+      for (let i = 1; i < TIEMPO.length; i++) {
+        const [n0, s0] = TIEMPO[i - 1], [n1, s1] = TIEMPO[i];
+        if (n <= n1) return s0 + (s1 - s0) * (n - n0) / (n1 - n0);
+      }
+      return TIEMPO[TIEMPO.length - 1][1];
+    }
+
+    function tictac(t) {
+      if (!corriendo) return;
+      const queda = 1 - (t - t0) / (duracionRonda * 1000);
+      elBarra.style.transform = "scaleX(" + Math.max(0, queda) + ")";
+      elBarra.classList.toggle("poco", queda < 0.25);
+      if (queda <= 0) return resolver(-1);
+      animId = requestAnimationFrame(tictac);
+    }
+
+    // ---------- Auswerten ----------
+    function elegir(i) { if (corriendo) resolver(i); }
+
+    function resolver(i) {
+      corriendo = false;
+      cancelAnimationFrame(animId);
+      const bien = i === ronda.correctaIdx;
+
+      Fallos.anotar(JUEGO, ronda.clave, bien, ronda.etq);
+
+      const botones = [...elOpciones.children];
+      botones[ronda.correctaIdx].classList.add("bien");
+      if (!bien && i >= 0) botones[i].classList.add("mal");
+      botones.forEach(b => b.style.pointerEvents = "none");
+
+      if (bien) {
+        aciertos++;
+        serie++;
+        if (serie > serieMax) serieMax = serie;
+        let ganado = 1;
+        if (serie % 5 === 0) ganado += 3;
+        coins += ganado;
+        monedasRonda += ganado;
+        guardarMonedas();
+        flotante("+" + ganado);
+      } else {
+        vidas--;
+        serie = 0;
+        fallosRonda.set(ronda.etq, (fallosRonda.get(ronda.etq) || 0) + 1);
+        pintarVidas();
+        elTarea.classList.add("sacude");
+        setTimeout(() => elTarea.classList.remove("sacude"), 360);
+      }
+      pintarSerie();
+
+      setTimeout(() => {
+        if (vidas <= 0) return finDelJuego();
+        nuevaRonda();
+      }, bien ? 600 : 1800);
+    }
+
+    function pintarSerie() {
+      elSerieN.textContent = serie;
+      elSerie.classList.toggle("apagada", serie === 0);
+    }
+
+    function pintarVidas() {
+      let s = "";
+      for (let i = 0; i < VIDAS_MAX; i++) s += i < vidas ? "<span>❤️</span>" : '<span class="perdida">❤️</span>';
+      elVidas.innerHTML = s;
+    }
+
+    function flotante(txt) {
+      const r = elTarea.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "flota";
+      f.innerHTML = txt + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 40, window.innerWidth - 110) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1100);
+    }
+
+    function listaMarcas(destino) {
+      document.getElementById(destino).innerHTML =
+        "<div><span>Längste Serie</span><b>" + rec.serie + "</b></div>" +
+        "<div><span>Meiste richtig</span><b>" + rec.aciertos + "</b></div>";
+    }
+
+    // ---------- Ende ----------
+    function finDelJuego() {
+      corriendo = false;
+      if (serieMax > rec.serie) rec.serie = serieMax;
+      if (aciertos > rec.aciertos) rec.aciertos = aciertos;
+      try { localStorage.setItem("cece-hora-rec", JSON.stringify(rec)); } catch (e) {}
+
+      document.getElementById("round").textContent = monedasRonda;
+      listaMarcas("marcas-fin");
+
+      const caja = document.getElementById("repasar");
+      if (fallosRonda.size) {
+        caja.innerHTML = "<h3>Das übst du noch:</h3><ul>" +
+          [...fallosRonda.keys()].slice(0, 6).map(t => "<li><b>" + t + "</b></li>").join("") + "</ul>";
+      } else {
+        caja.innerHTML = "<h3>Kein einziger Fehler. ¡Genial!</h3>";
+      }
+      document.getElementById("over").style.display = "flex";
+    }
+
+    function empezar() {
+      document.getElementById("over").style.display = "none";
+      document.getElementById("inicio").style.display = "none";
+      vidas = VIDAS_MAX;
+      serie = 0; serieMax = 0;
+      aciertos = 0;
+      monedasRonda = 0;
+      fallosRonda = new Map();
+      pintarVidas();
+      pintarSerie();
+      nuevaRonda();
+    }
+
+    function mostrarInicio() {
+      corriendo = false;
+      cancelAnimationFrame(animId);
+      document.getElementById("over").style.display = "none";
+      listaMarcas("marcas-inicio");
+      document.getElementById("inicio").style.display = "flex";
+    }
+
+    document.getElementById("btn-empezar").addEventListener("click", empezar);
+    document.getElementById("btn-otra").addEventListener("click", empezar);
+    mostrarInicio();
+  </script>
+</body>
+</html>

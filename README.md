@@ -13,6 +13,7 @@ Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 |---|---|---|
 | [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar`, `-er` und `-ir` |
 | [Einmaleins](einmaleins.html) | Mathe | Mal und Geteilt bis 100, mit Schatzkarte und Rekorden |
+| [Uhrzeit](hora.html) | Spanisch | Die Uhrzeit auf Spanisch, analog und digital |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
 sich pro Aufgabe, wie oft sie saß und wie oft nicht. Was wackelt, kommt
@@ -121,3 +122,28 @@ auf einen Blick, was noch fehlt.
 Rekorde (längste Serie, meiste richtige, schnellste Antwort) bleiben
 gespeichert. Münzen gibt es wie im Verbenspiel: eine pro richtiger Antwort,
 drei extra für jede fünfte in Folge. Nach drei Fehlern ist die Runde vorbei.
+
+### Uhrzeit (`hora.html`)
+
+Zwei Richtungen im Wechsel. Meistens zeigt eine Uhr die Zeit und der passende
+Satz ist unter dreien zu finden; in etwa vier von zehn Aufgaben steht der Satz
+da und die richtige von drei Uhren ist gesucht.
+
+Die Uhr ist mal analog, mal digital — nie beides zugleich. Das Zifferblatt
+wechselt zwischen allen zwölf Zahlen, nur `3 6 9 12` und ganz ohne Zahlen, damit
+sie die Zeiger wirklich lesen muss und nicht nur Zahlen abliest.
+
+**Sprachlich genau im Rahmen von Módulo 3:** `Es la una` gegen `Son las ...`,
+`en punto`, `y cuarto`, `y media`, `menos cuarto` und `y`/`menos` + Minutenzahl
+in Fünferschritten. Kein 24-Stunden-Format und keine Tageszeit (`de la tarde`) —
+beides ließe sich später ergänzen.
+
+Die Ablenker sind die Fehler, die man als Deutsche:r wirklich macht:
+
+* **Die Stunde nicht weitergedreht.** 3:45 heißt `Son las cuatro menos cuarto`,
+  nicht `las tres`. Genau dieser Satz steht als Ablenker daneben.
+* **`y` statt `menos`.** Aus „Viertel vor vier" wird schnell `Son las tres y
+  cuarto` — auch das steht zur Wahl.
+* **`cuarto` und `media` verwechselt.**
+* **Der Artikel.** `Son las una` oder `Es la tres` kommt in jeder vierten
+  Aufgabe als Falle vor.
