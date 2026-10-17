@@ -30,6 +30,14 @@
       font-weight: bold;
     }
     .coin { width: 1.6em; height: 1.6em; vertical-align: middle; }
+    .rekorde {
+      width: 56px; height: 56px; flex: 0 0 auto;
+      border-radius: 50%; background: #fff8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; text-decoration: none; line-height: 1;
+      box-shadow: 0 3px 0 #0002;
+    }
+    .rekorde:active { transform: translateY(3px); box-shadow: 0 1px 0 #0002; }
     .yo {
       width: 56px; height: 56px; flex: 0 0 auto;
       border-radius: 50%; overflow: hidden; display: block;
@@ -70,6 +78,7 @@
 </head>
 <body>
   <div class="cabecera">
+    <a class="rekorde" href="marcas.html" aria-label="Rekorde">🏆</a>
     <div class="coins"><img class="coin" src="coin.svg" alt="Münzen"> <span id="coins">0</span></div>
     <a class="yo" href="avatar.html" id="yo" aria-label="Avatar"></a>
   </div>

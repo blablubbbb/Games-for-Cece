@@ -251,13 +251,29 @@
     .repasar ul { margin: 0; padding-left: 1.1rem; font-size: 0.95rem; }
     .repasar li { margin-bottom: 0.15rem; }
     .repasar b { color: #7b3fe4; }
+
+    /* Rekordanzeige in der Kopfzeile */
+    .pill.marca { gap: 0.25rem; opacity: 0.85; }
+    /* Zurück: gleicher Platz wie "Nochmal", aber zweitrangig */
+    .volver {
+      display: inline-block; font-size: 1rem; font-weight: bold;
+      padding: 0.6rem 1.1rem; border-radius: 999px; margin: 0.9rem 0 0 0.4rem;
+      background: #fff; color: #7b3fe4; text-decoration: none;
+      box-shadow: inset 0 0 0 2px #7b3fe4;
+    }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.95rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.15rem 0; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .nuevo { color: #e4573f; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="top">
     <a href="index.html">⬅︎</a>
     <div class="pill vidas" id="vidas">❤️❤️❤️</div>
-    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
   </div>
 
   <div class="tarea">
@@ -291,8 +307,10 @@
       <div class="pill">In dieser Runde: <img class="coin" src="coin.svg" alt="Münzen"><span id="round">0</span></div>
       <div class="pill">Richtig: <span id="aciertos">0</span></div>
       <div class="pill" id="nivelFin">–</div>
+      <div class="marcas" id="marcas-fin"></div>
       <div class="repasar" id="repasar"></div>
       <button id="again">Nochmal</button>
+      <a class="volver" href="index.html">Zurück</a>
       <button id="cambiar" class="otro">Anderes Level</button>
     </div>
   </div>
@@ -309,6 +327,7 @@
   </div>
 
   <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
   <script>
     // ---------- Die Verben ----------
     // Nur Wortschatz aus ¡Apúntate! 1 (Ausgabe 2024), und nur Verben, die
@@ -502,27 +521,36 @@
     const campo    = document.getElementById("campo");
     const grupo    = document.getElementById("grupo");
     const cesta    = document.getElementById("cesta");
-    const coinsEl  = document.getElementById("coins");
+    const ptsEl    = document.getElementById("pts");
+    const recEl    = document.getElementById("rec");
     const vidasEl  = document.getElementById("vidas");
     const flash    = document.getElementById("flash");
 
     const ALTO_FICHA = 46;   // Höhe einer Wortkachel in px
     const VIDAS_MAX  = 3;
 
+    const JUEGO = "verbos";
+
     let coins = 0;
     try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
-    coinsEl.textContent = coins;
 
-    let bahn, ronda, y, ultimoT, corriendo, vidas, serie, aciertos, monedasRonda, fallos;
+    let bahn, ronda, y, ultimoT, corriendo, vidas, serie, serieMax, aciertos, monedasRonda, fallos;
 
     // Das zuletzt gespielte Level merken, damit sie nicht jedes Mal wählen muss
     let nivel = 1;
     try { nivel = Number(localStorage.getItem("cece-verbos-nivel")) || 1; } catch (e) {}
     if (!NIVELES[nivel]) nivel = 1;
 
+    // Die Münzen laufen weiter aufs Konto, angezeigt wird aber nur, was
+    // diese Runde eingebracht hat – und daneben der Rundenrekord.
     function guardarMonedas() {
-      coinsEl.textContent = coins;
       try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      pintarPuntos();
+    }
+
+    function pintarPuntos() {
+      ptsEl.textContent = monedasRonda;
+      recEl.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
     }
 
     function azar(n) { return Math.floor(Math.random() * n); }
@@ -692,6 +720,7 @@
       if (bien) {
         aciertos++;
         serie++;
+        if (serie > serieMax) serieMax = serie;
         let ganado = 1;
         if (serie % 5 === 0) ganado += 3;     // Bonus für fünf in Folge
         coins += ganado;
@@ -784,6 +813,10 @@
       document.getElementById("aciertos").textContent = aciertos;
       document.getElementById("nivelFin").textContent = "Nivel " + nivel + ": " + NIVELES[nivel].sub;
 
+      const batidos = Marcas.registrar(JUEGO,
+        { puntos: monedasRonda, serie: serieMax, aciertos: aciertos });
+      document.getElementById("marcas-fin").innerHTML = Marcas.lista(JUEGO, batidos);
+
       const caja = document.getElementById("repasar");
       if (fallos.size) {
         const lista = [...fallos.entries()]
@@ -807,12 +840,14 @@
       flash.style.display = "none";
       vidas = VIDAS_MAX;
       serie = 0;
+      serieMax = 0;
       aciertos = 0;
       monedasRonda = 0;
       fallos = new Map();
       bahn = 1;
       cesta.style.left = (bahn * 100 / 3) + "%";
       pintarVidas();
+      pintarPuntos();
       nuevaRonda();
       corriendo = true;
       ultimoT = null;

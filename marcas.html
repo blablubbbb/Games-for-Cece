@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rekorde – Games for Cece</title>
+  <style>
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      background-attachment: fixed;
+      color: #2b1a4a;
+      padding: 0.6rem 0.6rem 2rem;
+      box-sizing: border-box;
+    }
+    .top {
+      width: 100%; max-width: 420px; margin: 0 auto 0.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .top a, .pill {
+      background: #fff8; border-radius: 999px; padding: 0.3rem 0.9rem;
+      font-size: 1.15rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .coin { width: 1.5em; height: 1.5em; }
+    h1 { max-width: 420px; margin: 0.4rem auto 0.9rem; font-size: clamp(1.7rem, 7.5vw, 2.4rem); text-align: center; }
+
+    .juego {
+      max-width: 420px; margin: 0 auto 0.7rem;
+      background: #fff; border-radius: 1rem; box-shadow: 0 4px 0 #0002;
+      padding: 0.8rem 1rem; box-sizing: border-box;
+      display: block; color: inherit; text-decoration: none;
+    }
+    .juego:active { transform: translateY(3px); box-shadow: 0 1px 0 #0002; }
+    .juego h2 {
+      margin: 0 0 0.4rem; font-size: 1.15rem;
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .juego h2 .ico { font-size: 1.5rem; }
+    .marcas { font-size: 0.95rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.18rem 0; }
+    .marcas div + div { border-top: 1px solid #2b1a4a12; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .vacio { opacity: 0.55; font-size: 0.95rem; }
+
+    .resumen {
+      max-width: 420px; margin: 0 auto 0.9rem;
+      background: #fff8; border-radius: 1rem; padding: 0.7rem 1rem;
+      box-sizing: border-box; display: flex; justify-content: space-between;
+      align-items: center; font-weight: bold;
+    }
+    .resumen b { color: #7b3fe4; display: flex; align-items: center; gap: 0.3rem; font-size: 1.25rem; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+  </div>
+
+  <h1>🏆 Rekorde</h1>
+
+  <div class="resumen">
+    <span id="resumen-txt">–</span>
+    <b id="resumen-num">–</b>
+  </div>
+
+  <div id="lista"></div>
+
+  <script src="marcas.js"></script>
+  <script>
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+    document.getElementById("coins").textContent = coins;
+
+    // Oben eine Zahl über alle Spiele hinweg: wie viele Aufgaben sie
+    // insgesamt schon richtig hatte. Das weiß das Fehlergedächtnis.
+    let bien = 0;
+    try {
+      const todo = JSON.parse(localStorage.getItem("cece-fallos") || "{}");
+      for (const j in todo) for (const k in todo[j]) bien += todo[j][k].bien || 0;
+    } catch (e) {}
+    document.getElementById("resumen-txt").textContent = "Richtig beantwortet, insgesamt";
+    document.getElementById("resumen-num").textContent = bien;
+
+    document.getElementById("lista").innerHTML = Marcas.JUEGOS.map(j => {
+      const cuerpo = Marcas.jugado(j.id)
+        ? '<div class="marcas">' + Marcas.lista(j.id, null) + "</div>"
+        : '<div class="vacio">Noch nicht gespielt — probier es aus!</div>';
+      return '<a class="juego" href="' + j.url + '">' +
+             '<h2><span class="ico">' + j.icono + "</span>" + j.nombre + "</h2>" +
+             cuerpo + "</a>";
+    }).join("");
+  </script>
+</body>
+</html>

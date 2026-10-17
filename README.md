@@ -22,6 +22,17 @@ sich pro Aufgabe, wie oft sie saß und wie oft nicht. Was wackelt, kommt
 häufiger dran, und was gerade danebenging, kommt drei bis sieben Aufgaben
 später noch einmal. Das überlebt das Schließen des Browsers.
 
+Dazu teilen sie sich die **Bestmarken** (`marcas.js`). Jedes Spiel hält fest:
+beste Runde, längste Serie und meiste richtige Antworten, das Einmaleins
+außerdem die schnellste Antwort. Die Übersicht über alles liegt auf
+[`marcas.html`](marcas.html) und ist oben links auf der Startseite verlinkt.
+
+In den Spielen selbst steht in der Kopfzeile **nicht** mehr der Münzstand,
+sondern was diese Runde eingebracht hat und daneben der Rundenrekord — so
+sieht man beim Spielen, ob man gerade dabei ist, ihn zu schlagen. Gesammelt
+werden die Münzen natürlich weiter, zu sehen sind sie auf der Startseite und
+im Avatar. Am Rundenende gibt es neben *Nochmal* auch *Zurück*.
+
 ### Verben (`verbos.html`)
 
 Oben steht eine Person und ein Verb, zum Beispiel **tú · hablar**. Von oben

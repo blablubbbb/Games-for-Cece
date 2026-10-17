@@ -144,7 +144,8 @@
     }
     .marcas { text-align: left; margin-top: 0.7rem; font-size: 0.95rem; }
     .marcas div { display: flex; justify-content: space-between; padding: 0.15rem 0; }
-    .marcas b { color: #7b3fe4; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
     .nuevo { color: #e4573f; font-weight: bold; }
 
     /* Die große Karte am Rundenende, mit Beschriftung */
@@ -161,13 +162,24 @@
     .carta span.dominado { background: #ffd34d; }
     .leyenda { font-size: 0.75rem; margin-top: 0.4rem; display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
     .leyenda i { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; vertical-align: -1px; margin-right: 0.2rem; }
+
+    /* Rekordanzeige in der Kopfzeile */
+    .pill.marca { gap: 0.25rem; opacity: 0.85; }
+    /* Zurück: gleicher Platz wie "Nochmal", aber zweitrangig */
+    .volver {
+      display: inline-block; font-size: 1rem; font-weight: bold;
+      padding: 0.6rem 1.1rem; border-radius: 999px; margin: 0.9rem 0 0 0.4rem;
+      background: #fff; color: #7b3fe4; text-decoration: none;
+      box-shadow: inset 0 0 0 2px #7b3fe4;
+    }
   </style>
 </head>
 <body>
   <div class="top">
     <a href="index.html">⬅︎</a>
     <div class="pill vidas" id="vidas">❤️❤️❤️</div>
-    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
   </div>
 
   <div class="tarea" id="tarea">
@@ -206,10 +218,12 @@
       <div class="marcas" id="marcas-fin"></div>
       <div class="carta" id="carta-fin"></div>
       <button id="btn-otra">Nochmal</button>
+      <a class="volver" href="index.html">Zurück</a>
     </div>
   </div>
 
   <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
   <script>
     // ---------- Die Aufgaben ----------
     // Das kleine Einmaleins: 1x1 bis 10x10. Eine Aufgabe wird immer unter
@@ -245,29 +259,29 @@
     const elSerieN = document.getElementById("serie-n");
     const elMapa = document.getElementById("mapa");
     const elVidas = document.getElementById("vidas");
-    const elCoins = document.getElementById("coins");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
 
     let coins = 0;
     try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
-    elCoins.textContent = coins;
-
-    let rec = { serie: 0, aciertos: 0, rapido: 0 };
-    try { rec = Object.assign(rec, JSON.parse(localStorage.getItem("cece-einmaleins-rec") || "{}")); } catch (e) {}
 
     let tarea, escrito, vidas, serie, aciertos, monedasRonda, corriendo;
-    let t0, duracionRonda, animId, nuevosDominados, recordsBatidos;
+    let t0, duracionRonda, animId, nuevosDominados;
     // Stand der laufenden Runde, für die Bestmarken am Ende
     let serieMax = 0, rapidoRonda = 0;
 
     function azar(n) { return Math.floor(Math.random() * n); }
 
+    // Die Münzen laufen weiter aufs Konto, angezeigt wird aber nur, was
+    // diese Runde eingebracht hat – und daneben der Rundenrekord.
     function guardarMonedas() {
-      elCoins.textContent = coins;
       try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      pintarPuntos();
     }
 
-    function guardarRec() {
-      try { localStorage.setItem("cece-einmaleins-rec", JSON.stringify(rec)); } catch (e) {}
+    function pintarPuntos() {
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
     }
 
     // ---------- Die Schatzkarte ----------
@@ -513,38 +527,28 @@
     }
 
     // ---------- Rekorde ----------
-    function listaMarcas(destino, conNuevos) {
+    function listaMarcas(destino, batidos) {
       const dominadas = TODAS.filter(c => estado(c) === "dominado").length;
-      const marca = (etq, val, nuevo) =>
-        "<div><span>" + etq + "</span><b>" + val +
-        (nuevo ? " <span class='nuevo'>neu!</span>" : "") + "</b></div>";
-      let h = "";
-      h += marca("Längste Serie", rec.serie, conNuevos && recordsBatidos.serie);
-      h += marca("Meiste richtig", rec.aciertos, conNuevos && recordsBatidos.aciertos);
-      h += marca("Schnellste Antwort", rec.rapido ? rec.rapido.toFixed(2) + " s" : "–",
-                 conNuevos && recordsBatidos.rapido);
-      h += marca("Aufgaben, die sitzen", dominadas + " von " + TODAS.length, false);
-      document.getElementById(destino).innerHTML = h;
+      document.getElementById(destino).innerHTML = Marcas.lista(JUEGO, batidos) +
+        "<div><span>Aufgaben, die sitzen</span><b>" + dominadas +
+        " von " + TODAS.length + "</b></div>";
     }
 
     // ---------- Ende ----------
     function finDelJuego() {
       corriendo = false;
       // Erst jetzt gegen die Bestmarken verrechnen, damit "neu!" stimmt
-      recordsBatidos = { serie: false, aciertos: false, rapido: false };
-      if (serieMax > rec.serie) { rec.serie = serieMax; recordsBatidos.serie = true; }
-      if (aciertos > rec.aciertos) { rec.aciertos = aciertos; recordsBatidos.aciertos = true; }
-      if (rapidoRonda && (!rec.rapido || rapidoRonda < rec.rapido)) {
-        rec.rapido = rapidoRonda; recordsBatidos.rapido = true;
-      }
-      guardarRec();
+      const batidos = Marcas.registrar(JUEGO, {
+        puntos: monedasRonda, serie: serieMax,
+        aciertos: aciertos, rapido: rapidoRonda || null,
+      });
 
       document.getElementById("over-titulo").textContent =
         nuevosDominados > 0 ? (nuevosDominados === 1 ? "Eine Aufgabe sitzt jetzt!"
                                                      : nuevosDominados + " Aufgaben sitzen jetzt!")
                             : "Vorbei!";
       document.getElementById("round").textContent = monedasRonda;
-      listaMarcas("marcas-fin", true);
+      listaMarcas("marcas-fin", batidos);
       cartaGrande("carta-fin");
       document.getElementById("over").style.display = "flex";
     }
@@ -561,6 +565,7 @@
       rapidoRonda = 0;
       pintarVidas();
       pintarSerie();
+      pintarPuntos();
       pintarMapa();
       nuevaTarea();
     }
@@ -569,7 +574,7 @@
       corriendo = false;
       cancelAnimationFrame(animId);
       document.getElementById("over").style.display = "none";
-      listaMarcas("marcas-inicio", false);
+      listaMarcas("marcas-inicio", null);
       cartaGrande("carta-inicio");
       document.getElementById("inicio").style.display = "flex";
     }

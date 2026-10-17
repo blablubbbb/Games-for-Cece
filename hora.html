@@ -135,20 +135,33 @@
     }
     .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.95rem; }
     .marcas div { display: flex; justify-content: space-between; padding: 0.15rem 0; }
-    .marcas b { color: #7b3fe4; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
     .repasar { margin-top: 0.8rem; text-align: left; font-size: 0.95rem; }
     .repasar h3 { margin: 0 0 0.3rem; font-size: 0.95rem; }
     .repasar ul { margin: 0; padding-left: 1.1rem; }
     .repasar b { color: #7b3fe4; }
     .ayuda { font-size: 0.85rem; text-align: left; opacity: 0.75; margin-top: 0.5rem; }
     .ayuda code { background: #2b1a4a0d; padding: 0 0.2rem; border-radius: 3px; }
+
+    /* Rekordanzeige in der Kopfzeile */
+    .pill.marca { gap: 0.25rem; opacity: 0.85; }
+    /* Zurück: gleicher Platz wie "Nochmal", aber zweitrangig */
+    .volver {
+      display: inline-block; font-size: 1rem; font-weight: bold;
+      padding: 0.6rem 1.1rem; border-radius: 999px; margin: 0.9rem 0 0 0.4rem;
+      background: #fff; color: #7b3fe4; text-decoration: none;
+      box-shadow: inset 0 0 0 2px #7b3fe4;
+    }
+    .nuevo { color: #e4573f; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="top">
     <a href="index.html">⬅︎</a>
     <div class="pill vidas" id="vidas">❤️❤️❤️</div>
-    <div class="pill"><img class="coin" src="coin.svg" alt="Münzen"><span id="coins">0</span></div>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
   </div>
 
   <div class="tarea" id="tarea">
@@ -180,10 +193,12 @@
       <div class="marcas" id="marcas-fin"></div>
       <div class="repasar" id="repasar"></div>
       <button id="btn-otra">Nochmal</button>
+      <a class="volver" href="index.html">Zurück</a>
     </div>
   </div>
 
   <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
   <script>
     // ---------- Die Uhrzeit auf Spanisch ----------
     // Genau die Bausteine, die in ¡Apúntate! 1 (Módulo 3) stehen:
@@ -313,7 +328,8 @@
     const elSerie = document.getElementById("serie");
     const elSerieN = document.getElementById("serie-n");
     const elVidas = document.getElementById("vidas");
-    const elCoins = document.getElementById("coins");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
 
     const VIDAS_MAX = 3;
     const JUEGO = "hora";
@@ -322,10 +338,6 @@
 
     let coins = 0;
     try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
-    elCoins.textContent = coins;
-
-    let rec = { serie: 0, aciertos: 0 };
-    try { rec = Object.assign(rec, JSON.parse(localStorage.getItem("cece-hora-rec") || "{}")); } catch (e) {}
 
     let ronda, vidas, serie, serieMax, aciertos, monedasRonda, corriendo;
     let t0, duracionRonda, animId, fallosRonda;
@@ -335,9 +347,16 @@
       for (let i = a.length - 1; i > 0; i--) { const j = azar(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
       return a;
     }
+    // Die Münzen laufen weiter aufs Konto, angezeigt wird aber nur, was
+    // diese Runde eingebracht hat – und daneben der Rundenrekord.
     function guardarMonedas() {
-      elCoins.textContent = coins;
       try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      pintarPuntos();
+    }
+
+    function pintarPuntos() {
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
     }
 
     // ---------- Eine neue Aufgabe ----------
@@ -538,21 +557,18 @@
       setTimeout(() => f.remove(), 1100);
     }
 
-    function listaMarcas(destino) {
-      document.getElementById(destino).innerHTML =
-        "<div><span>Längste Serie</span><b>" + rec.serie + "</b></div>" +
-        "<div><span>Meiste richtig</span><b>" + rec.aciertos + "</b></div>";
+    function listaMarcas(destino, batidos) {
+      document.getElementById(destino).innerHTML = Marcas.lista(JUEGO, batidos);
     }
 
     // ---------- Ende ----------
     function finDelJuego() {
       corriendo = false;
-      if (serieMax > rec.serie) rec.serie = serieMax;
-      if (aciertos > rec.aciertos) rec.aciertos = aciertos;
-      try { localStorage.setItem("cece-hora-rec", JSON.stringify(rec)); } catch (e) {}
+      const batidos = Marcas.registrar(JUEGO,
+        { puntos: monedasRonda, serie: serieMax, aciertos: aciertos });
 
       document.getElementById("round").textContent = monedasRonda;
-      listaMarcas("marcas-fin");
+      listaMarcas("marcas-fin", batidos);
 
       const caja = document.getElementById("repasar");
       if (fallosRonda.size) {
@@ -574,6 +590,7 @@
       fallosRonda = new Map();
       pintarVidas();
       pintarSerie();
+      pintarPuntos();
       nuevaRonda();
     }
 
@@ -581,7 +598,7 @@
       corriendo = false;
       cancelAnimationFrame(animId);
       document.getElementById("over").style.display = "none";
-      listaMarcas("marcas-inicio");
+      listaMarcas("marcas-inicio", null);
       document.getElementById("inicio").style.display = "flex";
     }
 
