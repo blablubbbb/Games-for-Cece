@@ -138,7 +138,7 @@
     .controls {
       width: min(92vw, 420px);
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.6rem;
       margin-top: 0.7rem;
     }
@@ -153,6 +153,7 @@
       touch-action: none;
     }
     .controls button:active { transform: translateY(3px); box-shadow: 0 1px 0 #0003; }
+    .controls .soltar { background: #7b3fe4; color: #fff; }
 
     .float {
       position: fixed;
@@ -233,6 +234,7 @@
 
   <div class="controls">
     <button id="izq" aria-label="Links">◀</button>
+    <button id="btn-soltar" class="soltar" aria-label="Fallen lassen">⬇</button>
     <button id="der" aria-label="Rechts">▶</button>
   </div>
 
@@ -357,19 +359,27 @@
       grupo.style.transform = "translateY(" + y + "px)";
     }
 
-    // Tempo: der ganze Verlauf wird durch diesen Faktor geteilt.
-    // 1 = ursprüngliches Tempo, 3 = dreimal so viel Zeit zum Überlegen.
-    // Zum Nachregeln reicht diese eine Zahl.
-    const LENTITUD = 3;
+    // Tempo: Stützpunkte [richtige Wörter, Sekunden pro Kachel].
+    // Dazwischen wird gerade interpoliert, das Tempo ändert sich also bei
+    // jedem einzelnen Wort ein kleines bisschen statt in Sprüngen.
+    // Nach dem letzten Stützpunkt bleibt es beim Höchsttempo.
+    // Zum Nachregeln reicht diese Tabelle.
+    const TEMPO = [
+      [0,  13.8],
+      [40,  2.0],
+      [60,  1.0],
+      [80,  0.5],
+    ];
 
-    // Fallzeit in Sekunden: wird mit jedem Level kürzer, hört beim Minimum auf.
-    // Start und Minimum wachsen mit LENTITUD mit, damit die Kurve ihre Form
-    // behält – sonst bliebe sie ewig beim Anfangstempo hängen.
+    // Fallzeit in Sekunden für den aktuellen Stand
     function duracion() {
-      return LENTITUD * Math.max(2.0, 4.6 - nivel() * 0.18);
-    }
-    function nivel() {
-      return Math.floor(aciertos / 5);
+      const n = aciertos;
+      if (n <= TEMPO[0][0]) return TEMPO[0][1];
+      for (let i = 1; i < TEMPO.length; i++) {
+        const [n0, s0] = TEMPO[i - 1], [n1, s1] = TEMPO[i];
+        if (n <= n1) return s0 + (s1 - s0) * (n - n0) / (n1 - n0);
+      }
+      return TEMPO[TEMPO.length - 1][1];      // Höchsttempo, bleibt so
     }
 
     function moverCesta(d) {
@@ -445,6 +455,17 @@
     }
 
     // ---------- Fallschleife ----------
+    // Fallstrecke der Kachel: von oben bis kurz über die Kiste
+    function recorrido() { return campo.clientHeight - 24; }
+
+    // Sofort fallen lassen – wenn sie die Form schon weiß, muss sie nicht warten
+    function soltar() {
+      if (!corriendo) return;
+      y = recorrido() - ALTO_FICHA;
+      grupo.style.transform = "translateY(" + y + "px)";
+      resolver();
+    }
+
     function bucle(t) {
       if (!corriendo) return;
       if (ultimoT === null) ultimoT = t;
@@ -455,11 +476,10 @@
       // y = recorrido - ALTO_FICHA ausgewertet, legt also genau
       // "recorrido" Pixel zurück. Das Tempo muss über dieselbe Strecke
       // gerechnet werden, sonst ist die echte Fallzeit kürzer als duracion().
-      const recorrido = campo.clientHeight - 24;      // bis kurz über die Kiste
-      y += recorrido / duracion() * dt;
+      y += recorrido() / duracion() * dt;
       grupo.style.transform = "translateY(" + y + "px)";
 
-      if (y >= recorrido - ALTO_FICHA) return resolver();
+      if (y >= recorrido() - ALTO_FICHA) return resolver();
       requestAnimationFrame(bucle);
     }
 
@@ -510,11 +530,13 @@
     }
     boton("izq", () => moverCesta(-1));
     boton("der", () => moverCesta(1));
+    boton("btn-soltar", soltar);
 
-    // Am Computer auch mit den Pfeiltasten
+    // Am Computer auch mit den Pfeiltasten, runter oder Leertaste lässt fallen
     document.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft") moverCesta(-1);
       else if (e.key === "ArrowRight") moverCesta(1);
+      else if (e.key === "ArrowDown" || e.key === " ") soltar();
       else return;
       e.preventDefault();
     });
