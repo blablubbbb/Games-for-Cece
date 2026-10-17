@@ -70,6 +70,26 @@ const Avatar = (function () {
         { id: "arcoiris", nombre: "Regenbogen", precio: 150 },
       ]
     },
+    pantalon: {
+      nombre: "Hose", items: [
+        { id: "vaquero", nombre: "Jeans",      color: "#4a6fa5", largo: "largo", precio: 0 },
+        { id: "gris",    nombre: "Grau",       color: "#6b6b7a", largo: "largo", precio: 0 },
+        { id: "corto",   nombre: "Kurze Hose", color: "#e4573f", largo: "corto", precio: 35 },
+        { id: "verde",   nombre: "Grün",       color: "#3f9b5a", largo: "largo", precio: 55 },
+        { id: "falda",   nombre: "Rock",       color: "#e8559b", largo: "falda", precio: 85 },
+        { id: "dorado",  nombre: "Gold",       color: "#e0b23a", largo: "largo", precio: 130 },
+      ]
+    },
+    zapatos: {
+      nombre: "Schuhe", items: [
+        { id: "deportivas", nombre: "Sneaker", color: "#2b1a4a", precio: 0 },
+        { id: "blancas",    nombre: "Weiß",    color: "#f2f2f6", precio: 0 },
+        { id: "rojas",      nombre: "Rot",     color: "#e4573f", precio: 30 },
+        { id: "botas",      nombre: "Stiefel", color: "#6b4226", bota: true, precio: 65 },
+        { id: "doradas",    nombre: "Gold",    color: "#ffd34d", precio: 100 },
+        { id: "neon",       nombre: "Neon",    color: "#39e6a0", precio: 140 },
+      ]
+    },
     extra: {
       nombre: "Extra", items: [
         { id: "nada",    nombre: "Nichts",      precio: 0 },
@@ -92,7 +112,7 @@ const Avatar = (function () {
     },
   };
 
-  const ORDEN = ["piel", "pelo", "colorPelo", "ojos", "ropa", "extra", "fondo"];
+  const ORDEN = ["piel", "pelo", "colorPelo", "ojos", "ropa", "pantalon", "zapatos", "extra", "fondo"];
 
   function buscar(cat, id) {
     const lista = PARTES[cat].items;
@@ -197,10 +217,12 @@ const Avatar = (function () {
       s += g("M" + (cx - 11) + " " + (cy - 20) + " Q" + cx + " " + (cy - 46) + " " + (cx + 11) + " " + (cy - 20) + " Z");
       return s;
     }
+    // Der Pony endet bewusst über den Augen. Die tiefste Stelle der
+    // Unterkante liegt bei cy-9, die größten Augen reichen bis cy-7.2.
     s += g("M" + (cx - R) + " " + cy + " A" + R + " " + R + " 0 0 1 " + (cx + R) + " " + cy +
-           " L" + (cx + R) + " " + (cy - 6) + " Q" + cx + " " + (cy + 9) + " " + (cx - R) + " " + (cy - 6) + " Z");
+           " L" + (cx + R) + " " + (cy - 13) + " Q" + cx + " " + (cy - 5) + " " + (cx - R) + " " + (cy - 13) + " Z");
     if (estilo === "rizado") {
-      const pts = lado ? [[-20,-14],[-10,-22],[2,-24],[13,-18],[19,-8]] : [[-19,-13],[-10,-22],[0,-25],[10,-22],[19,-13]];
+      const pts = lado ? [[-20,-16],[-11,-25],[0,-28],[10,-24],[17,-16]] : [[-19,-17],[-10,-25],[0,-28],[10,-25],[19,-17]];
       for (const [dx, dy] of pts)
         s += '<circle cx="' + (cx + dx) + '" cy="' + (cy + dy) + '" r="9" fill="' + c + '"/>';
     } else if (estilo === "mono") {
@@ -318,21 +340,43 @@ const Avatar = (function () {
     const ropa = buscar("ropa", sel.ropa);
     const cx = lado ? 52 : 50, cy = 38;
 
-    let s = '<svg viewBox="0 0 100 130" class="' + (opt.clase || "") + '" xmlns="http://www.w3.org/2000/svg">';
+    // opt.cabeza schneidet auf den Kopf zu – für kleine Abzeichen, etwa
+    // oben rechts auf der Startseite. Sehr hohe Frisuren werden dabei
+    // oben angeschnitten, wie bei einem Profilbild.
+    const vb = opt.cabeza ? (cx - 27) + " " + (cy - 30) + " 54 56" : "0 0 100 130";
+    let s = '<svg viewBox="' + vb + '" class="' + (opt.clase || "") + '" xmlns="http://www.w3.org/2000/svg">';
     if (opt.fondo !== false) s += fondoSVG(buscar("fondo", sel.fondo));
 
-    // Beine und Schuhe. Von der Seite stehen sie hintereinander und die
-    // Schuhe zeigen nach rechts, in die Blickrichtung.
-    if (lado) {
-      s += '<rect x="45" y="94" width="9" height="26" rx="4.5" fill="' + piel + '" opacity="0.7"/>';
-      s += '<ellipse cx="50" cy="121" rx="9" ry="4.6" fill="#2b1a4a" opacity="0.7"/>';
-      s += '<rect x="52" y="94" width="9" height="26" rx="4.5" fill="' + piel + '"/>';
-      s += '<ellipse cx="58" cy="121" rx="9" ry="4.6" fill="#2b1a4a"/>';
+    // Beine, Hose und Schuhe. Von der Seite stehen die Beine hintereinander
+    // und die Schuhe zeigen nach rechts, in die Blickrichtung. Das hintere
+    // Bein ist leicht abgedunkelt, damit es nach hinten rutscht.
+    const pan = buscar("pantalon", sel.pantalon);
+    const zap = buscar("zapatos", sel.zapatos);
+    const piernas = lado ? [[45, 0.7], [52, 1]] : [[39, 1], [52, 1]];
+    const pies = lado ? [[50, 9, 0.7], [58, 9, 1]] : [[43.5, 7.5, 1], [56.5, 7.5, 1]];
+
+    for (const [x, op] of piernas)
+      s += '<rect x="' + x + '" y="94" width="9" height="26" rx="4.5" fill="' + piel +
+           '" opacity="' + op + '"/>';
+
+    // Hose. Der Rock ersetzt die beiden Hosenbeine durch ein Trapez.
+    if (pan.largo === "falda") {
+      s += lado ? '<path d="M39 90 L66 90 L72 112 L33 112 Z" fill="' + pan.color + '"/>'
+                : '<path d="M31 90 L69 90 L76 112 L24 112 Z" fill="' + pan.color + '"/>';
     } else {
-      s += '<rect x="39" y="94" width="9" height="26" rx="4.5" fill="' + piel + '"/>';
-      s += '<rect x="52" y="94" width="9" height="26" rx="4.5" fill="' + piel + '"/>';
-      s += '<ellipse cx="43.5" cy="121" rx="7.5" ry="4.6" fill="#2b1a4a"/>';
-      s += '<ellipse cx="56.5" cy="121" rx="7.5" ry="4.6" fill="#2b1a4a"/>';
+      const alto = pan.largo === "corto" ? 13 : 23;
+      for (const [x, op] of piernas)
+        s += '<rect x="' + (x - 0.7) + '" y="92" width="10.4" height="' + alto +
+             '" rx="5" fill="' + pan.color + '" opacity="' + op + '"/>';
+    }
+
+    // Schuhe, bei Stiefeln mit Schaft
+    for (const [cxp, rx, op] of pies) {
+      if (zap.bota)
+        s += '<rect x="' + (cxp - 5) + '" y="108" width="10" height="12" rx="3" fill="' +
+             zap.color + '" opacity="' + op + '"/>';
+      s += '<ellipse cx="' + cxp + '" cy="121" rx="' + rx + '" ry="4.6" fill="' +
+           zap.color + '" opacity="' + op + '"/>';
     }
 
     // Arme hinter dem Oberkörper
@@ -351,8 +395,12 @@ const Avatar = (function () {
     // Arm (nur Seitenansicht). Ein gerader Arm am Körper sieht aus wie ein
     // Streifen auf dem Pullover – deshalb schwingt er nach vorn. Das passt
     // auch besser, wenn die Figur später läuft.
-    if (lado) s += '<line x1="53" y1="70" x2="65" y2="92" stroke="' + piel +
-                   '" stroke-width="8.5" stroke-linecap="round"/>';
+    // Der dunkle Strich darunter setzt ihn vom Pullover ab, sonst sieht er
+    // in klein aus wie eine Schärpe quer über die Brust.
+    if (lado) {
+      s += '<line x1="55" y1="70" x2="62" y2="98" stroke="#00000018" stroke-width="11.5" stroke-linecap="round"/>';
+      s += '<line x1="55" y1="70" x2="62" y2="98" stroke="' + piel + '" stroke-width="8.5" stroke-linecap="round"/>';
+    }
 
     // Haare, die hinter dem Kopf hängen
     s += peloSVG(sel.pelo, pcol, lado, cx, cy, "detras");

@@ -15,17 +15,27 @@
       box-sizing: border-box;
       text-align: center;
     }
-    h1 { margin: 0.5rem 0; font-size: clamp(2rem, 9vw, 3.5rem); }
+    /* Münzen links, Avatarkopf rechts – darunter erst der Titel, sonst
+       stößt der Kopf auf schmalen Handys in die Überschrift. */
+    .cabecera {
+      max-width: 420px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    h1 { margin: 0.6rem 0 1.2rem; font-size: clamp(2rem, 9vw, 3.5rem); }
     .coins {
-      display: inline-block;
       background: #fff8;
       border-radius: 999px;
       padding: 0.4rem 1rem;
       font-size: 1.3rem;
       font-weight: bold;
-      margin-bottom: 1.5rem;
     }
     .coin { width: 1.6em; height: 1.6em; vertical-align: middle; }
+    .yo {
+      width: 56px; height: 56px; flex: 0 0 auto;
+      border-radius: 50%; overflow: hidden; display: block;
+      background: #fff; box-shadow: 0 3px 0 #0002, inset 0 0 0 3px #fff;
+    }
+    .yo svg { width: 100%; height: 100%; display: block; }
     .tiles {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -43,6 +53,10 @@
       gap: 0.3rem;
       font-size: 0.95rem;
       font-weight: bold;
+      line-height: 1.15;
+      padding: 0.3rem;
+      box-sizing: border-box;
+      text-align: center;
       text-decoration: none;
       color: #2b1a4a;
       background: #fff;
@@ -55,22 +69,31 @@
   </style>
 </head>
 <body>
+  <div class="cabecera">
+    <div class="coins"><img class="coin" src="coin.svg" alt="Münzen"> <span id="coins">0</span></div>
+    <a class="yo" href="avatar.html" id="yo" aria-label="Avatar"></a>
+  </div>
+
   <h1>Games for Cece</h1>
-  <div class="coins"><img class="coin" src="coin.svg" alt="Münzen"> <span id="coins">0</span></div>
 
   <div class="tiles">
     <a class="tile" href="verbos.html"><span class="icon">🎣</span>Verben<span class="fach">Spanisch · 3 Level</span></a>
     <a class="tile" href="einmaleins.html"><span class="icon">✖️</span>Einmaleins<span class="fach">Mathe</span></a>
     <a class="tile" href="hora.html"><span class="icon">🕰️</span>Uhrzeit<span class="fach">Spanisch</span></a>
-    <a class="tile" href="avatar.html"><span class="icon">🧑‍🎤</span>Avatar<span class="fach">Münzen ausgeben</span></a>
+    <a class="tile" href="estar.html"><span class="icon">📍</span>ser · estar · hay<span class="fach">Spanisch</span></a>
     <div class="tile locked"><span class="icon">❓</span>Bald da</div>
     <div class="tile locked"><span class="icon">❓</span>Bald da</div>
   </div>
 
+  <script src="avatar.js"></script>
   <script>
     let coins = 0;
     try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
     document.getElementById("coins").textContent = coins;
+
+    // Ihr Avatar als Kopfabzeichen – führt in die Werkstatt
+    document.getElementById("yo").innerHTML =
+      Avatar.dibujar(Avatar.cargar(), "frente", { cabeza: true });
   </script>
 </body>
 </html>

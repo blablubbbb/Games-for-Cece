@@ -14,6 +14,7 @@ Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 | [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar`, `-er` und `-ir` |
 | [Einmaleins](einmaleins.html) | Mathe | Mal und Geteilt bis 100, mit Schatzkarte und Rekorden |
 | [Uhrzeit](hora.html) | Spanisch | Die Uhrzeit auf Spanisch, analog und digital |
+| [ser · estar · hay](estar.html) | Spanisch | Welches der drei Wörter in die Lücke gehört |
 | [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
@@ -162,8 +163,9 @@ Die Ablenker sind die Fehler, die man als Deutsche:r wirklich macht:
 
 ### Avatar (`avatar.html`, `avatar.js`)
 
-Hier gibt sie die Münzen aus, die sie in den Spielen sammelt. Sieben Rubriken:
-Haut, Haare, Haarfarbe, Augen, Kleidung, Extra und Hintergrund.
+Hier gibt sie die Münzen aus, die sie in den Spielen sammelt. Neun Rubriken:
+Haut, Haare, Haarfarbe, Augen, Kleidung, Hose, Schuhe, Extra und Hintergrund.
+Ihr Kopf steht oben rechts auf der Startseite und führt hierher.
 
 Von jeder Rubrik gehört ihr die **Grundausstattung** von Anfang an. Alles
 andere kostet Münzen, zwischen 25 und 220. Was sie sich gerade leisten kann,
@@ -206,3 +208,28 @@ Gespeichert wird im `localStorage`, den sich alle Seiten der Domain teilen:
 
 `Avatar.dibujar(sel, vista, { fondo: false })` zeichnet ohne Hintergrund —
 praktisch, wenn die Figur in einer eigenen Szene stehen soll.
+
+### ser · estar · hay (`estar.html`)
+
+Ein Satz mit einer Lücke, drei Wörter zur Wahl. Die beiden falschen sind keine
+Zufallswörter: zu jedem Satz stehen **ser und estar in genau der Person, die
+der Satz braucht**, dazu `hay`. Zu *Mi hermana ___ alta* also `es`, `está`,
+`hay` — zu *Mis amigos ___ en la heladería* dagegen `son`, `están`, `hay`.
+Die Form ist damit nie das Problem, es geht wirklich um die Entscheidung
+zwischen den drei Wörtern.
+
+48 Sätze: 18 mit `ser`, 16 mit `estar`, 14 mit `hay`. Darunter die Paare, an
+denen es hängt:
+
+* *En el armario **hay** un gato* gegen *El gato **está** en el armario* —
+  unbestimmt heißt `hay`, ein bestimmtes Ding an einem Ort heißt `está`.
+* *Mi abuela **es** un poco estricta* gegen *Mamá **está** en la cocina* —
+  wie jemand ist gegen wo jemand ist.
+
+Nach einem Fehler bleibt der gelöste Satz stehen und darunter steht, warum:
+„Wo etwas ist → estar“, „es gibt → hay“, „Eigenschaft → ser“. Am Rundenende
+sind die verpassten Sätze samt Merksatz noch einmal aufgelistet.
+
+Die Sätze stammen aus dem `Para comunicarse`-Anhang des Buchs, und **jedes
+einzelne Wort ist gegen ihren ¡Apúntate!-Wortschatz geprüft** — es kommt
+nichts vor, was sie nicht hatte.
