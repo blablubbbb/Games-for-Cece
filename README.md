@@ -12,6 +12,12 @@ Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 | Spiel | Fach | Was geübt wird |
 |---|---|---|
 | [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar`, `-er` und `-ir` |
+| [Einmaleins](einmaleins.html) | Mathe | Mal und Geteilt bis 100, mit Schatzkarte und Rekorden |
+
+Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
+sich pro Aufgabe, wie oft sie saß und wie oft nicht. Was wackelt, kommt
+häufiger dran, und was gerade danebenging, kommt drei bis sieben Aufgaben
+später noch einmal. Das überlebt das Schließen des Browsers.
 
 ### Verben (`verbos.html`)
 
@@ -89,3 +95,29 @@ regelmäßig sind:
 `hacer` und `ver` stehen zwar auch in Unidad 2, haben aber eine unregelmäßige
 ich-Form (`hago`, `veo`) und bleiben deshalb draußen — sonst würde das Spiel
 falsche Endungen antrainieren.
+
+### Einmaleins (`einmaleins.html`)
+
+Eine Aufgabe, eine Zifferntastatur, ein Zeitbalken. Stimmt die getippte Zahl,
+geht es sofort weiter — das hält das Tempo hoch. Mit ✓ kann man auch eine
+falsche Antwort abschicken, mit ⌫ korrigieren. Am Computer gehen die
+Zifferntasten, Rücktaste und Enter.
+
+Gerechnet wird das kleine Einmaleins von 1·1 bis 10·10, etwa ein Drittel der
+Aufgaben als Division (`56 : 7`). Die Bedenkzeit schrumpft mit jeder richtigen
+Antwort von 9 auf 3,5 Sekunden (Tabelle `TIEMPO`).
+
+**Die Schatzkarte** ist das Herz des Spiels: 10×10 Felder, eines pro Aufgabe.
+
+* grau — noch nie drangekommen
+* lila — schon mal da, sitzt aber noch nicht
+* rot — wackelt (weniger als die Hälfte richtig)
+* gold — sitzt (mindestens dreimal richtig und drei Viertel aller Versuche)
+
+`7·8` und `8·7` sind dasselbe Wissen, deshalb leuchten immer beide Felder
+zusammen und die Karte ist symmetrisch. Sie füllt sich über Wochen und zeigt
+auf einen Blick, was noch fehlt.
+
+Rekorde (längste Serie, meiste richtige, schnellste Antwort) bleiben
+gespeichert. Münzen gibt es wie im Verbenspiel: eine pro richtiger Antwort,
+drei extra für jede fünfte in Folge. Nach drei Fehlern ist die Runde vorbei.

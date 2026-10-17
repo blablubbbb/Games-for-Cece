@@ -307,6 +307,7 @@
     </div>
   </div>
 
+  <script src="fallos.js"></script>
   <script>
     // ---------- Die Verben ----------
     // Nur Wortschatz aus ¡Apúntate! 1 (Ausgabe 2024), und nur Verben, die
@@ -473,17 +474,44 @@
     }
 
     // ---------- Eine neue Aufgabe bauen ----------
+    // Schlüssel fürs Fehlergedächtnis, z.B. "hablar|3" oder "fut:vivir|2"
+    function claveDe(verbo, persona, futuro) {
+      return (futuro ? "fut:" : "") + verbo.inf + "|" + persona;
+    }
+
+    // Person aussuchen – die, bei der es bei diesem Verb zuletzt gehakt hat,
+    // kommt etwas häufiger dran.
+    function personaPara(verbo, futuro) {
+      const claves = [0, 1, 2, 3, 4, 5].map(i => claveDe(verbo, i, futuro));
+      return Number(Fallos.elegir("verbos", claves).split("|")[1]);
+    }
+
     function nuevaRonda() {
       const nv = NIVELES[nivel];
-      const persona = azar(6);
-      const futuro = !!nv.futuro && Math.random() < nv.futuro;
+
+      // Was danebenging, holt das Fehlergedächtnis ein paar Aufgaben später
+      // von selbst zurück – aber nur, wenn es ins aktuelle Level passt.
+      let forzado = null;
+      const pend = Fallos.pendiente("verbos");
+      if (pend) {
+        const m = /^(fut:)?([^|]+)\|(\d)$/.exec(pend);
+        const v = m && VERBOS.find(x => x.inf === m[2]);
+        const fut = !!(m && m[1]);
+        if (v && (fut ? (!!nv.futuro && !v.formas) : !!nv.pesos[v.clase])) {
+          forzado = { verbo: v, persona: Number(m[3]), futuro: fut };
+        }
+      }
+
+      const futuro = forzado ? forzado.futuro
+                             : (!!nv.futuro && Math.random() < nv.futuro);
       const senuelos = [];
-      let verbo, correcta;
+      let verbo, persona, correcta;
 
       if (futuro) {
         // "nosotros + hablar" → "vamos a hablar": nur "ir" wird konjugiert,
         // das zweite Verb bleibt im Infinitiv. Genau da passieren die Fehler.
-        verbo = REGULARES[azar(REGULARES.length)];
+        verbo = forzado ? forzado.verbo : REGULARES[azar(REGULARES.length)];
+        persona = forzado ? forzado.persona : personaPara(verbo, true);
         const ir = VERBO_IR.formas;
         correcta = ir[persona] + " a " + verbo.inf;
 
@@ -503,7 +531,8 @@
           if (!senuelos.includes(f)) senuelos.push(f);
         }
       } else {
-        verbo = verboAlAzar();
+        verbo = forzado ? forzado.verbo : verboAlAzar();
+        persona = forzado ? forzado.persona : personaPara(verbo, false);
         const formas = formasDe(verbo);
         correcta = formas[persona];
 
@@ -529,6 +558,7 @@
         verbo,
         persona,
         futuro,
+        clave: claveDe(verbo, persona, futuro),
         etiqueta: etiquetas[azar(etiquetas.length)],
         formas: opciones,
         correcta: opciones.indexOf(correcta),
@@ -592,6 +622,10 @@
       const elegida = ronda.formas[bahn];
       const correcta = ronda.formas[ronda.correcta];
       const bien = bahn === ronda.correcta;
+
+      // Fürs gemeinsame Fehlergedächtnis festhalten, wie es lief
+      Fallos.anotar("verbos", ronda.clave, bien,
+                    PERSONAS[ronda.persona].etiquetas[0] + " " + correcta);
 
       if (bien) {
         aciertos++;
