@@ -49,10 +49,22 @@ Beim Start wird gewählt, die Wahl wird gemerkt. Nach dem Spielende geht es übe
 | **Nivel 1** | bis Unidad 1 | `ser` · die `-ar`-Verben | ser 30 %, -ar 70 % |
 | **Nivel 2** | bis Unidad 2 | dazu die regelmäßigen `-er`- und `-ir`-Verben | ser 15 %, -ar 25 %, -er 30 %, -ir 30 % |
 | **Nivel 3** | bis Unidad 5 | `ir` und die nahe Zukunft `ir a` + Infinitiv | 30 % nur `ir`, 70 % ganze Wendung |
+| **Nivel 4** | bis Unidad 5 | die Gruppenverben `quiero`, `puedo` | nur Gruppenverben |
 
 `ser` kommt in Nivel 1 absichtlich viel häufiger dran als ein einzelnes
 `-ar`-Verb: es ist das einzige unregelmäßige und muss sitzen. Zum Nachregeln
 reicht die Tabelle `NIVELES` in `verbos.html`.
+
+**Nivel 4** dreht sich um die eine Regel, die bei Gruppenverben zählt: der
+Stamm ändert sich überall — *außer* bei `nosotros` und `vosotros`.
+
+> quiero · quieres · quiere · **queremos** · **queréis** · quieren
+
+Daraus ergeben sich beide Fehlerrichtungen von selbst, und beide stehen als
+Ablenker daneben: den Stammwechsel **vergessen** (`quiero` → `quero`,
+`puedo` → `podo`) und ihn **zu viel** anwenden (`queremos` → `quieremos`,
+`podéis` → `puedéis`). Weil das hier die eigentliche Lektion ist, kommt der
+falsche Stamm in diesem Level in 60 % der Aufgaben vor statt in 40 %.
 
 Nivel 2 zielt auf die eine Stelle, an der `-er` und `-ir` sich überhaupt
 unterscheiden: `comemos`/`coméis` gegen `vivimos`/`vivís`. In allen anderen
@@ -94,6 +106,12 @@ regelmäßig sind:
 * `-er` (Unidad 2): comer, beber, leer, aprender, esconder, responder
 * `-ir` (Unidad 2): vivir, escribir, compartir, discutir, abrir
 * unregelmäßig: `ser` (Unidad 1), `ir` (Unidad 5)
+* Gruppenverben `e → ie`: querer, pensar, empezar, entender, preferir, tener
+* Gruppenverben `o → ue`: poder, volver, contar, encontrar
+
+Die Gruppenverben stehen so im Konjugationsanhang des Buchs (S. 149/150).
+`tener` gehört dazu, hat aber zusätzlich eine unregelmäßige ich-Form
+(`tengo`), und steht deshalb ausgeschrieben im Code.
 
 `hacer` und `ver` stehen zwar auch in Unidad 2, haben aber eine unregelmäßige
 ich-Form (`hago`, `veo`) und bleiben deshalb draußen — sonst würde das Spiel

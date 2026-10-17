@@ -304,6 +304,7 @@
       <button data-nivel="1">Nivel 1<small>-ar und ser</small></button>
       <button data-nivel="2">Nivel 2<small>dazu -er und -ir</small></button>
       <button data-nivel="3">Nivel 3<small>ir und die nahe Zukunft</small></button>
+      <button data-nivel="4">Nivel 4<small>quiero, puedo &ndash; Gruppenverben</small></button>
     </div>
   </div>
 
@@ -368,6 +369,9 @@
       1: { sub: "-ar und ser",          pesos: { ser: 30, ar: 70 } },
       2: { sub: "dazu -er und -ir",     pesos: { ser: 15, ar: 25, er: 30, ir: 30 } },
       3: { sub: "ir und die Zukunft",   pesos: { irv: 100 }, futuro: 0.7 },
+      // Bei den Gruppenverben ist der falsche Stamm die eigentliche Lektion,
+      // deshalb kommt er hier öfter als in den anderen Leveln.
+      4: { sub: "Gruppenverben",        pesos: { dipt: 100 }, pFalsa: 0.6 },
     };
 
     const VERBO_IR  = VERBOS.find(v => v.clase === "irv");
@@ -402,6 +406,47 @@
       const raiz = v.inf.slice(0, -2);        // hablar -> habl
       return TERMINACIONES[v.clase].map(t => raiz + t);
     }
+
+    // ---------- Die Gruppenverben (Nivel 4) ----------
+    // Der Stamm ändert sich – aber nicht bei nosotros und vosotros.
+    // quiero, quieres, quiere, QUEREMOS, QUERÉIS, quieren.
+    // Das ist die ganze Regel, und genau daraus lassen sich auch die
+    // Fehlformen bilden: einfach den jeweils anderen Stamm nehmen.
+    // (Muss nach TERMINACIONES stehen, es wird hier schon gerechnet.)
+    const LLANAS = [3, 4];        // die beiden Personen ohne Stammwechsel
+    const DIPTONGO = [
+      // e → ie
+      { inf: "querer",    term: "er", sentido: "wollen",        llana: "quer",    dipt: "quier" },
+      { inf: "pensar",    term: "ar", sentido: "denken",        llana: "pens",    dipt: "piens" },
+      { inf: "empezar",   term: "ar", sentido: "anfangen",      llana: "empez",   dipt: "empiez" },
+      { inf: "entender",  term: "er", sentido: "verstehen",     llana: "entend",  dipt: "entiend" },
+      { inf: "preferir",  term: "ir", sentido: "lieber mögen",  llana: "prefer",  dipt: "prefier" },
+      // o → ue
+      { inf: "poder",     term: "er", sentido: "können",        llana: "pod",     dipt: "pued" },
+      { inf: "volver",    term: "er", sentido: "zurückkommen",  llana: "volv",    dipt: "vuelv" },
+      { inf: "contar",    term: "ar", sentido: "erzählen",      llana: "cont",    dipt: "cuent" },
+      { inf: "encontrar", term: "ar", sentido: "finden",        llana: "encontr", dipt: "encuentr" },
+    ];
+
+    for (const v of DIPTONGO) {
+      const t = TERMINACIONES[v.term];
+      const stamm = (i) => (LLANAS.includes(i) ? v.llana : v.dipt);
+      const andere = (i) => (LLANAS.includes(i) ? v.dipt : v.llana);
+      v.formas = [0, 1, 2, 3, 4, 5].map(i => stamm(i) + t[i]);
+      // Die typischen Fehler: Stammwechsel vergessen (quero) oder ihn
+      // dort anwenden, wo er nicht hingehört (quieremos).
+      v.falsas = [0, 1, 2, 3, 4, 5].map(i => [andere(i) + t[i]]);
+      v.clase = "dipt";
+      VERBOS.push(v);
+    }
+
+    // tener gehört auch zu dieser Gruppe, hat aber zusätzlich eine
+    // unregelmäßige ich-Form, deshalb steht es ausgeschrieben da.
+    VERBOS.push({
+      inf: "tener", clase: "dipt", sentido: "haben",
+      formas: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"],
+      falsas: [["tiengo"], ["tenes"], ["tene"], ["tienemos"], ["tienéis"], ["tenen"]],
+    });
 
     // Dieselbe Person, aber falsche Endung. Bei regelmäßigen Verben die Endung
     // einer anderen Gruppe – in Nivel 1 also schon die aus Nivel 2 (hablamos →
@@ -515,7 +560,7 @@
         const ir = VERBO_IR.formas;
         correcta = ir[persona] + " a " + verbo.inf;
 
-        if (Math.random() < P_ENDING_FALSO) {
+        if (Math.random() < (nv.pFalsa || P_ENDING_FALSO)) {
           // Die zwei typischen Baufehler: zweites Verb mitkonjugiert
           // ("vamos a hablamos") oder das "a" vergessen ("vamos hablar").
           const malas = [
@@ -540,7 +585,7 @@
         // dadurch muss sie die Endung wirklich der Person zuordnen und kann
         // nicht über den Wortstamm raten. In einem Teil der Aufgaben ist einer
         // davon stattdessen die gefragte Person mit falscher Endung.
-        if (Math.random() < P_ENDING_FALSO) {
+        if (Math.random() < (nv.pFalsa || P_ENDING_FALSO)) {
           const f = endingFalso(verbo, persona, correcta);
           if (f) senuelos.push(f);
         }
