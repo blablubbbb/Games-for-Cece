@@ -129,14 +129,21 @@ Zwei Richtungen im Wechsel. Meistens zeigt eine Uhr die Zeit und der passende
 Satz ist unter dreien zu finden; in etwa vier von zehn Aufgaben steht der Satz
 da und die richtige von drei Uhren ist gesucht.
 
-Die Uhr ist mal analog, mal digital — nie beides zugleich. Das Zifferblatt
-wechselt zwischen allen zwölf Zahlen, nur `3 6 9 12` und ganz ohne Zahlen, damit
-sie die Zeiger wirklich lesen muss und nicht nur Zahlen abliest.
+Die Uhr ist mal analog, mal digital — nie beides zugleich. Von beiden gibt es
+drei Ausführungen: das Zifferblatt mit allen zwölf Zahlen, nur `3 6 9 12` oder
+ganz ohne, und als Digitaluhr einen Wecker mit Leuchtziffern, eine Klappanzeige
+wie am Bahnhof oder einen Handy-Sperrbildschirm.
 
 **Sprachlich genau im Rahmen von Módulo 3:** `Es la una` gegen `Son las ...`,
 `en punto`, `y cuarto`, `y media`, `menos cuarto` und `y`/`menos` + Minutenzahl
-in Fünferschritten. Kein 24-Stunden-Format und keine Tageszeit (`de la tarde`) —
-beides ließe sich später ergänzen.
+in Fünferschritten.
+
+Die Hälfte der Digitaluhren zeigt **24 Stunden** — dann ist auch die Tageszeit
+gefragt: `15:30` heißt `Son las tres y media de la tarde`. Weil der Satz ab 35
+Minuten schon die nächste Stunde nennt, richtet sich die Tageszeit nach der
+*genannten* Stunde. Ausgelassen sind 12 Uhr mittags, 20 Uhr (da gehen `tarde`
+und `noche` beide) und die Nacht zwischen 0 und 6, für die das Buch kein Wort
+anbietet — es bleiben 177 eindeutige Uhrzeiten.
 
 Die Ablenker sind die Fehler, die man als Deutsche:r wirklich macht:
 
@@ -147,3 +154,7 @@ Die Ablenker sind die Fehler, die man als Deutsche:r wirklich macht:
 * **`cuarto` und `media` verwechselt.**
 * **Der Artikel.** `Son las una` oder `Es la tres` kommt in jeder vierten
   Aufgabe als Falle vor.
+* **Die falsche Tageszeit.** Bei 24-Stunden-Aufgaben steht in der Hälfte der
+  Fälle derselbe Satz mit `de la noche` statt `de la mañana` daneben. Wird
+  andersherum nach der Uhr gefragt, ist der Ablenker dieselbe Zeit in der
+  anderen Tageshälfte: `15:30` gegen `03:30`.

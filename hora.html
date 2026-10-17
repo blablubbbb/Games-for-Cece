@@ -42,14 +42,45 @@
 
     /* Analoguhr */
     .esfera { width: min(44vw, 170px); height: auto; display: block; margin: 0 auto; }
-    /* Digitaluhr */
-    .digital {
+    /* Drei Digitaluhren, so verschieden wie die drei Zifferblätter */
+    .digital { display: inline-block; font-weight: bold; margin: 0.3rem auto; }
+
+    /* 1 – Wecker mit Leuchtziffern */
+    .digital.led {
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: clamp(2.6rem, 15vw, 4rem); font-weight: bold;
+      font-size: clamp(2.4rem, 13vw, 3.6rem);
       background: #2b1a4a; color: #ffd34d; border-radius: 12px;
-      padding: 0.35rem 0.6rem; display: inline-block; letter-spacing: 2px;
-      margin: 0.3rem auto;
+      padding: 0.35rem 0.7rem; letter-spacing: 3px;
+      text-shadow: 0 0 10px #ffd34d99;
     }
+    /* 2 – Klappanzeige wie am Bahnhof */
+    .digital.flip {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(2.2rem, 12vw, 3.2rem);
+      color: #fff; letter-spacing: 1px;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .digital.flip span {
+      background: linear-gradient(#432f6d 0 calc(50% - 1px), #1d1033 50%, #2b1a4a 100%);
+      border-radius: 6px; padding: 0.2rem 0.4rem;
+      box-shadow: 0 2px 0 #0004;
+    }
+    .digital.flip em { font-style: normal; color: #2b1a4a; }
+    /* 3 – Handy-Sperrbildschirm */
+    .digital.movil {
+      font-size: clamp(2.6rem, 15vw, 4rem); font-weight: 300;
+      color: #2b1a4a; letter-spacing: -1px;
+      padding: 0.45rem 1rem; border-radius: 20px;
+      background: linear-gradient(140deg, #ffd9ec, #cfd9ff);
+      box-shadow: inset 0 0 0 1.5px #ffffffaa;
+    }
+    /* Als Antwortmöglichkeit müssen sie deutlich kleiner sein */
+    .opciones.relojes .digital {
+      font-size: clamp(0.85rem, 4.2vw, 1.25rem); padding: 0.3rem 0.35rem;
+      letter-spacing: 0; margin: 0; border-radius: 8px;
+    }
+    .opciones.relojes .digital.flip span { padding: 0.12rem 0.22rem; border-radius: 4px; }
+    .opciones.relojes .digital.movil { border-radius: 10px; padding: 0.35rem 0.4rem; }
     /* Satz, wenn andersherum gefragt wird */
     .frase { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: bold; padding: 0.8rem 0.2rem; }
 
@@ -193,6 +224,35 @@
       return [...cand];
     }
 
+    // ---------- 24-Stunden-Aufgaben ----------
+    // Nur eine Digitaluhr kann 24 Stunden zeigen, und erst dann ist die
+    // Tageszeit eindeutig. Ausgelassen sind 12 Uhr mittags, die Nacht
+    // zwischen 0 und 6 (das wäre "de la madrugada", kennt sie nicht) und
+    // 20 Uhr, weil da "tarde" und "noche" beide gehen.
+    function parteDelDia(h24) {
+      if (h24 >= 6 && h24 <= 11) return "de la mañana";
+      if (h24 >= 13 && h24 <= 19) return "de la tarde";
+      if (h24 >= 21 && h24 <= 23) return "de la noche";
+      return null;
+    }
+    const PARTES = ["de la mañana", "de la tarde", "de la noche"];
+
+    // Ab 35 Minuten nennt der Satz die nächste Stunde – die Tageszeit
+    // richtet sich nach der genannten, nicht nach der angezeigten.
+    function horaDicha(h24, m) { return m > 30 ? (h24 + 1) % 24 : h24; }
+
+    function enPalabras24(h24, m) {
+      const base = enPalabras(h24 % 12 || 12, m);
+      const p = parteDelDia(horaDicha(h24, m));
+      return p ? base + " " + p : base;
+    }
+
+    // Alle 24-Stunden-Zeiten, deren Tageszeit eindeutig ist
+    const H24_VALIDAS = [];
+    for (let h = 0; h < 24; h++)
+      for (const m of MIN_POSIBLES)
+        if (parteDelDia(horaDicha(h, m)) && parteDelDia(h)) H24_VALIDAS.push([h, m]);
+
     // "Son las una" oder "Es la tres" – der Artikelfehler
     function errorArticulo(h, m) {
       const t = enPalabras(h, m);
@@ -234,8 +294,14 @@
       return s;
     }
 
-    function digitalHTML(h, m) {
-      return '<div class="digital">' + h + ":" + String(m).padStart(2, "0") + "</div>";
+    // diseño: "led" = Wecker, "flip" = Klappanzeige, "movil" = Handy
+    function digitalHTML(h, m, diseno, pad24) {
+      const hh = (pad24 || diseno === "flip" || h >= 10) ? String(h).padStart(2, "0") : String(h);
+      const mm = String(m).padStart(2, "0");
+      if (diseno === "flip") {
+        return '<div class="digital flip"><span>' + hh + "</span><em>:</em><span>" + mm + "</span></div>";
+      }
+      return '<div class="digital ' + diseno + '">' + hh + ":" + mm + "</div>";
     }
 
     // ---------- Zustand ----------
@@ -276,67 +342,95 @@
 
     // ---------- Eine neue Aufgabe ----------
     function nuevaRonda() {
-      // Was danebenging, kommt ein paar Aufgaben später von selbst zurück
-      let h, m;
+      // Analog oder digital, und bei digital die Hälfte als 24-Stunden-Aufgabe.
+      // Eine Analoguhr kann keine 24 Stunden zeigen, deshalb hängt das zusammen.
+      let analogica = Math.random() < 0.5;
+      let es24 = !analogica && Math.random() < 0.5;
+      let h, m;      // h ist bei 24-Stunden-Aufgaben die 24er-Stunde
+
+      // Was danebenging, kommt ein paar Aufgaben später von selbst zurück.
+      // Schlüssel: "3:45" oder "24-15:45".
       const pend = Fallos.pendiente(JUEGO);
-      if (pend && /^\d+:\d+$/.test(pend)) {
-        [h, m] = pend.split(":").map(Number);
+      const p = pend && /^(24-)?(\d+):(\d+)$/.exec(pend);
+      if (p) {
+        es24 = !!p[1];
+        h = Number(p[2]); m = Number(p[3]);
+        if (es24) analogica = false;
+      } else if (es24) {
+        [h, m] = H24_VALIDAS[azar(H24_VALIDAS.length)];
       } else {
         h = 1 + azar(12);
         m = MIN_POSIBLES[azar(MIN_POSIBLES.length)];
       }
-      const clave = h + ":" + m;
-      const correcta = enPalabras(h, m);
+
+      const clave = (es24 ? "24-" : "") + h + ":" + m;
+      const h12 = es24 ? (h % 12 || 12) : h;
+      const correcta = es24 ? enPalabras24(h, m) : enPalabras(h12, m);
+      const parte = es24 ? parteDelDia(horaDicha(h, m)) : null;
 
       // Zwei Ablenker aussuchen
-      let malas = mezclar(senuelos(h, m));
       const elegidas = [];
-      if (Math.random() < P_ARTICULO) {
-        const e = errorArticulo(h, m);
-        if (e !== correcta) elegidas.push(e);
+      if (es24 && Math.random() < 0.5) {
+        // Falsche Tageszeit – der Fehler, den es nur im 24-Stunden-Format gibt
+        const otras = PARTES.filter(x => x !== parte);
+        elegidas.push(enPalabras(h12, m) + " " + otras[azar(otras.length)]);
       }
-      for (const s of malas) {
+      if (Math.random() < P_ARTICULO) {
+        const e = errorArticulo(h12, m) + (parte ? " " + parte : "");
+        if (e !== correcta && !elegidas.includes(e)) elegidas.push(e);
+      }
+      for (const s of mezclar(senuelos(h12, m))) {
         if (elegidas.length >= 2) break;
-        if (!elegidas.includes(s)) elegidas.push(s);
+        const t = s + (parte ? " " + parte : "");
+        if (t !== correcta && !elegidas.includes(t)) elegidas.push(t);
       }
 
       const alReves = Math.random() < P_AL_REVES;
       const variante = ["todos", "cuartos", "ninguno"][azar(3)];
-      const analogica = Math.random() < 0.6;
+      const diseno = ["led", "flip", "movil"][azar(3)];
 
-      ronda = { h, m, clave, correcta, alReves, etq: correcta };
+      ronda = { h, m, h12, es24, clave, correcta, alReves, etq: correcta };
 
       if (alReves) {
         // Satz steht da, die passende Uhr ist gesucht.
         // Die Ablenkeruhren sind die Zeiten hinter den falschen Sätzen.
         elPedir.textContent = "Welche Uhr zeigt das?";
         elMuestra.innerHTML = '<div class="frase">' + correcta + "</div>";
-        const tiempos = [[h, m]];
-        for (const s of elegidas) {
-          const t = buscarTiempo(s);
-          if (t && !tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
-        }
-        // Falls ein Ablenkersatz keine saubere Uhrzeit ergibt (beim
-        // Artikelfehler ist das so), mit anderen Zeiten auffüllen. Bewusst
-        // über eine gemischte Liste statt per Zufall, damit das hier unter
-        // keinen Umständen hängen bleibt.
-        if (tiempos.length < 3) {
-          const todas = [];
-          for (let hh = 1; hh <= 12; hh++)
-            for (const mm of MIN_POSIBLES) todas.push([hh, mm]);
-          for (const t of mezclar(todas)) {
-            if (tiempos.length >= 3) break;
-            if (!tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
+        let tiempos;
+        if (es24) {
+          // Die wichtigste Verwechslung im 24-Stunden-Format: dieselbe
+          // Uhrzeit in der anderen Tageshälfte, 15:30 gegen 03:30.
+          tiempos = [[h, m], [(h + 12) % 24, m], [(h + 1) % 24, m]];
+        } else {
+          tiempos = [[h12, m]];
+          for (const s of elegidas) {
+            const t = buscarTiempo(s);
+            if (t && !tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
+          }
+          // Falls ein Ablenkersatz keine saubere Uhrzeit ergibt (beim
+          // Artikelfehler ist das so), mit anderen Zeiten auffüllen. Bewusst
+          // über eine gemischte Liste statt per Zufall, damit das hier unter
+          // keinen Umständen hängen bleibt.
+          if (tiempos.length < 3) {
+            const todas = [];
+            for (let hh = 1; hh <= 12; hh++)
+              for (const mm of MIN_POSIBLES) todas.push([hh, mm]);
+            for (const t of mezclar(todas)) {
+              if (tiempos.length >= 3) break;
+              if (!tiempos.some(x => x[0] === t[0] && x[1] === t[1])) tiempos.push(t);
+            }
           }
         }
         const orden = mezclar(tiempos.slice(0, 3));
-        ronda.correctaIdx = orden.findIndex(x => x[0] === h && x[1] === m);
+        ronda.correctaIdx = orden.findIndex(x => x[0] === (es24 ? h : h12) && x[1] === m);
         elOpciones.className = "opciones relojes";
-        elOpciones.innerHTML = orden.map(([hh, mm]) =>
-          "<button>" + esferaSVG(hh, mm, variante) + "</button>").join("");
+        elOpciones.innerHTML = orden.map(([hh, mm]) => "<button>" +
+          (analogica ? esferaSVG(hh, mm, variante) : digitalHTML(hh, mm, diseno, es24)) +
+          "</button>").join("");
       } else {
         elPedir.textContent = "¿Qué hora es?";
-        elMuestra.innerHTML = analogica ? esferaSVG(h, m, variante, "esfera") : digitalHTML(h, m);
+        elMuestra.innerHTML = analogica ? esferaSVG(h12, m, variante, "esfera")
+                                        : digitalHTML(es24 ? h : h12, m, diseno, es24);
         const orden = mezclar([correcta, ...elegidas]);
         ronda.correctaIdx = orden.indexOf(correcta);
         elOpciones.className = "opciones textos";
