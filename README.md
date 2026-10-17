@@ -11,7 +11,7 @@ Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 
 | Spiel | Fach | Was geübt wird |
 |---|---|---|
-| [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar` |
+| [Verben](verbos.html) | Spanisch | Die Personalformen von `ser` und der regelmäßigen Verben auf `-ar`, `-er` und `-ir` |
 
 ### Verben (`verbos.html`)
 
@@ -30,9 +30,53 @@ halben Sekunde. Nachregeln geht über die Tabelle `TEMPO` in `verbos.html`.
 * Nach drei Herzen ist Schluss – dann listet das Spiel auf, welche Formen
   noch wackeln.
 
-Die Ablenker sind immer andere Personalformen **desselben** Verbs. Raten über
-den Wortstamm bringt also nichts, es geht wirklich um die Endung.
+#### Die zwei Level
 
-Der Wortschatz bleibt im Rahmen von ¡Apúntate! 1 bis Unidad 1, Texto B:
-`ser` und die `-ar`-Verben hablar, estudiar, escuchar, mirar, tocar, buscar,
-charlar, tomar, quedar, pasar, descansar.
+Beim Start wird gewählt, die Wahl wird gemerkt. Nach dem Spielende geht es über
+*Anderes Level* zurück zur Auswahl.
+
+| | Unidad | Verben | Wie oft |
+|---|---|---|---|
+| **Nivel 1** | bis Unidad 1 | `ser` · die `-ar`-Verben | ser 30 %, -ar 70 % |
+| **Nivel 2** | bis Unidad 2 | dazu die regelmäßigen `-er`- und `-ir`-Verben | ser 15 %, -ar 25 %, -er 30 %, -ir 30 % |
+
+`ser` kommt in Nivel 1 absichtlich viel häufiger dran als ein einzelnes
+`-ar`-Verb: es ist das einzige unregelmäßige und muss sitzen. Zum Nachregeln
+reicht die Tabelle `NIVELES` in `verbos.html`.
+
+Nivel 2 zielt auf die eine Stelle, an der `-er` und `-ir` sich überhaupt
+unterscheiden: `comemos`/`coméis` gegen `vivimos`/`vivís`. In allen anderen
+Personen sind die Endungen gleich — das Spiel bietet dort automatisch keine
+`-er`/`-ir`-Verwechslung an, weil es keine gibt.
+
+#### Die Ablenker
+
+Normalerweise sind es andere Personalformen **desselben** Verbs. Raten über den
+Wortstamm bringt also nichts, es geht wirklich um die Endung.
+
+In etwa 40 % der Aufgaben ist einer der beiden Ablenker stattdessen die
+*gefragte* Person mit einer **falschen Endung** – also genau der Fehler, den man
+selbst macht: `somos → seramos`, `hablamos → hablemos`, `comemos → comimos`.
+Steuern lässt sich das über `P_ENDING_FALSO`. Bei der ich-Form gibt es keine,
+weil alle drei Gruppen dort auf `-o` enden.
+
+Die erfundenen `ser`-Formen (`so`, `ses`, `sere`, `semos`, `seramos`, `séis`,
+`serís`, `sen`, `seren`) sind bewusst keine echten spanischen Wörter. Bei den
+regelmäßigen Verben geht das nicht immer: `hablemos` oder `comimos` gibt es
+wirklich, nur eben im subjuntivo bzw. im indefinido. Das Spiel behauptet nie,
+dass es die Formen nicht gibt — es fragt nach dem presente zu einer bestimmten
+Person, und dafür sind sie falsch.
+
+#### Wortschatz
+
+Alles aus ¡Apúntate! 1 (Ausgabe 2024), und nur Verben, die vollständig
+regelmäßig sind:
+
+* `-ar` (Unidad 1): hablar, estudiar, escuchar, mirar, tocar, buscar, charlar,
+  tomar, quedar, pasar, descansar
+* `-er` (Unidad 2): comer, beber, leer, aprender, esconder, responder
+* `-ir` (Unidad 2): vivir, escribir, compartir, discutir, abrir
+
+`hacer` und `ver` stehen zwar auch in Unidad 2, haben aber eine unregelmäßige
+ich-Form (`hago`, `veo`) und bleiben deshalb draußen — sonst würde das Spiel
+falsche Endungen antrainieren.

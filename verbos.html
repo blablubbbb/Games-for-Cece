@@ -169,7 +169,7 @@
     .float img { width: 2.2rem; height: 2.2rem; }
     @keyframes up { to { transform: translateY(-80px); opacity: 0; } }
 
-    #over {
+    #over, #inicio {
       position: fixed; inset: 0;
       background: #0008;
       display: none;
@@ -178,7 +178,7 @@
       padding: 1rem;
       box-sizing: border-box;
     }
-    #over .box {
+    #over .box, #inicio .box {
       background: #fff;
       border-radius: 1rem;
       padding: 1.3rem 1.5rem;
@@ -189,7 +189,7 @@
       max-height: 90dvh;
       overflow-y: auto;
     }
-    #over h2 { margin: 0 0 0.6rem; }
+    #over h2, #inicio h2 { margin: 0 0 0.6rem; }
     #over .pill { justify-content: center; background: none; }
     #over button {
       font-size: 1.2rem;
@@ -200,6 +200,33 @@
       color: #fff;
       margin-top: 1rem;
     }
+    /* Zweitrangiger Knopf: gleiche Größe, nur umrandet statt gefüllt */
+    #over button.otro {
+      background: #fff;
+      color: #7b3fe4;
+      box-shadow: inset 0 0 0 2px #7b3fe4;
+      font-size: 1rem;
+      padding: 0.6rem 1rem;
+      margin-left: 0.4rem;
+    }
+
+    /* Levelauswahl beim Start */
+    #inicio p { margin: 0 0 0.2rem; opacity: 0.7; }
+    #inicio button {
+      display: block;
+      width: 100%;
+      font-size: 1.25rem;
+      font-weight: bold;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 14px;
+      background: #7b3fe4;
+      color: #fff;
+      margin-top: 0.7rem;
+      box-shadow: 0 4px 0 #0003;
+    }
+    #inicio button:active { transform: translateY(3px); box-shadow: 0 1px 0 #0003; }
+    #inicio button small { display: block; font-size: 0.78rem; font-weight: normal; opacity: 0.85; }
     .repasar { margin-top: 0.9rem; text-align: left; }
     .repasar h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
     .repasar ul { margin: 0; padding-left: 1.1rem; font-size: 0.95rem; }
@@ -243,30 +270,75 @@
       <h2>¡Se acabó!</h2>
       <div class="pill">In dieser Runde: <img class="coin" src="coin.svg" alt="Münzen"><span id="round">0</span></div>
       <div class="pill">Richtig: <span id="aciertos">0</span></div>
+      <div class="pill" id="nivelFin">–</div>
       <div class="repasar" id="repasar"></div>
       <button id="again">Nochmal</button>
+      <button id="cambiar" class="otro">Anderes Level</button>
+    </div>
+  </div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>Verben</h2>
+      <p>Welches Level?</p>
+      <button data-nivel="1">Nivel 1<small>-ar und ser</small></button>
+      <button data-nivel="2">Nivel 2<small>dazu -er und -ir</small></button>
     </div>
   </div>
 
   <script>
     // ---------- Die Verben ----------
-    // Nur Wortschatz, den Cece schon hatte (¡Apúntate! 1 bis Unidad 1, Texto B).
-    // "ser" ist unregelmäßig und steht ausgeschrieben da, der Rest geht auf -ar
-    // und wird aus dem Stamm gebildet.
+    // Nur Wortschatz aus ¡Apúntate! 1 (Ausgabe 2024), und nur Verben, die
+    // komplett regelmäßig sind. "hacer" und "ver" stehen zwar in Unidad 2,
+    // haben aber eine unregelmäßige ich-Form (hago, veo) und bleiben deshalb
+    // draußen – sonst würde das Spiel falsche Endungen antrainieren.
+    // "ser" ist unregelmäßig und steht ausgeschrieben da, alle anderen werden
+    // aus dem Stamm gebildet.
     const VERBOS = [
-      { inf: "ser",       sentido: "sein",            formas: ["soy", "eres", "es", "somos", "sois", "son"] },
-      { inf: "hablar",    sentido: "sprechen" },
-      { inf: "estudiar",  sentido: "lernen" },
-      { inf: "escuchar",  sentido: "hören" },
-      { inf: "mirar",     sentido: "anschauen" },
-      { inf: "tocar",     sentido: "spielen (Instrument)" },
-      { inf: "buscar",    sentido: "suchen" },
-      { inf: "charlar",   sentido: "plaudern" },
-      { inf: "tomar",     sentido: "trinken, nehmen" },
-      { inf: "quedar",    sentido: "sich verabreden" },
-      { inf: "pasar",     sentido: "verbringen" },
-      { inf: "descansar", sentido: "sich ausruhen" },
+      { inf: "ser", clase: "irr", sentido: "sein", formas: ["soy", "eres", "es", "somos", "sois", "son"] },
+
+      // -ar, Unidad 1
+      { inf: "hablar",    clase: "ar", sentido: "sprechen" },
+      { inf: "estudiar",  clase: "ar", sentido: "lernen" },
+      { inf: "escuchar",  clase: "ar", sentido: "hören" },
+      { inf: "mirar",     clase: "ar", sentido: "anschauen" },
+      { inf: "tocar",     clase: "ar", sentido: "spielen (Instrument)" },
+      { inf: "buscar",    clase: "ar", sentido: "suchen" },
+      { inf: "charlar",   clase: "ar", sentido: "plaudern" },
+      { inf: "tomar",     clase: "ar", sentido: "trinken, nehmen" },
+      { inf: "quedar",    clase: "ar", sentido: "sich verabreden" },
+      { inf: "pasar",     clase: "ar", sentido: "verbringen" },
+      { inf: "descansar", clase: "ar", sentido: "sich ausruhen" },
+
+      // -er, Unidad 2 (Texto A)
+      { inf: "comer",     clase: "er", sentido: "essen" },
+      { inf: "beber",     clase: "er", sentido: "trinken" },
+      { inf: "leer",      clase: "er", sentido: "lesen" },
+      { inf: "aprender",  clase: "er", sentido: "erlernen" },
+      { inf: "esconder",  clase: "er", sentido: "verstecken" },
+      { inf: "responder", clase: "er", sentido: "antworten" },
+
+      // -ir, Unidad 2 (Texto A und B)
+      { inf: "vivir",     clase: "ir", sentido: "wohnen, leben" },
+      { inf: "escribir",  clase: "ir", sentido: "schreiben" },
+      { inf: "compartir", clase: "ir", sentido: "teilen" },
+      { inf: "discutir",  clase: "ir", sentido: "streiten" },
+      { inf: "abrir",     clase: "ir", sentido: "öffnen" },
     ];
+
+    // Die Level. "pesos" sagt, wie häufig eine Verbgruppe dran kommt – ser ist
+    // unregelmäßig und soll deutlich öfter kommen als ein einzelnes -ar-Verb.
+    // In Nivel 2 rutscht ser etwas runter, damit Platz für das Neue ist.
+    // Zum Nachregeln reichen diese Zahlen (sie sind Anteile, keine Prozente).
+    const NIVELES = {
+      1: { sub: "-ar und ser",      pesos: { irr: 30, ar: 70 } },
+      2: { sub: "dazu -er und -ir", pesos: { irr: 15, ar: 25, er: 30, ir: 30 } },
+    };
+
+    // Anteil der Aufgaben, in denen einer der beiden Ablenker nicht eine andere
+    // Person ist, sondern die gefragte Person mit einer falschen Endung –
+    // also genau der Fehler, den sie selbst machen würde (somos → seramos).
+    const P_ENDING_FALSO = 0.4;
 
     // Die sechs Personen. Bei 3. Person und Plural wechseln die Beschriftungen
     // ab, damit sie die Form nicht nur an "él" festmacht.
@@ -279,12 +351,62 @@
       { etiquetas: ["ellos", "ellas"] },
     ];
 
-    const TERMINACIONES = ["o", "as", "a", "amos", "áis", "an"];
+    // Die Endungen der drei Gruppen. -er und -ir sind bis auf nosotros und
+    // vosotros identisch – genau darauf zielt Nivel 2.
+    const TERMINACIONES = {
+      ar: ["o", "as", "a", "amos", "áis", "an"],
+      er: ["o", "es", "e", "emos", "éis", "en"],
+      ir: ["o", "es", "e", "imos", "ís",  "en"],
+    };
 
     function formasDe(v) {
       if (v.formas) return v.formas;
       const raiz = v.inf.slice(0, -2);        // hablar -> habl
-      return TERMINACIONES.map(t => raiz + t);
+      return TERMINACIONES[v.clase].map(t => raiz + t);
+    }
+
+    // Erfundene ser-Formen pro Person: typische Fehler, aber bewusst keine
+    // echten spanischen Wörter, damit sie sich nichts Falsches einprägt.
+    // (él/ella hat nur eine – "se" und "sea" gibt es wirklich.)
+    const SER_FALSAS = [
+      ["so", "sero"],         // yo
+      ["ses", "seres"],       // tú
+      ["sere"],               // él/ella
+      ["semos", "seramos"],   // nosotros
+      ["séis", "serís"],      // vosotros
+      ["sen", "seren"],       // ellos
+    ];
+
+    // Dieselbe Person, aber falsche Endung. Bei regelmäßigen Verben die Endung
+    // einer anderen Gruppe – in Nivel 1 also schon die aus Nivel 2 (hablamos →
+    // hablemos, hablimos). Bei "ser" eine aus der Liste oben. Gibt null
+    // zurück, wenn es nichts Falsches gibt: die ich-Form ist in allen drei
+    // Gruppen "-o", da ist keine falsche Endung möglich.
+    function endingFalso(v, persona, correcta) {
+      if (v.clase === "irr") {
+        const cand = SER_FALSAS[persona].filter(f => f !== correcta);
+        return cand.length ? cand[azar(cand.length)] : null;
+      }
+      const raiz = v.inf.slice(0, -2);
+      const cand = [];
+      for (const cl of ["ar", "er", "ir"]) {
+        if (cl === v.clase) continue;
+        const f = raiz + TERMINACIONES[cl][persona];
+        if (f !== correcta) cand.push(f);
+      }
+      return cand.length ? cand[azar(cand.length)] : null;
+    }
+
+    // Ein Verb passend zu den Gewichten des Levels ziehen
+    function verboAlAzar() {
+      const pesos = NIVELES[nivel].pesos;
+      let total = 0;
+      for (const k in pesos) total += pesos[k];
+      let r = Math.random() * total;
+      let clase = Object.keys(pesos)[0];
+      for (const k in pesos) { r -= pesos[k]; if (r < 0) { clase = k; break; } }
+      const pool = VERBOS.filter(v => v.clase === clase);
+      return pool[azar(pool.length)];
     }
 
     // ---------- Zustand ----------
@@ -304,6 +426,11 @@
 
     let bahn, ronda, y, ultimoT, corriendo, vidas, serie, aciertos, monedasRonda, fallos;
 
+    // Das zuletzt gespielte Level merken, damit sie nicht jedes Mal wählen muss
+    let nivel = 1;
+    try { nivel = Number(localStorage.getItem("cece-verbos-nivel")) || 1; } catch (e) {}
+    if (!NIVELES[nivel]) nivel = 1;
+
     function guardarMonedas() {
       coinsEl.textContent = coins;
       try { localStorage.setItem("cece-coins", coins); } catch (e) {}
@@ -311,34 +438,45 @@
 
     function azar(n) { return Math.floor(Math.random() * n); }
 
+    function mezclar(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = azar(i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
     // ---------- Eine neue Aufgabe bauen ----------
     function nuevaRonda() {
-      const verbo = VERBOS[azar(VERBOS.length)];
+      const verbo = verboAlAzar();
       const formas = formasDe(verbo);
       const persona = azar(6);
+      const correcta = formas[persona];
 
-      // Zwei Ablenker: andere Personen desselben Verbs. Dadurch muss sie
-      // wirklich die Endung zur Person zuordnen und kann nicht raten.
-      const otras = [0, 1, 2, 3, 4, 5].filter(i => i !== persona);
-      for (let i = otras.length - 1; i > 0; i--) {
-        const j = azar(i + 1);
-        [otras[i], otras[j]] = [otras[j], otras[i]];
+      // Die beiden Ablenker. Normalerweise andere Personen desselben Verbs –
+      // dadurch muss sie die Endung wirklich der Person zuordnen und kann
+      // nicht über den Wortstamm raten. In einem Teil der Aufgaben ist einer
+      // davon stattdessen die gefragte Person mit falscher Endung.
+      const senuelos = [];
+      if (Math.random() < P_ENDING_FALSO) {
+        const f = endingFalso(verbo, persona, correcta);
+        if (f) senuelos.push(f);
       }
-      const elegidas = [persona, otras[0], otras[1]];
+      for (const f of mezclar(formas.filter(f => f !== correcta))) {
+        if (senuelos.length >= 2) break;
+        if (!senuelos.includes(f)) senuelos.push(f);
+      }
 
-      // Mischen, damit die richtige Form nicht immer links liegt
-      for (let i = elegidas.length - 1; i > 0; i--) {
-        const j = azar(i + 1);
-        [elegidas[i], elegidas[j]] = [elegidas[j], elegidas[i]];
-      }
+      // Mischen, damit die richtige Form nicht immer an derselben Stelle liegt
+      const opciones = mezclar([correcta, ...senuelos]);
 
       const etiquetas = PERSONAS[persona].etiquetas;
       ronda = {
         verbo,
         persona,
         etiqueta: etiquetas[azar(etiquetas.length)],
-        formas: elegidas.map(i => formas[i]),
-        correcta: elegidas.indexOf(persona),
+        formas: opciones,
+        correcta: opciones.indexOf(correcta),
       };
 
       document.getElementById("pron").textContent = ronda.etiqueta;
@@ -488,6 +626,7 @@
       corriendo = false;
       document.getElementById("round").textContent = monedasRonda;
       document.getElementById("aciertos").textContent = aciertos;
+      document.getElementById("nivelFin").textContent = "Nivel " + nivel + ": " + NIVELES[nivel].sub;
 
       const caja = document.getElementById("repasar");
       if (fallos.size) {
@@ -508,6 +647,7 @@
 
     function empezar() {
       document.getElementById("over").style.display = "none";
+      document.getElementById("inicio").style.display = "none";
       flash.style.display = "none";
       vidas = VIDAS_MAX;
       serie = 0;
@@ -550,8 +690,25 @@
       cesta.style.left = (bahn * 100 / 3) + "%";
     });
 
+    // ---------- Levelauswahl ----------
+    function mostrarInicio() {
+      corriendo = false;
+      document.getElementById("over").style.display = "none";
+      flash.style.display = "none";
+      document.getElementById("inicio").style.display = "flex";
+    }
+
+    document.querySelectorAll("#inicio button[data-nivel]").forEach((b) => {
+      b.addEventListener("click", () => {
+        nivel = Number(b.dataset.nivel);
+        try { localStorage.setItem("cece-verbos-nivel", nivel); } catch (e) {}
+        empezar();
+      });
+    });
+
     document.getElementById("again").addEventListener("click", empezar);
-    empezar();
+    document.getElementById("cambiar").addEventListener("click", mostrarInicio);
+    mostrarInicio();
   </script>
 </body>
 </html>
