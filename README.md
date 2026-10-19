@@ -7,6 +7,11 @@ im Browser gespeichert.
 Reines HTML, CSS und JavaScript. Kein Build, keine Bibliotheken – einfach
 `index.html` öffnen oder über GitHub Pages aufrufen.
 
+Der Titel **Games for Cece** auf der Startseite ist ein versteckter Link nach
+[Game of Cece](https://blablubbbb.github.io/Game-of-Cece/) — und dort führt der
+Titel genauso hierher zurück. So kommt man ohne Umweg zwischen beiden Seiten
+hin und her, ohne dass eine Kachel dafür draufgeht.
+
 ## Spiele
 
 | Spiel | Fach | Was geübt wird |

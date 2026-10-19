@@ -22,6 +22,9 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     h1 { margin: 0.6rem 0 1.2rem; font-size: clamp(2rem, 9vw, 3.5rem); }
+    /* Versteckter Weg zum anderen Repo – der Titel sieht unverändert aus.
+       Drüben in Game of Cece führt der Titel genauso hierher zurück. */
+    h1 a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
     .coins {
       background: #fff8;
       border-radius: 999px;
@@ -83,7 +86,7 @@
     <a class="yo" href="avatar.html" id="yo" aria-label="Avatar"></a>
   </div>
 
-  <h1>Games for Cece</h1>
+  <h1><a href="https://blablubbbb.github.io/Game-of-Cece/">Games for Cece</a></h1>
 
   <div class="tiles">
     <a class="tile" href="verbos.html"><span class="icon">🎣</span>Verben<span class="fach">Spanisch · 4 Level</span></a>
