@@ -20,6 +20,7 @@ hin und her, ohne dass eine Kachel dafür draufgeht.
 | [Einmaleins](einmaleins.html) | Mathe | Mal und Geteilt bis 100, mit Schatzkarte und Rekorden |
 | [Uhrzeit](hora.html) | Spanisch | Die Uhrzeit auf Spanisch, analog und digital |
 | [ser · estar · hay](estar.html) | Spanisch | Welches der drei Wörter in die Lücke gehört |
+| [Kreuzwort](crucigrama.html) | Spanisch | Vokabeln schreiben – Frage auf Deutsch, Wort auf Spanisch |
 | [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
@@ -275,3 +276,97 @@ sind die verpassten Sätze samt Merksatz noch einmal aufgelistet.
 Die Sätze stammen aus dem `Para comunicarse`-Anhang des Buchs, und **jedes
 einzelne Wort ist gegen ihren ¡Apúntate!-Wortschatz geprüft** — es kommt
 nichts vor, was sie nicht hatte.
+
+### Kreuzwort (`crucigrama.html`, `puzles.js`)
+
+Die Frage steht auf Deutsch, das Wort wird auf Spanisch eingetragen – **mit
+Akzenten und ohne Artikel**. Damit übt das Spiel etwas, was die anderen nicht
+abdecken: die Schreibung. Ankreuzen kann man auch mit halbem Wissen, `jardín`
+hinschreiben nicht.
+
+110 fertige Rätsel in vier Stufen, je acht Wörter:
+
+| Stufe | Rätsel | verschiedene Wörter |
+|---|---|---|
+| Vorkurs | 25 | 44 |
+| Unidad 1 | 30 | 84 |
+| Unidad 2 | 30 | 101 |
+| Alles gemischt | 25 | 134 |
+
+Insgesamt 244 verschiedene Wörter, 45 davon mit Akzent oder `ñ`. Welches
+Rätsel kommt, entscheidet das Fehlergedächtnis: zuerst die noch nicht
+gespielten, und darunter das mit den meisten Wackelkandidaten. Erst wenn eine
+Stufe durch ist, fängt sie von vorne an.
+
+#### Die Fragen
+
+Nicht einfach die Übersetzung. Zu 190 der 244 Wörter steht mindestens eine
+eigene Frage im Spiel, im Schnitt zwei pro Wort, und welche erscheint, hängt
+am Eintrag – dasselbe Wort wird in einem anderen Rätsel anders gefragt.
+
+* **Umschrieben statt übersetzt** — *Dort stehen viele Bücher, aber kaufen
+  kann man keines* → `biblioteca`, gegen *Dort kauft man Bücher* → `librería`.
+  Genauso `lápiz` gegen `bolígrafo`.
+* **Grammatik** — *1. Person Singular* → `yo`, oder, um die Ecke gedacht:
+  *Sie ist die Schwester meines Bruders, aber nicht meine Schwester*.
+* **Rechnen** — *7 + 5* → `doce`, *So viele Monate hat ein Jahr* ebenso.
+* **Erdkunde** — *Das größte Land der Erde* → `rusia`.
+
+Als Rückfallebene hängt an jedem Wort zusätzlich die deutsche Übersetzung aus
+ihrem Wortschatz, damit kein Eintrag ohne Frage dasteht.
+
+#### Tastatur
+
+Eine eigene Tastatur statt der vom Handy. Grund ist die oberste Reihe:
+`á é í ó ú ü ñ` liegen dort als normale Tasten. Auf der Systemtastatur müsste
+sie den Vokal lange gedrückt halten und aus einem Menü wählen – so ist der
+Akzent ein Tastendruck wie jeder andere. Das Rätsel bekommt dadurch auch den
+ganzen Platz, den die Systemtastatur sonst einnähme.
+
+Der 💡-Knopf verrät für drei Münzen einen Buchstaben. Er sitzt **in der
+Fragezeile, nicht auf der Tastatur** – neben dem `ñ` würde ein Fehlgriff drei
+Münzen kosten.
+
+#### Wie geprüft wird
+
+Sobald alle Felder eines Wortes voll sind, prüft das Spiel von selbst. Stimmt
+es, wird es gelb und fest; stimmt es nicht, wackelt das Gitter und **genau die
+falschen Buchstaben** werden rot – bei `jardin` also nur das `i`. Sie sieht
+damit, *wo* es hakt, nicht nur *dass* es hakt. Die falschen Buchstaben bleiben
+stehen, damit sie sie vergleichen kann.
+
+Felder eines schon gelösten Wortes sind fest: ein Tippfehler im kreuzenden
+Wort kann ein fertiges Wort nicht mehr kaputtmachen, und beim Schreiben
+überspringt der Cursor sie.
+
+#### Woher die Rätsel kommen
+
+Die 110 Rätsel sind vorgefertigt und liegen in `puzles.js`, nicht im Browser
+erzeugt. Die Skripte dazu liegen in [`herramientas/`](herramientas/) und sind
+nachrechenbar — `python3 generar.py` liefert zweimal hintereinander dieselben
+110 Rätsel, weil die Startwerte fest stehen (`hash()` wäre falsch gewesen:
+Python würfelt den String-Hash bei jedem Prozessstart neu):
+
+* `pool.py` – baut den Wortschatz aus ihrer Vokabelliste. Die Liste selbst
+  liegt woanders, das fertige Ergebnis `pool.json` aber hier. Artikel fallen weg
+  (`el/la amigo/-a` → `amigo`), Akzente bleiben, Ausdrücke mit mehreren
+  Wörtern fliegen raus. 258 Wörter.
+* `pistas.py` – die handgeschriebenen Fragen.
+* `generar.py` – legt die Gitter. Längstes Wort zuerst, jedes weitere muss ein
+  liegendes kreuzen, und `ú` und `u` gelten als verschiedene Buchstaben, sonst
+  würde das Spiel Akzente verschlucken.
+* `verificar.py` – prüft jedes fertige Rätsel noch einmal unabhängig nach:
+  dass kein Wort aus Versehen entsteht, dass jedes Wort mindestens ein anderes
+  kreuzt, dass das Gitter nicht in zwei Teile zerfällt, und dass kein Rätsel
+  breiter als elf Felder wird – darüber werden die Kästchen auf dem Handy zu
+  klein zum Lesen.
+
+* `probar.js` – spielt alle 110 Rätsel im Browser durch, 873 Wörter auf den
+  echten Tasten, und prüft nach jedem Wort, ob es erkannt, gelb markiert und
+  mit Münzen belohnt wurde; dazu, dass jedes Gitter auf ein 360×640-Display
+  passt und kein Kästchen unter 24 px fällt.
+* `probar2.js` – die Randfälle: dass `jardin` ohne Akzent nicht durchgeht,
+  dass der Tipp-Knopf ohne Münzen nichts verrät, dass ein gelöstes Wort nicht
+  überschreibbar ist, und dass ein Tipp auf das *letzte* Feld eines Wortes
+  keine Sackgasse ist — der Cursor springt an die erste Lücke, sonst hätte
+  jeder weitere Buchstabe dasselbe Feld überschrieben.

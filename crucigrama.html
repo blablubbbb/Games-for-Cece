@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Kreuzworträtsel – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.4rem 0.4rem 0.5rem; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+    .top {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .top a, .pill, .top button {
+      background: #fff8; border: none; border-radius: 999px; padding: 0.28rem 0.75rem;
+      font-size: 1.05rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
+    }
+    .coin { width: 1.35em; height: 1.35em; }
+    .pill.marca { opacity: 0.85; }
+
+    /* ---------- Die aktive Frage ---------- */
+    .pista {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      background: #fff; border-radius: 0.8rem; box-shadow: 0 3px 0 #0002;
+      padding: 0.45rem 0.7rem; box-sizing: border-box; margin-bottom: 0.35rem;
+      min-height: 2.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    /* Der Tipp-Knopf gehört zur Frage. Auf der Tastatur läge er neben dem ñ,
+       und ein Fehlgriff würde drei Münzen kosten. */
+    .pista #btn-ayuda {
+      margin-left: auto; flex: 0 0 auto; background: #ffd34d; border: none;
+      border-radius: 10px; font-size: 1.25rem; padding: 0.3rem 0.6rem;
+      box-shadow: 0 2px 0 #0002; font-family: inherit; line-height: 1;
+    }
+    .pista #btn-ayuda:active { transform: translateY(2px); box-shadow: none; }
+    .pista .num {
+      background: #7b3fe4; color: #fff; border-radius: 0.4rem;
+      font-size: 0.78rem; font-weight: bold; padding: 0.12rem 0.4rem;
+      white-space: nowrap; flex: 0 0 auto;
+    }
+    .pista .txt { font-size: 0.95rem; line-height: 1.25; }
+    .pista .txt b { color: #7b3fe4; }
+
+    /* ---------- Das Gitter ---------- */
+    #campo { flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+             width: 100%; min-height: 0; }
+    #rejilla { position: relative; }
+    .celda {
+      position: absolute; background: #fff; border: 1px solid #c9bde4;
+      box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; color: #2b1a4a;
+    }
+    .celda.activa { background: #e4d9fb; }
+    .celda.foco { background: #7b3fe4; color: #fff; border-color: #7b3fe4; }
+    .celda.lista { background: #ffd34d; }
+    .celda.mala { background: #e4573f; color: #fff; }
+    .celda .n {
+      position: absolute; top: 0; left: 1px; font-size: var(--num, 7px); font-weight: 600;
+      color: #7b3fe4; line-height: 1;
+    }
+    .celda.foco .n, .celda.mala .n { color: #fff; }
+    #rejilla.sacude { animation: sacudir 0.35s; }
+    @keyframes sacudir {
+      0%,100% { transform: translateX(0); } 25% { transform: translateX(-7px); }
+      75% { transform: translateX(7px); }
+    }
+
+    /* ---------- Tastatur ---------- */
+    .teclado { width: 100%; max-width: 460px; flex: 0 0 auto; margin-top: 0.35rem; }
+    .teclado .fila { display: flex; gap: 0.22rem; margin-bottom: 0.22rem; justify-content: center; }
+    .teclado button {
+      flex: 1 1 0; min-width: 0; height: clamp(34px, 5.6dvh, 46px);
+      font-size: clamp(0.85rem, 3.9vw, 1.1rem); font-weight: bold; font-family: inherit;
+      border: none; border-radius: 7px; background: #fff; color: #2b1a4a;
+      box-shadow: 0 2px 0 #0003; padding: 0;
+    }
+    .teclado button:active { transform: translateY(2px); box-shadow: 0 0 0 #0003; }
+    .teclado .acento { background: #efe7ff; color: #5a2db0; }
+    .teclado .ancha { flex: 1.5 1 0; }
+    .teclado .borrar { background: #ffd9ec; }
+    .teclado .ayuda { background: #ffd34d; }
+
+    /* ---------- Überlagerungen ---------- */
+    #inicio, #fin, #lista {
+      position: fixed; inset: 0; background: #0009; z-index: 20;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+      box-sizing: border-box;
+    }
+    .box {
+      background: #fff; border-radius: 1rem; padding: 1.1rem 1.2rem; text-align: center;
+      max-width: 360px; width: 100%; box-sizing: border-box; max-height: 90dvh; overflow-y: auto;
+    }
+    .box h2 { margin: 0 0 0.5rem; }
+    .box p { margin: 0 0 0.3rem; opacity: 0.75; font-size: 0.95rem; }
+    .box button {
+      display: block; width: 100%; font-size: 1.15rem; font-weight: bold; font-family: inherit;
+      padding: 0.7rem 1rem; border: none; border-radius: 14px;
+      background: #7b3fe4; color: #fff; margin-top: 0.6rem; box-shadow: 0 4px 0 #0003;
+    }
+    .box button small { display: block; font-size: 0.75rem; font-weight: normal; opacity: 0.85; }
+    .box button.otro { background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #7b3fe4; }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.92rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.12rem 0; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .nuevo { color: #e4573f; font-weight: bold; }
+
+    #lista .box { text-align: left; }
+    #lista h3 { margin: 0.6rem 0 0.2rem; font-size: 0.95rem; color: #7b3fe4; }
+    #lista ol { margin: 0; padding-left: 1.3rem; font-size: 0.92rem; }
+    #lista li { margin-bottom: 0.25rem; }
+    #lista li.ok { text-decoration: line-through; opacity: 0.45; }
+    #lista .cerrar { margin-top: 0.8rem; }
+
+    .flota {
+      position: fixed; font-size: 1.6rem; font-weight: bold; pointer-events: none;
+      animation: subir 1s forwards; text-shadow: 0 2px 0 #fff; z-index: 25;
+      display: flex; align-items: center; gap: 0.2rem;
+    }
+    .flota img { width: 1.6rem; height: 1.6rem; }
+    @keyframes subir { to { transform: translateY(-70px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <button id="btn-lista" title="Alle Fragen">📋</button>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
+  </div>
+
+  <div class="pista">
+    <span class="num" id="pista-num">–</span>
+    <span class="txt" id="pista-txt">Tippe auf ein Feld oder auf 📋</span>
+    <button id="btn-ayuda" title="Einen Buchstaben verraten">💡</button>
+  </div>
+
+  <div id="campo"><div id="rejilla"></div></div>
+
+  <div class="teclado" id="teclado"></div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>🔤 Kreuzworträtsel</h2>
+      <p>Die Frage steht auf Deutsch, das Wort schreibst du auf Spanisch —
+         mit Akzenten. Die liegen auf der obersten Tastenreihe.</p>
+      <p>📋 zeigt alle Fragen auf einmal. 💡 verrät einen Buchstaben, kostet
+         aber 3 Münzen.</p>
+      <div class="marcas" id="marcas-inicio"></div>
+      <button data-nivel="vorkurs">Vorkurs<small>Zahlen, Länder, sich vorstellen</small></button>
+      <button data-nivel="u1">Unidad 1<small>Stadt, Freizeit, Klassenzimmer</small></button>
+      <button data-nivel="u2">Unidad 2<small>Zimmer, Essen, Kalender</small></button>
+      <button data-nivel="todo" class="otro">Alles gemischt</button>
+    </div>
+  </div>
+
+  <div id="lista"><div class="box">
+    <h2 style="text-align:center">Alle Fragen</h2>
+    <div id="lista-cuerpo"></div>
+    <button class="cerrar otro" id="btn-cerrar">Zurück zum Rätsel</button>
+  </div></div>
+
+  <div id="fin"><div class="box">
+    <h2 id="fin-titulo">¡Bravo!</h2>
+    <p id="fin-sub">–</p>
+    <div class="marcas" id="marcas-fin"></div>
+    <button id="btn-otra">Nächstes Rätsel</button>
+    <button id="btn-nivel" class="otro">Anderes Level</button>
+    <a class="otro" href="index.html" style="display:block;margin-top:0.6rem;padding:0.6rem;
+       border-radius:14px;background:#fff;color:#7b3fe4;box-shadow:inset 0 0 0 2px #7b3fe4;
+       text-decoration:none;font-weight:bold">Zurück</a>
+  </div></div>
+
+  <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
+  <script src="puzles.js"></script>
+  <script>
+    const JUEGO = "crucigrama";
+    const PREMIO_PALABRA = 2;      // Münzen pro gelöstem Wort
+    const PREMIO_FINAL = 5;        // Münzen, wenn das ganze Rätsel steht
+    const COSTE_AYUDA = 3;         // Münzen für einen aufgedeckten Buchstaben
+
+    const elRejilla = document.getElementById("rejilla");
+    const elCampo = document.getElementById("campo");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
+    const elPistaNum = document.getElementById("pista-num");
+    const elPistaTxt = document.getElementById("pista-txt");
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+
+    let nivel, puzle, letras, resueltas, falladas, conAyuda;
+    let activa = -1, sentido = "h", foco = 0;
+    let monedasRonda = 0, t0 = 0;
+
+    function guardarMonedas() {
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
+    }
+
+    // ---------- Rätsel aussuchen ----------
+    // Was sie noch nicht hatte, kommt zuerst. Danach bevorzugt Rätsel mit
+    // Wörtern, die laut Fehlergedächtnis wackeln.
+    function jugados() {
+      try { return JSON.parse(localStorage.getItem("cece-crucigrama-hechos") || "{}"); }
+      catch (e) { return {}; }
+    }
+    function marcarJugado(niv, i) {
+      const h = jugados();
+      h[niv] = h[niv] || [];
+      if (!h[niv].includes(i)) h[niv].push(i);
+      if (h[niv].length >= PUZLES[niv].length) h[niv] = [];   // von vorne
+      try { localStorage.setItem("cece-crucigrama-hechos", JSON.stringify(h)); } catch (e) {}
+    }
+    function elegirPuzle(niv) {
+      const hechos = jugados()[niv] || [];
+      const libres = PUZLES[niv].map((_, i) => i).filter(i => !hechos.includes(i));
+      const pool = libres.length ? libres : PUZLES[niv].map((_, i) => i);
+      // Wackelige Wörter zählen und das Rätsel mit den meisten nehmen
+      let mejor = pool[0], mejorPeso = -1;
+      for (const i of pool) {
+        let peso = 0;
+        for (const e of PUZLES[niv][i].entradas) peso += Fallos.peso(JUEGO, e.sol);
+        peso += Math.random() * 3;            // etwas Zufall, sonst immer dasselbe
+        if (peso > mejorPeso) { mejorPeso = peso; mejor = i; }
+      }
+      return mejor;
+    }
+
+    // ---------- Aufbauen ----------
+    function clave(r, c) { return r + "," + c; }
+
+    function entradasEn(r, c) {
+      const out = [];
+      puzle.entradas.forEach((e, i) => {
+        const dr = e.dir === "v" ? 1 : 0, dc = e.dir === "h" ? 1 : 0;
+        for (let k = 0; k < e.sol.length; k++) {
+          if (e.r + dr * k === r && e.c + dc * k === c) { out.push(i); break; }
+        }
+      });
+      return out;
+    }
+
+    function celdaDe(e, k) {
+      const dr = e.dir === "v" ? 1 : 0, dc = e.dir === "h" ? 1 : 0;
+      return [e.r + dr * k, e.c + dc * k];
+    }
+
+    function dibujar() {
+      // Feldgröße so, dass das Gitter in den verbleibenden Platz passt
+      const dispW = elCampo.clientWidth - 2;
+      const dispH = elCampo.clientHeight - 2;
+      const lado = Math.max(18, Math.floor(Math.min(dispW / puzle.ancho, dispH / puzle.alto)));
+      elRejilla.style.width = (lado * puzle.ancho) + "px";
+      elRejilla.style.height = (lado * puzle.alto) + "px";
+
+      // Nummern je Startfeld
+      const numEn = {};
+      for (const e of puzle.entradas) numEn[clave(e.r, e.c)] = e.n;
+
+      elRejilla.innerHTML = "";
+      for (const [r, c] of puzle.celdas) {
+        const d = document.createElement("div");
+        d.className = "celda";
+        d.style.left = (c * lado) + "px";
+        d.style.top = (r * lado) + "px";
+        d.style.width = lado + "px";
+        d.style.height = lado + "px";
+        d.style.fontSize = Math.round(lado * 0.52) + "px";
+        d.style.setProperty("--num", Math.max(7, Math.round(lado * 0.26)) + "px");
+        d.dataset.r = r; d.dataset.c = c;
+        const n = numEn[clave(r, c)];
+        d.innerHTML = (n ? '<span class="n">' + n + "</span>" : "") +
+                      "<span>" + (letras[clave(r, c)] || "") + "</span>";
+        d.addEventListener("pointerdown", (ev) => { ev.preventDefault(); tocar(r, c); });
+        elRejilla.appendChild(d);
+      }
+      pintar();
+    }
+
+    function pintar() {
+      const e = puzle.entradas[activa];
+      const enActiva = new Set();
+      let focoClave = null;
+      if (e) {
+        for (let k = 0; k < e.sol.length; k++) {
+          const [r, c] = celdaDe(e, k);
+          enActiva.add(clave(r, c));
+          if (k === foco) focoClave = clave(r, c);
+        }
+      }
+      const listas = new Set();
+      resueltas.forEach(i => {
+        const x = puzle.entradas[i];
+        for (let k = 0; k < x.sol.length; k++) listas.add(clave(...celdaDe(x, k)));
+      });
+
+      for (const d of elRejilla.children) {
+        const k = clave(d.dataset.r, d.dataset.c);
+        d.classList.toggle("lista", listas.has(k));
+        d.classList.toggle("activa", enActiva.has(k) && k !== focoClave);
+        d.classList.toggle("foco", k === focoClave);
+        d.lastChild.textContent = letras[k] || "";
+      }
+
+      if (e) {
+        const pistas = e.pistas;
+        const idx = (e.n * 7 + e.sol.length) % pistas.length;   // stabil je Eintrag
+        elPistaNum.textContent = e.n + (e.dir === "h" ? " →" : " ↓") + " · " + e.sol.length;
+        elPistaTxt.innerHTML = pistas[idx];
+      } else {
+        elPistaNum.textContent = "–";
+        elPistaTxt.textContent = "Tippe auf ein Feld oder auf 📋";
+      }
+      elPts.textContent = monedasRonda;
+    }
+
+    function tocar(r, c) {
+      const ids = entradasEn(Number(r), Number(c)).filter(i => !resueltas.has(i));
+      if (!ids.length) return;
+      // Wenn mehrere durch dieses Feld laufen: Richtung wechseln
+      let elegido = ids.find(i => puzle.entradas[i].dir === sentido);
+      if (elegido === undefined || elegido === activa) {
+        const otro = ids.find(i => i !== activa);
+        if (otro !== undefined) elegido = otro;
+      }
+      if (elegido === undefined) elegido = ids[0];
+      activa = elegido;
+      sentido = puzle.entradas[activa].dir;
+      colocarFoco(puzle.entradas[activa]);
+      pintar();
+    }
+
+    // Felder gelöster Wörter sind fest. Sonst macht ein Tippfehler in einem
+    // kreuzenden Wort ein längst fertiges Wort wieder kaputt.
+    function fijas() {
+      const s = new Set();
+      resueltas.forEach(i => {
+        const x = puzle.entradas[i];
+        for (let k = 0; k < x.sol.length; k++) s.add(clave(...celdaDe(x, k)));
+      });
+      return s;
+    }
+    function libre(e, k, fija) { return !fija.has(clave(...celdaDe(e, k))); }
+
+    // Der Cursor steht immer an der ersten Lücke des Wortes. Nicht dort, wo
+    // der Finger hingetippt hat: wer das letzte Feld von „año“ antippt, würde
+    // sonst mit jedem Buchstaben dasselbe Feld überschreiben und käme nie
+    // weiter. Der Tipp wählt das Wort, nicht die Schreibstelle.
+    function colocarFoco(e) {
+      const fija = fijas();
+      const huecos = [];
+      for (let k = 0; k < e.sol.length; k++) if (libre(e, k, fija)) huecos.push(k);
+      foco = huecos.length ? huecos[0] : 0;
+      for (const k of huecos) {
+        if (!letras[clave(...celdaDe(e, k))]) { foco = k; break; }
+      }
+    }
+
+    function elegirEntrada(i) {
+      if (resueltas.has(i)) return;
+      activa = i; sentido = puzle.entradas[i].dir;
+      colocarFoco(puzle.entradas[i]);
+      pintar();
+    }
+
+    // ---------- Eingabe ----------
+    function escribir(letra) {
+      if (activa < 0) return;
+      const e = puzle.entradas[activa];
+      const fija = fijas();
+      let k = foco;
+      while (k < e.sol.length && !libre(e, k, fija)) k++;   // feste Felder überspringen
+      if (k >= e.sol.length) return;
+
+      // War das Wort vorher schon voll? Dann tippt sie einen falschen Versuch
+      // neu, und geprüft wird erst wieder am letzten Feld – sonst wackelte das
+      // Gitter bei jedem einzelnen Buchstaben.
+      let lleno = true, ultimoHueco = k;
+      for (let j = 0; j < e.sol.length; j++) {
+        if (!libre(e, j, fija)) continue;
+        ultimoHueco = j;
+        if (!letras[clave(...celdaDe(e, j))]) lleno = false;
+      }
+
+      letras[clave(...celdaDe(e, k))] = letra;
+      foco = k;
+      let n = k + 1;
+      while (n < e.sol.length && !libre(e, n, fija)) n++;
+      if (n < e.sol.length) foco = n;
+      pintar();
+      if (!lleno || k === ultimoHueco) comprobar();
+    }
+
+    function borrar() {
+      if (activa < 0) return;
+      const e = puzle.entradas[activa];
+      const fija = fijas();
+      const aqui = clave(...celdaDe(e, foco));
+      if (libre(e, foco, fija) && letras[aqui]) {
+        delete letras[aqui];
+      } else {
+        let k = foco - 1;
+        while (k >= 0 && !libre(e, k, fija)) k--;
+        if (k >= 0) { foco = k; delete letras[clave(...celdaDe(e, k))]; }
+      }
+      pintar();
+    }
+
+    function comprobar() {
+      const e = puzle.entradas[activa];
+      let escrito = "";
+      for (let k = 0; k < e.sol.length; k++) escrito += letras[clave(...celdaDe(e, k))] || "";
+      if (escrito.length < e.sol.length) return;
+
+      if (escrito === e.sol) {
+        resueltas.add(activa);
+        // Ein Fehler ist schon beim Danebenliegen notiert worden, ein Treffer
+        // zählt also nur, wenn das Wort auf Anhieb und ohne Hilfe stand.
+        if (!falladas.has(activa) && !conAyuda.has(activa)) {
+          Fallos.anotar(JUEGO, e.sol, true, e.sol);
+        }
+        coins += PREMIO_PALABRA; monedasRonda += PREMIO_PALABRA;
+        guardarMonedas();
+        flotante("+" + PREMIO_PALABRA);
+        // Weiter zum nächsten offenen Eintrag
+        const siguiente = puzle.entradas.findIndex((_, i) => !resueltas.has(i));
+        activa = -1;
+        pintar();
+        if (resueltas.size === puzle.entradas.length) return setTimeout(terminar, 450);
+        if (siguiente >= 0) setTimeout(() => elegirEntrada(siguiente), 250);
+      } else {
+        if (!falladas.has(activa) && !conAyuda.has(activa)) {
+          Fallos.anotar(JUEGO, e.sol, false, e.sol);
+        }
+        falladas.add(activa);
+        marcarMal(e);
+      }
+    }
+
+    function marcarMal(e) {
+      const malas = [];
+      for (let k = 0; k < e.sol.length; k++) {
+        const [r, c] = celdaDe(e, k);
+        if (letras[clave(r, c)] !== e.sol[k]) malas.push(clave(r, c));
+      }
+      for (const d of elRejilla.children) {
+        if (malas.includes(clave(d.dataset.r, d.dataset.c))) d.classList.add("mala");
+      }
+      elRejilla.classList.add("sacude");
+      setTimeout(() => {
+        elRejilla.classList.remove("sacude");
+        for (const d of elRejilla.children) d.classList.remove("mala");
+        // Die falschen Buchstaben stehen lassen, damit sie sieht, was nicht passt
+        pintar();
+      }, 700);
+    }
+
+    function ayuda() {
+      if (activa < 0 || coins < COSTE_AYUDA) {
+        if (activa >= 0) flotante("fehlt " + (COSTE_AYUDA - coins));
+        return;
+      }
+      const e = puzle.entradas[activa];
+      // Ersten Buchstaben aufdecken, der noch fehlt oder falsch ist
+      for (let k = 0; k < e.sol.length; k++) {
+        const kk = clave(...celdaDe(e, k));
+        if (letras[kk] !== e.sol[k]) {
+          letras[kk] = e.sol[k];
+          if (!falladas.has(activa) && !conAyuda.has(activa)) {
+            Fallos.anotar(JUEGO, e.sol, false, e.sol);
+          }
+          conAyuda.add(activa);
+          coins -= COSTE_AYUDA;
+          guardarMonedas();
+          foco = Math.min(k + 1, e.sol.length - 1);
+          pintar();
+          comprobar();
+          return;
+        }
+      }
+    }
+
+    function flotante(txt) {
+      const r = elRejilla.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "flota";
+      f.innerHTML = txt + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 30, window.innerWidth - 100) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1000);
+    }
+
+    // ---------- Tastatur ----------
+    const FILAS = [
+      ["á", "é", "í", "ó", "ú", "ü", "ñ"],
+      ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+      ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+      ["z", "x", "c", "v", "b", "n", "m"],
+    ];
+    function construirTeclado() {
+      const t = document.getElementById("teclado");
+      t.innerHTML = "";
+      FILAS.forEach((fila, idx) => {
+        const d = document.createElement("div");
+        d.className = "fila";
+        if (idx === 0) {
+          fila.forEach(L => d.appendChild(tecla(L, "acento")));
+        } else if (idx === 3) {
+          fila.forEach(L => d.appendChild(tecla(L)));
+          d.appendChild(tecla("⌫", "borrar ancha", borrar));
+        } else {
+          fila.forEach(L => d.appendChild(tecla(L)));
+        }
+        t.appendChild(d);
+      });
+    }
+    function tecla(etq, clase, accion) {
+      const b = document.createElement("button");
+      b.textContent = etq;
+      if (clase) b.className = clase;
+      b.addEventListener("pointerdown", (ev) => {
+        ev.preventDefault();
+        if (accion) accion(); else escribir(etq);
+      });
+      return b;
+    }
+
+    document.addEventListener("keydown", (ev) => {
+      if (ev.key === "Backspace") { borrar(); ev.preventDefault(); }
+      else if (ev.key.length === 1 && /[a-záéíóúüñ]/i.test(ev.key)) {
+        escribir(ev.key.toLowerCase()); ev.preventDefault();
+      }
+    });
+
+    // ---------- Fragenliste ----------
+    function mostrarLista() {
+      const hs = puzle.entradas.filter(e => e.dir === "h");
+      const vs = puzle.entradas.filter(e => e.dir === "v");
+      const fila = (e) => {
+        const i = puzle.entradas.indexOf(e);
+        const idx = (e.n * 7 + e.sol.length) % e.pistas.length;
+        return '<li class="' + (resueltas.has(i) ? "ok" : "") + '" data-i="' + i + '">' +
+               "<b>" + e.n + "</b> " + e.pistas[idx] +
+               ' <span style="opacity:.5">(' + e.sol.length + ")</span></li>";
+      };
+      document.getElementById("lista-cuerpo").innerHTML =
+        "<h3>Waagerecht →</h3><ol style='list-style:none;padding-left:0'>" + hs.map(fila).join("") + "</ol>" +
+        "<h3>Senkrecht ↓</h3><ol style='list-style:none;padding-left:0'>" + vs.map(fila).join("") + "</ol>";
+      document.querySelectorAll("#lista-cuerpo li").forEach(li => {
+        li.addEventListener("click", () => {
+          document.getElementById("lista").style.display = "none";
+          elegirEntrada(Number(li.dataset.i));
+        });
+      });
+      document.getElementById("lista").style.display = "flex";
+    }
+
+    // ---------- Anfang und Ende ----------
+    function empezar(niv) {
+      nivel = niv || nivel;
+      try { localStorage.setItem("cece-crucigrama-nivel", nivel); } catch (e) {}
+      const i = elegirPuzle(nivel);
+      marcarJugado(nivel, i);
+      puzle = JSON.parse(JSON.stringify(PUZLES[nivel][i]));
+      letras = {}; resueltas = new Set(); falladas = new Set(); conAyuda = new Set();
+      activa = -1; sentido = "h"; foco = 0; monedasRonda = 0; t0 = performance.now();
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("lista").style.display = "none";
+      guardarMonedas();
+      dibujar();
+      elegirEntrada(0);
+    }
+
+    function terminar() {
+      const segundos = (performance.now() - t0) / 1000;
+      coins += PREMIO_FINAL; monedasRonda += PREMIO_FINAL;
+      guardarMonedas();
+      const sinAyuda = conAyuda.size === 0 && falladas.size === 0;
+      const batidos = Marcas.registrar(JUEGO, {
+        puntos: monedasRonda,
+        aciertos: puzle.entradas.length,
+        tiempo: segundos,
+      });
+      const m = Math.floor(segundos / 60), s = Math.round(segundos % 60);
+      document.getElementById("fin-titulo").textContent =
+        sinAyuda ? "¡Perfecto! Ohne Hilfe!" : "¡Bravo!";
+      document.getElementById("fin-sub").textContent =
+        puzle.entradas.length + " Wörter in " + m + ":" + String(s).padStart(2, "0") + " Minuten" +
+        (conAyuda.size ? " · " + conAyuda.size + "x Hilfe" : "");
+      document.getElementById("marcas-fin").innerHTML = Marcas.lista(JUEGO, batidos);
+      document.getElementById("fin").style.display = "flex";
+    }
+
+    function mostrarInicio() {
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("marcas-inicio").innerHTML = Marcas.lista(JUEGO, null);
+      document.getElementById("inicio").style.display = "flex";
+    }
+
+    document.getElementById("btn-ayuda").addEventListener("pointerdown", (ev) => {
+      ev.preventDefault(); ayuda();
+    });
+    document.getElementById("btn-lista").addEventListener("click", () => { if (puzle) mostrarLista(); });
+    document.getElementById("btn-cerrar").addEventListener("click", () =>
+      document.getElementById("lista").style.display = "none");
+    document.getElementById("btn-otra").addEventListener("click", () => empezar());
+    document.getElementById("btn-nivel").addEventListener("click", mostrarInicio);
+    document.querySelectorAll("#inicio button[data-nivel]").forEach(b =>
+      b.addEventListener("click", () => empezar(b.dataset.nivel)));
+    window.addEventListener("resize", () => { if (puzle) dibujar(); });
+
+    construirTeclado();
+    try { nivel = localStorage.getItem("cece-crucigrama-nivel") || "u1"; } catch (e) { nivel = "u1"; }
+    if (!PUZLES[nivel]) nivel = "u1";
+    mostrarInicio();
+  </script>
+</body>
+</html>

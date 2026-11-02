@@ -1,0 +1,2068 @@
+[
+ {
+  "es": "soy",
+  "art": null,
+  "de": [
+   "ich bin"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "de",
+  "art": null,
+  "de": [
+   "aus, von, über"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "pues",
+  "art": null,
+  "de": [
+   "Ja klar."
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "aquí",
+  "art": null,
+  "de": [
+   "hier"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "sí",
+  "art": null,
+  "de": [
+   "ja"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "claro",
+  "art": null,
+  "de": [
+   "klar"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "valencia",
+  "art": null,
+  "de": [
+   "Hauptstadt der Autonomen Gemeinschaft Valencia"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "madrid",
+  "art": null,
+  "de": [
+   "Hauptstadt Spaniens"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "españa",
+  "art": null,
+  "de": [
+   "Spanien"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "alemania",
+  "art": null,
+  "de": [
+   "Deutschland"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "austria",
+  "art": null,
+  "de": [
+   "Österreich"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "suiza",
+  "art": null,
+  "de": [
+   "die Schweiz"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "francia",
+  "art": null,
+  "de": [
+   "Frankreich"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "italia",
+  "art": null,
+  "de": [
+   "Italien"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "portugal",
+  "art": null,
+  "de": [
+   "Portugal"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "polonia",
+  "art": null,
+  "de": [
+   "Polen"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "rusia",
+  "art": null,
+  "de": [
+   "Russland"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "ucrania",
+  "art": null,
+  "de": [
+   "die Ukraine"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "turquía",
+  "art": null,
+  "de": [
+   "die Türkei"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "marruecos",
+  "art": null,
+  "de": [
+   "Marokko"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "siria",
+  "art": null,
+  "de": [
+   "Syrien"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "somalia",
+  "art": null,
+  "de": [
+   "Somalia"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "afganistán",
+  "art": null,
+  "de": [
+   "Afghanistan"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "genial",
+  "art": null,
+  "de": [
+   "genial, super, toll"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "muy",
+  "art": null,
+  "de": [
+   "sehr"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "gracias",
+  "art": null,
+  "de": [
+   "danke"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "fatal",
+  "art": null,
+  "de": [
+   "furchtbar"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "regular",
+  "art": null,
+  "de": [
+   "geht so"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "año",
+  "art": "el",
+  "de": [
+   "das Jahr"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "cero",
+  "art": null,
+  "de": [
+   "null"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "uno",
+  "art": null,
+  "de": [
+   "eins"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "dos",
+  "art": null,
+  "de": [
+   "zwei"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "tres",
+  "art": null,
+  "de": [
+   "Faltan"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "cuatro",
+  "art": null,
+  "de": [
+   "vier"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "cinco",
+  "art": null,
+  "de": [
+   "fünf"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "seis",
+  "art": null,
+  "de": [
+   "sechs"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "siete",
+  "art": null,
+  "de": [
+   "sieben"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "ocho",
+  "art": null,
+  "de": [
+   "acht"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "nueve",
+  "art": null,
+  "de": [
+   "neun"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "diez",
+  "art": null,
+  "de": [
+   "zehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "once",
+  "art": null,
+  "de": [
+   "elf"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "doce",
+  "art": null,
+  "de": [
+   "zwölf"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "trece",
+  "art": null,
+  "de": [
+   "dreizehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "catorce",
+  "art": null,
+  "de": [
+   "vierzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "quince",
+  "art": null,
+  "de": [
+   "fünfzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "dieciséis",
+  "art": null,
+  "de": [
+   "sechzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "diecisiete",
+  "art": null,
+  "de": [
+   "siebzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "dieciocho",
+  "art": null,
+  "de": [
+   "achtzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "diecinueve",
+  "art": null,
+  "de": [
+   "neunzehn"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "veinte",
+  "art": null,
+  "de": [
+   "zwanzig"
+  ],
+  "nivel": "vorkurs"
+ },
+ {
+  "es": "vida",
+  "art": "la",
+  "de": [
+   "das Leben"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "en",
+  "art": null,
+  "de": [
+   "in, an, auf"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ciudad",
+  "art": "la",
+  "de": [
+   "die Stadt"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "barrio",
+  "art": "el",
+  "de": [
+   "das Stadtviertel"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "parque",
+  "art": "el",
+  "de": [
+   "der Park"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "plaza",
+  "art": "la",
+  "de": [
+   "der Platz"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "café",
+  "art": "el",
+  "de": [
+   "das Café, die Cafeteria"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "mercado",
+  "art": "el",
+  "de": [
+   "der Markt"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "heladería",
+  "art": "la",
+  "de": [
+   "die Eisdiele"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "biblioteca",
+  "art": "la",
+  "de": [
+   "die Bibliothek"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tienda",
+  "art": "la",
+  "de": [
+   "das Geschäft, der Laden"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "cómic",
+  "art": "el",
+  "de": [
+   "der/das Comic"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ropa",
+  "art": "la",
+  "de": [
+   "die Kleidung"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "quiosco",
+  "art": "el",
+  "de": [
+   "der Kiosk"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "instituto",
+  "art": "el",
+  "de": [
+   "das Gymnasium, die Schule"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "cine",
+  "art": "el",
+  "de": [
+   "das Kino"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "estadio",
+  "art": "el",
+  "de": [
+   "das Stadion"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "librería",
+  "art": "la",
+  "de": [
+   "die Buchhandlung"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "museo",
+  "art": "el",
+  "de": [
+   "das Museum"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "panadería",
+  "art": "la",
+  "de": [
+   "die Bäckerei"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "piscina",
+  "art": "la",
+  "de": [
+   "das Schwimmbad"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "río",
+  "art": "el",
+  "de": [
+   "der Fluss"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "supermercado",
+  "art": "el",
+  "de": [
+   "der Supermarkt"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ser",
+  "art": null,
+  "de": [
+   "sein"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "amigo",
+  "art": null,
+  "de": [
+   "der/die Freund/-in"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "patio",
+  "art": "el",
+  "de": [
+   "der Hof"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "chico",
+  "art": "el",
+  "de": [
+   "der Junge"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "chica",
+  "art": "la",
+  "de": [
+   "das Mädchen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "yo",
+  "art": null,
+  "de": [
+   "ich"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tú",
+  "art": null,
+  "de": [
+   "du"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "él",
+  "art": null,
+  "de": [
+   "er"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ella",
+  "art": null,
+  "de": [
+   "sie"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "nosotros",
+  "art": null,
+  "de": [
+   "wir"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "vosotros",
+  "art": null,
+  "de": [
+   "ihr"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ellos",
+  "art": null,
+  "de": [
+   "sie (Plural)"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "vecino",
+  "art": null,
+  "de": [
+   "der/die Nachbar/-in"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "nuevo",
+  "art": null,
+  "de": [
+   "der/die Neue"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "clase",
+  "art": "la",
+  "de": [
+   "die Klasse",
+   "der Unterricht"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "también",
+  "art": null,
+  "de": [
+   "auch"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "quedar",
+  "art": null,
+  "de": [
+   "sich verabreden"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tarde",
+  "art": "la",
+  "de": [
+   "der Nachmittag"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "normalmente",
+  "art": null,
+  "de": [
+   "normalerweise"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "pasar",
+  "art": null,
+  "de": [
+   "(Zeit) verbringen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "descansar",
+  "art": null,
+  "de": [
+   "sich ausruhen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "escuchar",
+  "art": null,
+  "de": [
+   "etw. hören"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "música",
+  "art": "la",
+  "de": [
+   "die Musik"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "mirar",
+  "art": null,
+  "de": [
+   "etw. anschauen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tocar",
+  "art": null,
+  "de": [
+   "spielen (Instrument)"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "guitarra",
+  "art": "la",
+  "de": [
+   "die Gitarre"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "hablar",
+  "art": null,
+  "de": [
+   "sprechen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "con",
+  "art": null,
+  "de": [
+   "mit"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "vídeo",
+  "art": "el",
+  "de": [
+   "das Video"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "casa",
+  "art": "la",
+  "de": [
+   "das Haus, Zuhause"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "pero",
+  "art": null,
+  "de": [
+   "aber"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "estudiar",
+  "art": null,
+  "de": [
+   "lernen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "no",
+  "art": null,
+  "de": [
+   "oder?, stimmt’s?"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "buscar",
+  "art": null,
+  "de": [
+   "etw. suchen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "información",
+  "art": "la",
+  "de": [
+   "die Information"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "charlar",
+  "art": null,
+  "de": [
+   "plaudern, quatschen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tomar",
+  "art": null,
+  "de": [
+   "etwas trinken, zu sich hier: nehmen"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "algo",
+  "art": null,
+  "de": [
+   "etwas"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "guay",
+  "art": null,
+  "de": [
+   "cool, toll"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "español",
+  "art": "el",
+  "de": [
+   "Spanisch"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "alfabeto",
+  "art": "el",
+  "de": [
+   "das Alphabet"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "ahora",
+  "art": null,
+  "de": [
+   "jetzt"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "letra",
+  "art": "la",
+  "de": [
+   "der Buchstabe"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "mochila",
+  "art": "la",
+  "de": [
+   "der Rucksack"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "libro",
+  "art": "el",
+  "de": [
+   "das Buch"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "cuaderno",
+  "art": "el",
+  "de": [
+   "das Heft"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tableta",
+  "art": "la",
+  "de": [
+   "das Tablet PC"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "bolígrafo",
+  "art": "el",
+  "de": [
+   ") der Kugelschreiber"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "lápiz",
+  "art": "el",
+  "de": [
+   "der Stift"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "regla",
+  "art": "la",
+  "de": [
+   "das Lineal"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "estuche",
+  "art": "el",
+  "de": [
+   "die Federmappe"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "táper",
+  "art": "el",
+  "de": [
+   "die Brotdose"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "botella",
+  "art": "la",
+  "de": [
+   "die Flasche"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "aula",
+  "art": "el",
+  "de": [
+   "das Klassenzimmer"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "mesa",
+  "art": "la",
+  "de": [
+   "der Tisch"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "portátil",
+  "art": "el",
+  "de": [
+   "der Laptop"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "pizarra",
+  "art": "la",
+  "de": [
+   "die Tafel"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "profesor",
+  "art": null,
+  "de": [
+   "der/die Lehrer/-in"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "papelera",
+  "art": "la",
+  "de": [
+   "der Papierkorb"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "silla",
+  "art": "la",
+  "de": [
+   "der Stuhl"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "alumno",
+  "art": null,
+  "de": [
+   "der/die Schüler/-in"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "pregunta",
+  "art": "la",
+  "de": [
+   "die Frage"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "respuesta",
+  "art": "la",
+  "de": [
+   "die Antwort"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "baño",
+  "art": "el",
+  "de": [
+   "die Toilette",
+   "das Bad"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "calculadora",
+  "art": "la",
+  "de": [
+   "der Taschenrechner"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "horario",
+  "art": "el",
+  "de": [
+   "der Stundenplan"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "mapa",
+  "art": "el",
+  "de": [
+   "die Landkarte"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "pegamento",
+  "art": "el",
+  "de": [
+   "der Leim"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "reloj",
+  "art": "el",
+  "de": [
+   "die Uhr"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "rotulador",
+  "art": "el",
+  "de": [
+   "der Marker"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "sacapuntas",
+  "art": "el",
+  "de": [
+   "der Anspitzer"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "tijeras",
+  "art": "las",
+  "de": [
+   "die Schere"
+  ],
+  "nivel": "u1"
+ },
+ {
+  "es": "habitación",
+  "art": "la",
+  "de": [
+   "das Zimmer"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hay",
+  "art": null,
+  "de": [
+   "es gibt"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "cama",
+  "art": "la",
+  "de": [
+   "das Bett"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "armario",
+  "art": "el",
+  "de": [
+   "der Schrank"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "póster",
+  "art": "el",
+  "de": [
+   "das Poster"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "pared",
+  "art": "la",
+  "de": [
+   "die Wand"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "ventana",
+  "art": "la",
+  "de": [
+   "das Fenster"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "foto",
+  "art": "la",
+  "de": [
+   "das Foto"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "espejo",
+  "art": "el",
+  "de": [
+   "der Spiegel"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "puerta",
+  "art": "la",
+  "de": [
+   "die Tür"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "lámpara",
+  "art": "la",
+  "de": [
+   "die Lampe"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "alfombra",
+  "art": "la",
+  "de": [
+   "der Teppich"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "sillón",
+  "art": "el",
+  "de": [
+   "der Sessel"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "estantería",
+  "art": "la",
+  "de": [
+   "das Regal"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "videojuego",
+  "art": "el",
+  "de": [
+   "das Videospiel"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "altavoz",
+  "art": "el",
+  "de": [
+   "der Lautsprecher, pl. die Lautsprecher-Box"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "escritorio",
+  "art": "el",
+  "de": [
+   "der Schreibtisch"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "planta",
+  "art": "la",
+  "de": [
+   "die Pflanze"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "sofá",
+  "art": "el",
+  "de": [
+   "die Couch, das Sofa"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "almohada",
+  "art": "la",
+  "de": [
+   "das Kissen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "jaula",
+  "art": "la",
+  "de": [
+   "der Käfig"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hamaca",
+  "art": "la",
+  "de": [
+   "die Hängematte"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "mundo",
+  "art": "el",
+  "de": [
+   "die Welt"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "vivir",
+  "art": null,
+  "de": [
+   "leben, wohnen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hacer",
+  "art": null,
+  "de": [
+   "etw. machen, tun"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "piso",
+  "art": "el",
+  "de": [
+   "die Wohnung"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "centro",
+  "art": "el",
+  "de": [
+   "das Zentrum"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "compartir",
+  "art": null,
+  "de": [
+   "etw. (mit jdm) teilen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hermana",
+  "art": "la",
+  "de": [
+   "die Schwester"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "rincón",
+  "art": "el",
+  "de": [
+   "die Ecke"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "deberes",
+  "art": "los",
+  "de": [
+   "die Hausaufgaben"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "escribir",
+  "art": null,
+  "de": [
+   "etw. schreiben"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "diario",
+  "art": "el",
+  "de": [
+   "das Tagebuch"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "después",
+  "art": null,
+  "de": [
+   "danach"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "siempre",
+  "art": null,
+  "de": [
+   "immer"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "esconder",
+  "art": null,
+  "de": [
+   "etw. verstecken"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "discutir",
+  "art": null,
+  "de": [
+   "sich streiten, diskutieren auch:"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "ver",
+  "art": null,
+  "de": [
+   "etw. (an)sehen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "bailar",
+  "art": null,
+  "de": [
+   "tanzen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "practicar",
+  "art": null,
+  "de": [
+   "etw. üben"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "solo",
+  "art": null,
+  "de": [
+   "nur"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "película",
+  "art": "la",
+  "de": [
+   "der Film"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "móvil",
+  "art": "el",
+  "de": [
+   "das Handy"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "leer",
+  "art": null,
+  "de": [
+   "lesen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "revista",
+  "art": "la",
+  "de": [
+   "die Zeitschrift"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "aprender",
+  "art": null,
+  "de": [
+   "etw. (er-)lernen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "cosa",
+  "art": "la",
+  "de": [
+   "das Ding, die Sache"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "sobre",
+  "art": null,
+  "de": [
+   "über"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "fotografía",
+  "art": "la",
+  "de": [
+   "die Fotografie"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hermano",
+  "art": "el",
+  "de": [
+   "der Bruder"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "salón",
+  "art": "el",
+  "de": [
+   "das Wohnzimmer"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "merienda",
+  "art": "la",
+  "de": [
+   "der Nachmittagssnack"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "comer",
+  "art": null,
+  "de": [
+   "etw. essen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "bocadillo",
+  "art": "el",
+  "de": [
+   "das belegte Brötchen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "beber",
+  "art": null,
+  "de": [
+   "etw. trinken"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "zumo",
+  "art": "el",
+  "de": [
+   "der Saft"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "agua",
+  "art": "el",
+  "de": [
+   "das Wasser"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "helado",
+  "art": "el",
+  "de": [
+   "das Eis"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "allí",
+  "art": null,
+  "de": [
+   "dort"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "responder",
+  "art": null,
+  "de": [
+   "(auf etw.) antworten"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "dibujar",
+  "art": null,
+  "de": [
+   "zeichnen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "patinar",
+  "art": null,
+  "de": [
+   "skaten"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "estar",
+  "art": null,
+  "de": [
+   "sein, sich befinden"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "hoy",
+  "art": null,
+  "de": [
+   "heute"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "gato",
+  "art": null,
+  "de": [
+   "der Kater, die Katze"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "televisión",
+  "art": "la",
+  "de": [
+   ") der Fernseher"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "cocina",
+  "art": "la",
+  "de": [
+   "die Küche"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "nevera",
+  "art": "la",
+  "de": [
+   "der Kühlschrank"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "tampoco",
+  "art": null,
+  "de": [
+   "auch nicht"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "lavabo",
+  "art": "el",
+  "de": [
+   "das Waschbecken"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "ducha",
+  "art": "la",
+  "de": [
+   "die Dusche"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "mamá",
+  "art": "la",
+  "de": [
+   "die Mama"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "quizás",
+  "art": null,
+  "de": [
+   "vielleicht"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "entonces",
+  "art": null,
+  "de": [
+   "dann, also"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "abrir",
+  "art": null,
+  "de": [
+   "etw. öffnen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "llave",
+  "art": "la",
+  "de": [
+   "der Schlüssel"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "balcón",
+  "art": "el",
+  "de": [
+   "der Balkon"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "jardín",
+  "art": "el",
+  "de": [
+   "der Garten"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "terraza",
+  "art": "la",
+  "de": [
+   "die Terrasse"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "pasillo",
+  "art": "el",
+  "de": [
+   "der Flur"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "entrada",
+  "art": "la",
+  "de": [
+   "der Eingang, die Diele"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "agenda",
+  "art": "la",
+  "de": [
+   "der Terminkalender"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "enero",
+  "art": null,
+  "de": [
+   "Januar"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "febrero",
+  "art": null,
+  "de": [
+   "Februar"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "marzo",
+  "art": null,
+  "de": [
+   "März"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "abril",
+  "art": null,
+  "de": [
+   "April"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "mayo",
+  "art": null,
+  "de": [
+   "Mai"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "junio",
+  "art": null,
+  "de": [
+   "Juni"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "julio",
+  "art": null,
+  "de": [
+   "Juli"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "agosto",
+  "art": null,
+  "de": [
+   "August"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "septiembre",
+  "art": null,
+  "de": [
+   "September"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "octubre",
+  "art": null,
+  "de": [
+   "Oktober"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "noviembre",
+  "art": null,
+  "de": [
+   "November"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "diciembre",
+  "art": null,
+  "de": [
+   "Dezember"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "fecha",
+  "art": "la",
+  "de": [
+   "das Datum"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "lunes",
+  "art": "el",
+  "de": [
+   "der Montag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "martes",
+  "art": "el",
+  "de": [
+   "der Dienstag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "miércoles",
+  "art": "el",
+  "de": [
+   "der Mittwoch"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "jueves",
+  "art": "el",
+  "de": [
+   "der Donnerstag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "viernes",
+  "art": "el",
+  "de": [
+   "der Freitag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "sábado",
+  "art": "el",
+  "de": [
+   "der Samstag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "domingo",
+  "art": "el",
+  "de": [
+   "der Sonntag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "cumpleaños",
+  "art": "el",
+  "de": [
+   "der Geburtstag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "nota",
+  "art": "la",
+  "de": [
+   "die Notiz; die Schulnote"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "olvidar",
+  "art": null,
+  "de": [
+   "etw. vergessen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "comprar",
+  "art": null,
+  "de": [
+   "etw. kaufen"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "regalo",
+  "art": "el",
+  "de": [
+   "das Geschenk"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "semana",
+  "art": "la",
+  "de": [
+   "die Woche"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "pícnic",
+  "art": "el",
+  "de": [
+   "das Picknick"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "ya",
+  "art": null,
+  "de": [
+   "schon"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "fiesta",
+  "art": "la",
+  "de": [
+   "die Party, die Feier"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "día",
+  "art": "el",
+  "de": [
+   "der Tag"
+  ],
+  "nivel": "u2"
+ },
+ {
+  "es": "vale",
+  "art": null,
+  "de": [
+   "einverstanden, ok"
+  ],
+  "nivel": "u2"
+ }
+]

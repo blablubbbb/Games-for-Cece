@@ -19,6 +19,7 @@ const Marcas = (function () {
     serie:    { nombre: "Längste Serie",      mejor: "max" },
     aciertos: { nombre: "Meiste richtig",     mejor: "max" },
     rapido:   { nombre: "Schnellste Antwort", mejor: "min", sufijo: " s", decimales: 2 },
+    tiempo:   { nombre: "Schnellstes Rätsel",  mejor: "min", tiempo: true },
   };
 
   const JUEGOS = [
@@ -30,6 +31,8 @@ const Marcas = (function () {
       campos: ["puntos", "serie", "aciertos"] },
     { id: "estar",      nombre: "ser · estar · hay", icono: "📍",  url: "estar.html",
       campos: ["puntos", "serie", "aciertos"] },
+    { id: "crucigrama", nombre: "Kreuzworträtsel", icono: "🔤", url: "crucigrama.html",
+      campos: ["puntos", "aciertos", "tiempo"] },
   ];
 
   let datos = null;
@@ -99,6 +102,10 @@ const Marcas = (function () {
     texto(campo, valor) {
       const c = CAMPOS[campo];
       if (valor === null || valor === undefined) return "–";
+      if (c.tiempo) {
+        const m = Math.floor(valor / 60), sg = Math.round(valor % 60);
+        return m + ":" + String(sg).padStart(2, "0") + " min";
+      }
       let t = c.decimales ? valor.toFixed(c.decimales) : String(valor);
       if (c.sufijo) t += c.sufijo;
       if (c.moneda) t += ' <img class="coin" src="coin.svg" alt="">';
