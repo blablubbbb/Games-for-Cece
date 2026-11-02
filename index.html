@@ -56,6 +56,10 @@
     }
     .tile {
       aspect-ratio: 1;
+      /* Ohne min-width wäre die Mindestbreite einer Kachel so groß wie ihr
+         Inhalt hoch ist – drei davon passen dann nicht mehr nebeneinander und
+         die Seite lässt sich seitlich wegschieben. */
+      min-width: 0;
       border-radius: 1rem;
       display: flex;
       flex-direction: column;
@@ -93,7 +97,7 @@
     <a class="tile" href="einmaleins.html"><span class="icon">✖️</span>Einmaleins<span class="fach">Mathe</span></a>
     <a class="tile" href="hora.html"><span class="icon">🕰️</span>Uhrzeit<span class="fach">Spanisch</span></a>
     <a class="tile" href="estar.html"><span class="icon">📍</span>ser · estar · hay<span class="fach">Spanisch</span></a>
-    <a class="tile" href="crucigrama.html"><span class="icon">🔤</span>Kreuzwort<span class="fach">Spanisch · 110 Rätsel</span></a>
+    <a class="tile" href="crucigrama.html"><span class="icon">🔤</span>Kreuzwort<span class="fach">Spanisch</span></a>
     <div class="tile locked"><span class="icon">❓</span>Bald da</div>
   </div>
 
