@@ -21,6 +21,7 @@ hin und her, ohne dass eine Kachel dafür draufgeht.
 | [Uhrzeit](hora.html) | Spanisch | Die Uhrzeit auf Spanisch, analog und digital |
 | [ser · estar · hay](estar.html) | Spanisch | Welches der drei Wörter in die Lücke gehört |
 | [Kreuzwort](crucigrama.html) | Spanisch | Vokabeln schreiben – Frage auf Deutsch, Wort auf Spanisch |
+| [Salat](sopa.html) | Spanisch | Dieselben Fragen, aber das Wort im Buchstabengitter finden |
 | [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
@@ -370,3 +371,88 @@ Python würfelt den String-Hash bei jedem Prozessstart neu):
   überschreibbar ist, und dass ein Tipp auf das *letzte* Feld eines Wortes
   keine Sackgasse ist — der Cursor springt an die erste Lücke, sonst hätte
   jeder weitere Buchstabe dasselbe Feld überschrieben.
+
+### Buchstabensalat (`sopa.html`, `sopas.js`)
+
+Dieselben Fragen wie beim Kreuzworträtsel, aber von der anderen Seite: dort
+muss sie das Wort **schreiben**, hier muss sie es **wiedererkennen**. Das ist
+die leichtere Hälfte derselben Vokabel und ein guter Einstieg, wenn ein Wort
+noch wackelt.
+
+90 fertige Salate in denselben vier Stufen, je acht Wörter in einem 11×11-Gitter:
+
+| Stufe | Salate |
+|---|---|
+| Vorkurs | 20 |
+| Unidad 1 | 25 |
+| Unidad 2 | 25 |
+| Alles gemischt | 20 |
+
+Insgesamt 210 verschiedene Wörter von vier bis zehn Buchstaben. Kürzere wären
+schlecht: ein Dreibuchstabenwort steht in einem vollen Gitter schnell zufällig
+irgendwo.
+
+#### Alle acht Richtungen
+
+Wörter liegen waagerecht, senkrecht und diagonal, vorwärts wie rückwärts. Die
+Richtungen sind gleichmäßig verteilt – rund 90 Wörter je Richtung –, denn wer
+erst den Platz sucht und dann die Richtung nimmt, bekommt fast nur Waagerechte:
+dafür gibt es in einem quadratischen Gitter geometrisch die meisten Plätze. Der
+Generator geht darum umgekehrt vor und nimmt für jedes Wort die bisher am
+wenigsten benutzte Richtung, in der es überhaupt passt.
+
+Damit es einen Einstieg gibt, liegen in jedem Salat mindestens zwei Wörter
+vorwärts.
+
+#### Zwei Dinge, die ein Buchstabensalat leicht falsch macht
+
+**Die Füllbuchstaben.** Wären sie gleichverteilt, stünden lauter k, w und x
+herum und die echten Wörter stächen heraus. Gefüllt wird deshalb nach der
+Buchstabenverteilung ihres eigenen Wortschatzes.
+
+**Die Akzente.** Käme `í` nur in `jardín` vor, hätte sie das Wort gefunden,
+ohne ein Wort gelesen zu haben. Die Füllung bekommt darum denselben
+Akzentanteil wie das Wortmaterial: 2,7 % gegen 3,0 % in den Wörtern.
+
+Dazu kommt eine Prüfung, die das Kreuzworträtsel nicht braucht: **keine Frage
+darf ihre eigene Antwort enthalten.** `genial` heißt auf Deutsch „genial,
+super, toll" – beim Kreuzworträtsel ist das in Ordnung, dort muss sie das Wort
+ja trotzdem schreiben und `café` mit Akzent zu treffen ist die eigentliche
+Übung. Hier wäre es geschenkt. Solche Fragen fliegen raus, und die fünf Wörter,
+bei denen dann keine übrig bleibt (`somalia`, `café`, `cómic`, `póster`,
+`sofá`), kommen im Salat gar nicht erst vor.
+
+#### Wischen mit einem Kinderfinger
+
+Mit dem Finger vom ersten zum letzten Buchstaben ziehen. Ein Kind trifft dabei
+keine exakte Diagonale, also wird aus dem **Winkel** des Fingers die
+nächstliegende der acht Richtungen bestimmt und die Länge darauf projiziert –
+die Auswahl rastet ein, statt zu zappeln. Rückwärts gewischt zählt genauso.
+
+Danebengegriffen ist beim Suchen normal und zählt deshalb **nicht** als Fehler;
+ins Fehlergedächtnis kommt nur, wofür sie den Tipp-Knopf gebraucht hat.
+
+Die Fragen stehen sichtbar unter dem Gitter statt hinter einem Knopf – über dem
+Gitter bleibt ohnehin Platz, und sie soll beim Suchen sehen, wonach sie sucht.
+Vor dem Fund steht dort nur die Länge („5 Buchst."), danach das Wort selbst in
+der Farbe, in der es im Gitter markiert ist. Auf kurzen Bildschirmen gibt die
+Leiste nach, nicht das Gitter: unter 24 px trifft ein Finger die Felder nicht
+mehr.
+
+#### Wie geprüft wird
+
+* `sopa.py` – erzeugt die Salate, mit festen Startwerten, damit sie sich
+  nachbauen lassen.
+* `verificar_sopa.py` – rechnet jeden fertigen Salat unabhängig nach: dass
+  jedes Wort wirklich an seinem Platz steht, dass es **genau einmal** im Gitter
+  vorkommt (sonst wäre die Auswahl zweideutig), dass kein Wort in einem anderen
+  steckt, dass keine Frage ihre Antwort verrät und dass die Akzentquoten von
+  Wörtern und Füllung zusammenpassen.
+* `probar_sopa.js` – spielt alle 90 Salate im Browser durch: 720 Wörter mit der
+  echten Maus gewischt, davon 358 diagonal, 360 rückwärts und 180 mit
+  absichtlich danebenem Finger.
+* `probar_sopa2.js` – die Randfälle: dass ein Fehlgriff keine Münzen gibt und
+  nicht ins Fehlergedächtnis wandert, dass der Tipp-Knopf ohne Münzen nichts
+  verrät und sonst genau auf den Anfang des gesuchten Wortes zeigt.
+* `medir_sopa.js` – misst den textreichsten Salat auf fünf Bildschirmgrößen von
+  320×568 bis 414×896 nach.

@@ -33,6 +33,8 @@ const Marcas = (function () {
       campos: ["puntos", "serie", "aciertos"] },
     { id: "crucigrama", nombre: "Kreuzworträtsel", icono: "🔤", url: "crucigrama.html",
       campos: ["puntos", "aciertos", "tiempo"] },
+    { id: "sopa",       nombre: "Buchstabensalat", icono: "🔠", url: "sopa.html",
+      campos: ["puntos", "aciertos", "tiempo"] },
   ];
 
   let datos = null;

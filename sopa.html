@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Buchstabensalat – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.4rem 0.4rem 0.5rem; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+    .top {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .top a, .pill, .top button {
+      background: #fff8; border: none; border-radius: 999px; padding: 0.28rem 0.75rem;
+      font-size: 1.05rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
+    }
+    .coin { width: 1.35em; height: 1.35em; }
+    .pill.marca { opacity: 0.85; }
+
+    /* ---------- Die aktive Frage ---------- */
+    .pista {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      background: #fff; border-radius: 0.8rem; box-shadow: 0 3px 0 #0002;
+      padding: 0.45rem 0.7rem; box-sizing: border-box; margin-bottom: 0.35rem;
+      min-height: 2.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .pista .cuenta {
+      background: #7b3fe4; color: #fff; border-radius: 0.4rem;
+      font-size: 0.78rem; font-weight: bold; padding: 0.12rem 0.4rem;
+      white-space: nowrap; flex: 0 0 auto;
+    }
+    .pista .txt { font-size: 0.95rem; line-height: 1.25; flex: 1 1 auto; }
+    .pista #btn-ayuda {
+      flex: 0 0 auto; background: #ffd34d; border: none; border-radius: 10px;
+      font-size: 1.25rem; padding: 0.3rem 0.6rem; box-shadow: 0 2px 0 #0002;
+      font-family: inherit; line-height: 1;
+    }
+    .pista #btn-ayuda:active { transform: translateY(2px); box-shadow: none; }
+
+    /* ---------- Das Gitter ---------- */
+    #campo { flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+             width: 100%; min-height: 0; }
+    #rejilla {
+      position: relative; touch-action: none;
+      background: #fff; border-radius: 0.6rem; box-shadow: 0 3px 0 #0002;
+    }
+    .celda {
+      position: absolute; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: #2b1a4a; box-sizing: border-box; border-radius: 4px;
+      text-transform: lowercase;
+    }
+    .celda.sel { background: #7b3fe4; color: #fff; }
+    .celda.pista-ayuda { outline: 3px solid #e4573f; outline-offset: -3px; animation: late 1s infinite; }
+    @keyframes late { 50% { outline-color: transparent; } }
+    #rejilla.mal { animation: sacudir 0.3s; }
+    @keyframes sacudir {
+      0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* ---------- Die Fragen, gleich sichtbar ----------
+       Beim Buchstabensalat gehört die Liste daneben, nicht hinter einen Knopf:
+       über dem Gitter bleibt sowieso Platz, und sie soll beim Suchen sehen
+       können, wonach sie überhaupt sucht. */
+    .preguntas {
+      width: 100%; max-width: 460px; flex: 0 1 auto; min-height: 0;
+      /* Auf kurzen Schirmen gibt die Leiste nach, nicht das Gitter: unter
+         24 px trifft ein Kinderfinger die Felder nicht mehr zuverlässig. */
+      max-height: 24vh;
+      max-height: clamp(5rem, 24dvh, 11rem);
+      margin-top: 0.4rem; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 0.2rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .preguntas div {
+      background: #fff; border-radius: 0.5rem; padding: 0.22rem 0.55rem;
+      font-size: 0.8rem; line-height: 1.25; display: flex; gap: 0.4rem;
+      align-items: baseline; box-shadow: 0 2px 0 #0001;
+    }
+    .preguntas div.activa { outline: 2px solid #7b3fe4; }
+    .preguntas div.ok { text-decoration: line-through; opacity: 0.75; }
+    .preguntas b {
+      flex: 0 0 auto; font-size: 0.7rem; color: #7b3fe4;
+      font-weight: bold; white-space: nowrap;
+    }
+    .preguntas div.ok b { color: #2b1a4a; }
+
+    /* ---------- Überlagerungen ---------- */
+    #inicio, #fin, #lista {
+      position: fixed; inset: 0; background: #0009; z-index: 20;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+      box-sizing: border-box;
+    }
+    .box {
+      background: #fff; border-radius: 1rem; padding: 1.1rem 1.2rem; text-align: center;
+      max-width: 360px; width: 100%; box-sizing: border-box; max-height: 90dvh; overflow-y: auto;
+    }
+    .box h2 { margin: 0 0 0.5rem; }
+    .box p { margin: 0 0 0.3rem; opacity: 0.75; font-size: 0.95rem; }
+    .box button {
+      display: block; width: 100%; font-size: 1.15rem; font-weight: bold; font-family: inherit;
+      padding: 0.7rem 1rem; border: none; border-radius: 14px;
+      background: #7b3fe4; color: #fff; margin-top: 0.6rem; box-shadow: 0 4px 0 #0003;
+    }
+    .box button small { display: block; font-size: 0.75rem; font-weight: normal; opacity: 0.85; }
+    .box button.otro { background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #7b3fe4; }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.92rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.12rem 0; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .nuevo { color: #e4573f; font-weight: bold; }
+
+    #lista .box { text-align: left; }
+    #lista ol { margin: 0; padding: 0; list-style: none; }
+    #lista li {
+      margin-bottom: 0.3rem; font-size: 0.92rem; padding: 0.3rem 0.5rem;
+      border-radius: 0.5rem; background: #f3effb;
+    }
+    #lista li.ok { text-decoration: line-through; opacity: 0.6; }
+    #lista li b { color: #7b3fe4; font-size: 0.78rem; margin-right: 0.4rem; }
+    #lista li.ok b { color: #2b1a4a; }
+
+    .flota {
+      position: fixed; font-size: 1.6rem; font-weight: bold; pointer-events: none;
+      animation: subir 1s forwards; text-shadow: 0 2px 0 #fff; z-index: 25;
+      display: flex; align-items: center; gap: 0.2rem;
+    }
+    .flota img { width: 1.6rem; height: 1.6rem; }
+    @keyframes subir { to { transform: translateY(-70px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <button id="btn-lista" title="Alle Fragen">📋</button>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
+  </div>
+
+  <div class="pista">
+    <span class="cuenta" id="cuenta">0/8</span>
+    <span class="txt" id="pista-txt">–</span>
+    <button id="btn-ayuda" title="Ersten Buchstaben zeigen">💡</button>
+  </div>
+
+  <div id="campo"><div id="rejilla"></div></div>
+
+  <div class="preguntas" id="preguntas"></div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>🔠 Buchstabensalat</h2>
+      <p>Die Frage steht auf Deutsch, das spanische Wort steckt im Gitter —
+         in alle acht Richtungen, quer und rückwärts.</p>
+      <p>Mit dem Finger vom ersten zum letzten Buchstaben ziehen.
+         Tipp auf die Frage zeigt die nächste.</p>
+      <div class="marcas" id="marcas-inicio"></div>
+      <button data-nivel="vorkurs">Vorkurs<small>Zahlen, Länder, sich vorstellen</small></button>
+      <button data-nivel="u1">Unidad 1<small>Stadt, Freizeit, Klassenzimmer</small></button>
+      <button data-nivel="u2">Unidad 2<small>Zimmer, Essen, Kalender</small></button>
+      <button data-nivel="todo" class="otro">Alles gemischt</button>
+    </div>
+  </div>
+
+  <div id="lista"><div class="box">
+    <h2 style="text-align:center">Alle Fragen</h2>
+    <ol id="lista-cuerpo"></ol>
+    <button class="otro" id="btn-cerrar">Zurück zum Rätsel</button>
+  </div></div>
+
+  <div id="fin"><div class="box">
+    <h2 id="fin-titulo">¡Bravo!</h2>
+    <p id="fin-sub">–</p>
+    <div class="marcas" id="marcas-fin"></div>
+    <button id="btn-otra">Nächster Salat</button>
+    <button id="btn-nivel" class="otro">Anderes Level</button>
+    <a class="otro" href="index.html" style="display:block;margin-top:0.6rem;padding:0.6rem;
+       border-radius:14px;background:#fff;color:#7b3fe4;box-shadow:inset 0 0 0 2px #7b3fe4;
+       text-decoration:none;font-weight:bold;text-align:center">Zurück</a>
+  </div></div>
+
+  <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
+  <script src="sopas.js"></script>
+  <script>
+    const JUEGO = "sopa";
+    const PREMIO_PALABRA = 2;
+    const PREMIO_FINAL = 5;
+    const COSTE_AYUDA = 3;
+
+    // Acht Richtungen, im Kreis angeordnet: so lässt sich der Winkel des
+    // Fingers direkt in einen Index umrechnen.
+    const DIRS = [[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]];
+    const COLORES = ["#ffd34d","#7fd1a0","#9ec7ff","#ffb3d9",
+                     "#c4a6ff","#ffc18a","#a0e3e3","#dbe38a"];
+
+    const elRejilla = document.getElementById("rejilla");
+    const elCampo = document.getElementById("campo");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
+    const elCuenta = document.getElementById("cuenta");
+    const elPistaTxt = document.getElementById("pista-txt");
+    const elPreguntas = document.getElementById("preguntas");
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+
+    let nivel, sopa, lado, celdas = [];
+    let halladas, conAyuda, activa = 0, monedasRonda = 0, t0 = 0;
+    let sel = null;                 // {r0,c0,dr,dc,n}
+    let color = {};                 // "r,c" -> Farbe eines gefundenen Wortes
+
+    function guardarMonedas() {
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
+    }
+
+    // ---------- Salat aussuchen ----------
+    function hechos() {
+      try { return JSON.parse(localStorage.getItem("cece-sopa-hechos") || "{}"); }
+      catch (e) { return {}; }
+    }
+    function marcarHecho(niv, i) {
+      const h = hechos();
+      h[niv] = h[niv] || [];
+      if (!h[niv].includes(i)) h[niv].push(i);
+      if (h[niv].length >= SOPAS[niv].length) h[niv] = [];
+      try { localStorage.setItem("cece-sopa-hechos", JSON.stringify(h)); } catch (e) {}
+    }
+    function elegirSopa(niv) {
+      const ya = hechos()[niv] || [];
+      const libres = SOPAS[niv].map((_, i) => i).filter(i => !ya.includes(i));
+      const pool = libres.length ? libres : SOPAS[niv].map((_, i) => i);
+      let mejor = pool[0], mejorPeso = -1;
+      for (const i of pool) {
+        let peso = Math.random() * 3;
+        for (const x of SOPAS[niv][i].palabras) peso += Fallos.peso(JUEGO, x.p);
+        if (peso > mejorPeso) { mejorPeso = peso; mejor = i; }
+      }
+      return mejor;
+    }
+
+    // ---------- Zeichnen ----------
+    const clave = (r, c) => r + "," + c;
+
+    function dibujar() {
+      // Erst alles ringsherum füllen, dann messen. Fragezeile und Fragenleiste
+      // werden je nach Textlänge ein- oder zweizeilig und nehmen dem Gitter
+      // Platz weg; wer vorher misst, baut es zu groß.
+      pintarPista();
+      pintarPreguntas();
+
+      elRejilla.innerHTML = "";
+      celdas = [];
+      for (let r = 0; r < sopa.lado; r++) {
+        celdas.push([]);
+        for (let c = 0; c < sopa.lado; c++) {
+          const d = document.createElement("div");
+          d.className = "celda";
+          d.textContent = sopa.letras[r][c];
+          elRejilla.appendChild(d);
+          celdas[r].push(d);
+        }
+      }
+      medir();
+      pintar();
+    }
+
+    // Feldgröße setzen und nachmessen. Ändert sich die Höhe durch das
+    // Setzen noch einmal, wird eine Runde weitergerechnet.
+    function medir() {
+      for (let intento = 0; intento < 4; intento++) {
+        const ancho = elCampo.clientWidth - 2, alto = elCampo.clientHeight - 2;
+        const nuevo = Math.max(18, Math.floor(Math.min(ancho / sopa.lado, alto / sopa.lado)));
+        if (nuevo === lado) return;
+        lado = nuevo;
+        elRejilla.style.width = (lado * sopa.lado) + "px";
+        elRejilla.style.height = (lado * sopa.lado) + "px";
+        for (let r = 0; r < sopa.lado; r++) {
+          for (let c = 0; c < sopa.lado; c++) {
+            const d = celdas[r][c];
+            d.style.left = (c * lado) + "px";
+            d.style.top = (r * lado) + "px";
+            d.style.width = lado + "px";
+            d.style.height = lado + "px";
+            d.style.fontSize = Math.round(lado * 0.52) + "px";
+          }
+        }
+      }
+    }
+
+    function enSeleccion(r, c) {
+      if (!sel) return false;
+      for (let k = 0; k < sel.n; k++) {
+        if (sel.r0 + sel.dr * k === r && sel.c0 + sel.dc * k === c) return true;
+      }
+      return false;
+    }
+
+    function pintar() {
+      for (let r = 0; r < sopa.lado; r++) {
+        for (let c = 0; c < sopa.lado; c++) {
+          const d = celdas[r][c];
+          const col = color[clave(r, c)];
+          d.style.background = col || "";
+          d.classList.toggle("sel", enSeleccion(r, c));
+        }
+      }
+      pintarPista();
+      pintarPreguntas();
+    }
+
+    function pintarPista() {
+      elCuenta.textContent = halladas.size + "/" + sopa.palabras.length;
+      const x = sopa.palabras[activa];
+      elPistaTxt.textContent = (x && !halladas.has(activa))
+        ? x.pistas[(activa * 5 + x.p.length) % x.pistas.length]
+        : "Alle gefunden!";
+      elPts.textContent = monedasRonda;
+    }
+
+    // Eine Zeile der Fragenliste. Vor dem Fund steht da nur die Länge – das
+    // Wort selbst wäre im Salat sonst ohne Suchen zu haben.
+    function filaPregunta(x, i, etiqueta) {
+      const hecho = halladas.has(i);
+      const idx = (i * 5 + x.p.length) % x.pistas.length;
+      const estilo = hecho ? ' style="background:' + COLORES[i % COLORES.length] + '"' : "";
+      const clases = (hecho ? "ok" : "") + (i === activa && !hecho ? " activa" : "");
+      return "<" + etiqueta + ' class="' + clases.trim() + '" data-i="' + i + '"' + estilo +
+             "><b>" + (hecho ? x.p : x.p.length + " Buchst.") + "</b><span>" +
+             x.pistas[idx] + "</span></" + etiqueta + ">";
+    }
+
+    function elegirPregunta(i) {
+      if (halladas.has(i)) return;
+      activa = i; quitarAyuda(); pintar();
+      document.getElementById("lista").style.display = "none";
+    }
+
+    function pintarPreguntas() {
+      elPreguntas.innerHTML = sopa.palabras.map((x, i) => filaPregunta(x, i, "div")).join("");
+      elPreguntas.querySelectorAll("div[data-i]").forEach(d =>
+        d.addEventListener("click", () => elegirPregunta(Number(d.dataset.i))));
+      // Die aktive Frage mitführen, sonst sucht sie nach etwas, das außerhalb
+      // der sichtbaren Leiste steht.
+      const act = elPreguntas.querySelector("div.activa");
+      if (act) act.scrollIntoView({ block: "nearest" });
+    }
+
+    function siguientePregunta(desde) {
+      const n = sopa.palabras.length;
+      for (let k = 1; k <= n; k++) {
+        const i = (desde + k) % n;
+        if (!halladas.has(i)) { activa = i; return; }
+      }
+    }
+
+    // ---------- Wischen ----------
+    // Der Finger trifft keine exakte Diagonale. Darum wird aus dem Winkel die
+    // nächstliegende der acht Richtungen bestimmt und die Länge darauf
+    // projiziert – die Auswahl rastet ein, statt zu zappeln.
+    function desdePixel(x, y) {
+      const caja = elRejilla.getBoundingClientRect();
+      return [Math.floor((y - caja.top) / lado), Math.floor((x - caja.left) / lado)];
+    }
+
+    function actualizarSel(x, y) {
+      if (!sel) return;
+      const caja = elRejilla.getBoundingClientRect();
+      const cx = caja.left + (sel.c0 + 0.5) * lado;
+      const cy = caja.top + (sel.r0 + 0.5) * lado;
+      const dx = x - cx, dy = y - cy;
+      if (Math.hypot(dx, dy) < lado * 0.5) { sel.dr = 0; sel.dc = 0; sel.n = 1; return pintar(); }
+
+      const k = Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
+      const [dr, dc] = DIRS[((k % 8) + 8) % 8];
+      const norma = Math.hypot(dr, dc);                 // 1 oder √2
+      const largoPx = (dx * dc + dy * dr) / norma;      // Projektion auf die Richtung
+      let n = Math.round(largoPx / (lado * norma)) + 1;
+      // Nicht über den Rand hinaus
+      while (n > 1 && (sel.r0 + dr * (n - 1) < 0 || sel.r0 + dr * (n - 1) >= sopa.lado ||
+                       sel.c0 + dc * (n - 1) < 0 || sel.c0 + dc * (n - 1) >= sopa.lado)) n--;
+      sel.dr = dr; sel.dc = dc; sel.n = Math.max(1, n);
+      pintar();
+    }
+
+    function textoSel() {
+      if (!sel) return "";
+      let t = "";
+      for (let k = 0; k < sel.n; k++) t += sopa.letras[sel.r0 + sel.dr * k][sel.c0 + sel.dc * k];
+      return t;
+    }
+
+    function soltar() {
+      if (!sel) return;
+      const t = textoSel();
+      const alReves = t.split("").reverse().join("");
+      let encontrada = -1;
+      sopa.palabras.forEach((x, i) => {
+        if (!halladas.has(i) && (x.p === t || x.p === alReves)) encontrada = i;
+      });
+      if (encontrada >= 0) {
+        const col = COLORES[encontrada % COLORES.length];
+        for (let k = 0; k < sel.n; k++) {
+          color[clave(sel.r0 + sel.dr * k, sel.c0 + sel.dc * k)] = col;
+        }
+        halladas.add(encontrada);
+        if (!conAyuda.has(encontrada)) Fallos.anotar(JUEGO, sopa.palabras[encontrada].p, true,
+                                                     sopa.palabras[encontrada].p);
+        coins += PREMIO_PALABRA; monedasRonda += PREMIO_PALABRA;
+        guardarMonedas();
+        flotante("+" + PREMIO_PALABRA);
+        quitarAyuda();
+        sel = null;
+        if (halladas.size === sopa.palabras.length) { pintar(); return setTimeout(terminar, 450); }
+        if (halladas.has(activa)) siguientePregunta(activa);
+        pintar();
+      } else {
+        // Danebengegriffen ist beim Suchen normal und zählt nicht als Fehler
+        if (sel.n > 1) { elRejilla.classList.add("mal");
+                         setTimeout(() => elRejilla.classList.remove("mal"), 300); }
+        sel = null;
+        pintar();
+      }
+    }
+
+    elRejilla.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      const [r, c] = desdePixel(ev.clientX, ev.clientY);
+      if (r < 0 || c < 0 || r >= sopa.lado || c >= sopa.lado) return;
+      sel = { r0: r, c0: c, dr: 0, dc: 0, n: 1 };
+      elRejilla.setPointerCapture(ev.pointerId);
+      pintar();
+    });
+    elRejilla.addEventListener("pointermove", (ev) => {
+      if (!sel) return;
+      ev.preventDefault();
+      actualizarSel(ev.clientX, ev.clientY);
+    });
+    elRejilla.addEventListener("pointerup", (ev) => { ev.preventDefault(); soltar(); });
+    elRejilla.addEventListener("pointercancel", () => { sel = null; pintar(); });
+
+    // ---------- Hilfe ----------
+    function quitarAyuda() {
+      for (const f of celdas) for (const d of f) d.classList.remove("pista-ayuda");
+    }
+    function ayuda() {
+      if (halladas.has(activa) || halladas.size === sopa.palabras.length) return;
+      if (coins < COSTE_AYUDA) { flotante("fehlt " + (COSTE_AYUDA - coins)); return; }
+      const x = sopa.palabras[activa];
+      conAyuda.add(activa);
+      Fallos.anotar(JUEGO, x.p, false, x.p);
+      coins -= COSTE_AYUDA;
+      guardarMonedas();
+      quitarAyuda();
+      celdas[x.r][x.c].classList.add("pista-ayuda");
+    }
+
+    function flotante(txt) {
+      const r = elRejilla.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "flota";
+      f.innerHTML = txt + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 30, window.innerWidth - 100) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1000);
+    }
+
+    // ---------- Fragenliste ----------
+    function mostrarLista() {
+      document.getElementById("lista-cuerpo").innerHTML =
+        sopa.palabras.map((x, i) => filaPregunta(x, i, "li")).join("");
+      document.querySelectorAll("#lista-cuerpo li").forEach(li =>
+        li.addEventListener("click", () => elegirPregunta(Number(li.dataset.i))));
+      document.getElementById("lista").style.display = "flex";
+    }
+
+    // ---------- Anfang und Ende ----------
+    function empezar(niv) {
+      nivel = niv || nivel;
+      try { localStorage.setItem("cece-sopa-nivel", nivel); } catch (e) {}
+      const i = elegirSopa(nivel);
+      marcarHecho(nivel, i);
+      sopa = SOPAS[nivel][i];
+      halladas = new Set(); conAyuda = new Set(); color = {};
+      activa = 0; sel = null; monedasRonda = 0; t0 = performance.now();
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("lista").style.display = "none";
+      guardarMonedas();
+      dibujar();
+    }
+
+    function terminar() {
+      const segundos = (performance.now() - t0) / 1000;
+      coins += PREMIO_FINAL; monedasRonda += PREMIO_FINAL;
+      guardarMonedas();
+      const batidos = Marcas.registrar(JUEGO, {
+        puntos: monedasRonda, aciertos: sopa.palabras.length, tiempo: segundos,
+      });
+      const m = Math.floor(segundos / 60), s = Math.round(segundos % 60);
+      document.getElementById("fin-titulo").textContent =
+        conAyuda.size === 0 ? "¡Perfecto! Ohne Hilfe!" : "¡Bravo!";
+      document.getElementById("fin-sub").textContent =
+        sopa.palabras.length + " Wörter in " + m + ":" + String(s).padStart(2, "0") + " Minuten" +
+        (conAyuda.size ? " · " + conAyuda.size + "x Hilfe" : "");
+      document.getElementById("marcas-fin").innerHTML = Marcas.lista(JUEGO, batidos);
+      document.getElementById("fin").style.display = "flex";
+    }
+
+    function mostrarInicio() {
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("marcas-inicio").innerHTML = Marcas.lista(JUEGO, null);
+      document.getElementById("inicio").style.display = "flex";
+    }
+
+    document.getElementById("btn-ayuda").addEventListener("pointerdown", (ev) => {
+      ev.preventDefault(); ayuda();
+    });
+    document.getElementById("btn-lista").addEventListener("click", () => { if (sopa) mostrarLista(); });
+    document.getElementById("btn-cerrar").addEventListener("click", () =>
+      document.getElementById("lista").style.display = "none");
+    document.getElementById("btn-otra").addEventListener("click", () => empezar());
+    document.getElementById("btn-nivel").addEventListener("click", mostrarInicio);
+    document.querySelectorAll("#inicio button[data-nivel]").forEach(b =>
+      b.addEventListener("click", () => empezar(b.dataset.nivel)));
+    // Tipp auf die Frage zeigt die nächste noch offene
+    document.getElementById("pista-txt").addEventListener("click", () => {
+      if (sopa && halladas.size < sopa.palabras.length) { siguientePregunta(activa); quitarAyuda(); pintar(); }
+    });
+    window.addEventListener("resize", () => { if (sopa) dibujar(); });
+
+    try { nivel = localStorage.getItem("cece-sopa-nivel") || "u1"; } catch (e) { nivel = "u1"; }
+    if (!SOPAS[nivel]) nivel = "u1";
+    mostrarInicio();
+  </script>
+</body>
+</html>
