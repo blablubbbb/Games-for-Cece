@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Paare – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.4rem 0.4rem 0.5rem; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+    .top {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .top a, .pill, .top button {
+      background: #fff8; border: none; border-radius: 999px; padding: 0.28rem 0.75rem;
+      font-size: 1.05rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
+    }
+    .top button.apagado { opacity: 0.4; }
+    .coin { width: 1.35em; height: 1.35em; }
+    .pill.marca { opacity: 0.85; }
+
+    .barra {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      background: #fff; border-radius: 0.8rem; box-shadow: 0 3px 0 #0002;
+      padding: 0.4rem 0.7rem; box-sizing: border-box; margin-bottom: 0.4rem;
+      display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
+    }
+    .barra .cuenta {
+      background: #7b3fe4; color: #fff; border-radius: 0.4rem;
+      font-size: 0.78rem; font-weight: bold; padding: 0.12rem 0.45rem; white-space: nowrap;
+    }
+    .barra .modo { font-weight: bold; }
+    .barra .fallos { margin-left: auto; opacity: 0.6; font-size: 0.8rem; }
+
+    /* ---------- Die Kästchen ---------- */
+    #tablero {
+      flex: 1 1 auto; width: 100%; max-width: 460px; min-height: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr; gap: 0.4rem;
+    }
+    .ficha {
+      min-width: 0; min-height: 0; border: none; font-family: inherit;
+      background: #fff; border-radius: 0.7rem; box-shadow: 0 3px 0 #0002;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      padding: 0.25rem; font-weight: 600; color: #2b1a4a;
+      font-size: clamp(0.62rem, 2.9vw, 0.92rem); line-height: 1.2;
+      overflow: hidden; word-break: break-word; hyphens: auto;
+    }
+    .ficha.es { color: #5a2db0; }
+    .ficha.audio { font-size: 1.6rem; }
+    .ficha.elegida { background: #7b3fe4; color: #fff; box-shadow: 0 3px 0 #0004; }
+    .ficha.mala { background: #e4573f; color: #fff; }
+    .ficha.buena { background: #7fd1a0; }
+    .ficha.hecha {
+      background: #efe9fb; color: #2b1a4a66; box-shadow: none;
+      /* Beim Hören steht hier nach dem Fund das geschriebene Wort – dann
+         gilt wieder die normale Schriftgröße, nicht die des 🔊 */
+      font-size: clamp(0.62rem, 2.9vw, 0.92rem);
+    }
+    .ficha.tapada { background: #c4a6ff; color: #fff; font-size: 1.5rem; }
+    .ficha:active { transform: translateY(2px); }
+    .ficha.hecha:active { transform: none; }
+    #tablero.sacude { animation: sacudir 0.3s; }
+    @keyframes sacudir {
+      0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* ---------- Überlagerungen ---------- */
+    #inicio, #fin { position: fixed; inset: 0; background: #0009; z-index: 20;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+      box-sizing: border-box; }
+    .box {
+      background: #fff; border-radius: 1rem; padding: 1.1rem 1.2rem; text-align: center;
+      max-width: 360px; width: 100%; box-sizing: border-box; max-height: 90dvh; overflow-y: auto;
+    }
+    .box h2 { margin: 0 0 0.5rem; }
+    .box p { margin: 0 0 0.3rem; opacity: 0.75; font-size: 0.95rem; }
+    .box button {
+      display: block; width: 100%; font-size: 1.15rem; font-weight: bold; font-family: inherit;
+      padding: 0.7rem 1rem; border: none; border-radius: 14px;
+      background: #7b3fe4; color: #fff; margin-top: 0.6rem; box-shadow: 0 4px 0 #0003;
+    }
+    .box button small { display: block; font-size: 0.75rem; font-weight: normal; opacity: 0.85; }
+    .box button.otro { background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #7b3fe4; }
+    .box button[disabled] { opacity: 0.4; }
+    .modos { display: flex; gap: 0.3rem; margin: 0.6rem 0 0.2rem; }
+    .modos button {
+      flex: 1 1 0; margin: 0; font-size: 0.82rem; padding: 0.5rem 0.2rem;
+      background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #c9bde4;
+    }
+    .modos button.puesto { background: #7b3fe4; color: #fff; box-shadow: 0 3px 0 #0003; }
+    .nota button {
+      display: block; width: 100%; margin: 0 0 0.4rem; padding: 0.45rem;
+      font-family: inherit; font-size: 0.9rem; font-weight: bold;
+      border: none; border-radius: 0.5rem; background: #ffd34d; color: #6b4b00;
+      box-shadow: 0 2px 0 #0002;
+    }
+    .nota {
+      font-size: 0.78rem; line-height: 1.35; background: #fff4d6; color: #6b4b00;
+      border-radius: 0.6rem; padding: 0.5rem 0.7rem; margin-top: 0.5rem; text-align: left;
+    }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.92rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.12rem 0; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .nuevo { color: #e4573f; font-weight: bold; }
+
+    .flota {
+      position: fixed; font-size: 1.6rem; font-weight: bold; pointer-events: none;
+      animation: subir 1s forwards; text-shadow: 0 2px 0 #fff; z-index: 25;
+      display: flex; align-items: center; gap: 0.2rem;
+    }
+    .flota img { width: 1.6rem; height: 1.6rem; }
+    @keyframes subir { to { transform: translateY(-70px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <button id="btn-voz" title="Vorlesen an oder aus">🔊</button>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
+  </div>
+
+  <div class="barra">
+    <span class="cuenta" id="cuenta">0/6</span>
+    <span class="modo" id="modo-txt">Zuordnen</span>
+    <span class="fallos" id="fallos-txt"></span>
+  </div>
+
+  <div id="tablero"></div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>🧩 Paare</h2>
+      <p id="inicio-texto">Finde zu jedem spanischen Wort die deutsche Bedeutung.</p>
+      <div class="modos">
+        <button data-modo="texto" class="puesto">Zuordnen<small>es · de</small></button>
+        <button data-modo="oir" id="btn-modo-oir">Hören<small>🔊 · de</small></button>
+        <button data-modo="memoria">Memory<small>verdeckt</small></button>
+      </div>
+      <div id="nota-voz"></div>
+      <div class="marcas" id="marcas-inicio"></div>
+      <button data-nivel="vorkurs">Vorkurs<small>Zahlen, Länder, sich vorstellen</small></button>
+      <button data-nivel="u1">Unidad 1<small>Stadt, Freizeit, Klassenzimmer</small></button>
+      <button data-nivel="u2">Unidad 2<small>Zimmer, Essen, Kalender</small></button>
+      <button data-nivel="todo" class="otro">Alles gemischt</button>
+    </div>
+  </div>
+
+  <div id="fin"><div class="box">
+    <h2 id="fin-titulo">¡Bravo!</h2>
+    <p id="fin-sub">–</p>
+    <div class="marcas" id="marcas-fin"></div>
+    <button id="btn-otra">Noch eine Runde</button>
+    <button id="btn-nivel" class="otro">Anderes Level</button>
+    <a class="otro" href="index.html" style="display:block;margin-top:0.6rem;padding:0.6rem;
+       border-radius:14px;background:#fff;color:#7b3fe4;box-shadow:inset 0 0 0 2px #7b3fe4;
+       text-decoration:none;font-weight:bold;text-align:center">Zurück</a>
+  </div></div>
+
+  <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
+  <script src="voz.js"></script>
+  <script src="parejas.js"></script>
+  <script>
+    const PARES = 6;                 // 12 Kästchen, 3 mal 4
+    const PREMIO_PAR = 2;
+    const PREMIO_FINAL = 5;
+    const MODOS = {
+      texto:   { id: "parejas",     nombre: "Zuordnen", audio: false, tapado: false },
+      oir:     { id: "parejas-oir", nombre: "Hören",    audio: true,  tapado: false },
+      memoria: { id: "memoria",     nombre: "Memory",   audio: false, tapado: true },
+    };
+
+    const elTablero = document.getElementById("tablero");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
+    const elCuenta = document.getElementById("cuenta");
+    const elFallos = document.getElementById("fallos-txt");
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+    let leerVoz = true;
+    try { leerVoz = localStorage.getItem("cece-parejas-voz") !== "no"; } catch (e) {}
+
+    let modo = "texto", nivel = "u1";
+    let fichas = [], elegida = null, hechas = 0, fallados = new Set();
+    let errores = 0, monedasRonda = 0, t0 = 0, bloqueado = false;
+
+    function cfg() { return MODOS[modo]; }
+
+    function guardarMonedas() {
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(cfg().id, "puntos") || 0;
+    }
+
+    // ---------- Paare aussuchen ----------
+    // Je Konfliktgruppe höchstens eins: „sein" passt sonst auf ser und estar,
+    // und dann hätte die Runde zwei richtige Antworten.
+    function elegirPares(niv) {
+      const fuente = niv === "todo"
+        ? Object.values(PAREJAS).flat()
+        : (PAREJAS[niv] || []);
+      const mezclado = fuente.slice();
+      for (let i = mezclado.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [mezclado[i], mezclado[j]] = [mezclado[j], mezclado[i]];
+      }
+      // Wackelige Wörter zuerst, aber nicht immer dieselben
+      mezclado.sort((a, b) =>
+        (Fallos.peso(cfg().id, b.es) + Math.random() * 2) -
+        (Fallos.peso(cfg().id, a.es) + Math.random() * 2));
+      const elegidos = [], grupos = new Set(), vistos = new Set();
+      for (const p of mezclado) {
+        if (elegidos.length >= PARES) break;
+        if (vistos.has(p.es)) continue;
+        if (p.g && grupos.has(p.g)) continue;
+        if (p.g) grupos.add(p.g);
+        vistos.add(p.es);
+        elegidos.push(p);
+      }
+      return elegidos;
+    }
+
+    // ---------- Aufbauen ----------
+    function barajar(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function empezar(niv) {
+      nivel = niv || nivel;
+      try { localStorage.setItem("cece-parejas-nivel", nivel); } catch (e) {}
+      try { localStorage.setItem("cece-parejas-modo", modo); } catch (e) {}
+      const pares = elegirPares(nivel);
+      fichas = [];
+      pares.forEach((p, i) => {
+        fichas.push({ par: i, tipo: cfg().audio ? "audio" : "es",
+                      texto: cfg().audio ? "🔊" : p.es, es: p.es, de: p.de });
+        fichas.push({ par: i, tipo: "de", texto: p.de, es: p.es, de: p.de });
+      });
+      barajar(fichas);
+      elegida = null; hechas = 0; errores = 0; fallados = new Set();
+      monedasRonda = 0; bloqueado = false; t0 = performance.now();
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("modo-txt").textContent = cfg().nombre;
+      guardarMonedas();
+      dibujar();
+    }
+
+    function dibujar() {
+      elTablero.innerHTML = "";
+      fichas.forEach((f, i) => {
+        const b = document.createElement("button");
+        b.className = "ficha";
+        b.dataset.i = i;
+        elTablero.appendChild(b);
+        f.el = b;
+        b.addEventListener("click", () => tocar(i));
+      });
+      pintar();
+    }
+
+    function pintar() {
+      fichas.forEach((f, i) => {
+        const b = f.el;
+        const tapada = cfg().tapado && !f.abierta && !f.hecha;
+        b.className = "ficha" +
+          (f.hecha ? " hecha" : "") +
+          (tapada ? " tapada" : "") +
+          (!tapada && f.tipo !== "de" ? " " + f.tipo : "") +
+          (elegida === i ? " elegida" : "") +
+          (f.mala ? " mala" : "") +
+          (f.buena ? " buena" : "");
+        b.textContent = tapada ? "?" : f.texto;
+      });
+      elCuenta.textContent = hechas + "/" + PARES;
+      elFallos.textContent = errores ? errores + " daneben" : "";
+      elPts.textContent = monedasRonda;
+    }
+
+    // ---------- Spielen ----------
+    function hablar(f) {
+      if (!leerVoz || !Voz.hay()) return;
+      if (f.tipo === "audio" || f.tipo === "es") Voz.decir(f.es);
+    }
+
+    function tocar(i) {
+      if (bloqueado) return;
+      const f = fichas[i];
+      if (f.hecha) return;
+      if (elegida === i) {                 // abwählen, aber noch einmal hören
+        if (f.tipo === "audio") { hablar(f); return; }
+        elegida = null; pintar(); return;
+      }
+      f.abierta = true;
+      hablar(f);
+      if (elegida === null) { elegida = i; pintar(); return; }
+
+      const a = fichas[elegida], b = f;
+      if (a.par === b.par && a.tipo !== b.tipo) {
+        a.hecha = b.hecha = true; a.buena = b.buena = true;
+        // Beim Hören wird jetzt verraten, wie das Wort geschrieben wird
+        if (a.tipo === "audio") a.texto = a.es;
+        if (b.tipo === "audio") b.texto = b.es;
+        hechas++;
+        if (!fallados.has(a.par)) Fallos.anotar(cfg().id, a.es, true, a.es);
+        coins += PREMIO_PAR; monedasRonda += PREMIO_PAR;
+        guardarMonedas();
+        flotante("+" + PREMIO_PAR);
+        elegida = null;
+        pintar();
+        setTimeout(() => { a.buena = b.buena = false; pintar(); }, 600);
+        if (hechas === PARES) setTimeout(terminar, 650);
+      } else {
+        errores++;
+        for (const p of [a.par, b.par]) {
+          if (!fallados.has(p)) {
+            fallados.add(p);
+            Fallos.anotar(cfg().id, fichas.find(x => x.par === p).es, false,
+                          fichas.find(x => x.par === p).es);
+          }
+        }
+        a.mala = b.mala = true;
+        bloqueado = true;
+        elTablero.classList.add("sacude");
+        pintar();
+        setTimeout(() => {
+          elTablero.classList.remove("sacude");
+          a.mala = b.mala = false;
+          if (cfg().tapado) { a.abierta = false; b.abierta = false; }
+          elegida = null; bloqueado = false;
+          pintar();
+        }, cfg().tapado ? 900 : 600);
+      }
+    }
+
+    function flotante(txt) {
+      const r = elTablero.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "flota";
+      f.innerHTML = txt + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 30, window.innerWidth - 100) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1000);
+    }
+
+    // ---------- Ende ----------
+    function terminar() {
+      const segundos = (performance.now() - t0) / 1000;
+      coins += PREMIO_FINAL; monedasRonda += PREMIO_FINAL;
+      guardarMonedas();
+      const batidos = Marcas.registrar(cfg().id, {
+        puntos: monedasRonda, aciertos: PARES, tiempo: segundos,
+      });
+      const m = Math.floor(segundos / 60), s = Math.round(segundos % 60);
+      document.getElementById("fin-titulo").textContent =
+        errores === 0 ? "¡Perfecto! Ohne Fehler!" : "¡Bravo!";
+      document.getElementById("fin-sub").textContent =
+        PARES + " Paare in " + m + ":" + String(s).padStart(2, "0") + " Minuten" +
+        (errores ? " · " + errores + "x daneben" : "");
+      document.getElementById("marcas-fin").innerHTML = Marcas.lista(cfg().id, batidos);
+      document.getElementById("fin").style.display = "flex";
+    }
+
+    function mostrarInicio() {
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("marcas-inicio").innerHTML = Marcas.lista(cfg().id, null);
+      document.getElementById("inicio").style.display = "flex";
+    }
+
+    // ---------- Sprachausgabe ----------
+    function ponerVoz() {
+      const b = document.getElementById("btn-voz");
+      const puede = Voz.hay();
+      b.classList.toggle("apagado", !leerVoz || !puede);
+      b.textContent = (leerVoz && puede) ? "🔊" : "🔇";
+      b.title = puede ? (leerVoz ? "Vorlesen aus" : "Vorlesen an") : Voz.porQueNo();
+      const bOir = document.getElementById("btn-modo-oir");
+      bOir.disabled = !puede;
+      const nota = document.getElementById("nota-voz");
+      if (puede) {
+        // Der Schalter muss auch hier stehen: die Kopfzeile liegt hinter dem
+        // Startbildschirm und wäre von hier aus nicht zu erreichen.
+        nota.innerHTML = '<div class="nota"><button type="button" id="btn-voz-inicio">' +
+          (leerVoz ? "🔊 Vorlesen ist an" : "🔇 Vorlesen ist aus") + "</button>" +
+          "Spanische Wörter werden mit der Stimme deines Handys vorgelesen: " +
+          Voz.nombre() + "</div>";
+        document.getElementById("btn-voz-inicio").addEventListener("click", alternarVoz);
+      } else {
+        nota.innerHTML = '<div class="nota"><b>Kein Vorlesen möglich.</b> ' +
+                         Voz.porQueNo() + "</div>";
+        if (modo === "oir") ponerModo("texto");
+      }
+    }
+
+    function ponerModo(m) {
+      modo = m;
+      document.querySelectorAll("#inicio .modos button").forEach(b =>
+        b.classList.toggle("puesto", b.dataset.modo === m));
+      document.getElementById("inicio-texto").textContent =
+        m === "oir" ? "Tippe auf 🔊, höre das Wort und finde die deutsche Bedeutung."
+        : m === "memoria" ? "Alle Kästchen liegen verdeckt. Finde die Paare."
+        : "Finde zu jedem spanischen Wort die deutsche Bedeutung.";
+      document.getElementById("marcas-inicio").innerHTML = Marcas.lista(cfg().id, null);
+      elRec.textContent = Marcas.mejor(cfg().id, "puntos") || 0;
+    }
+
+    function alternarVoz() {
+      if (!Voz.hay()) return;
+      leerVoz = !leerVoz;
+      try { localStorage.setItem("cece-parejas-voz", leerVoz ? "si" : "no"); } catch (e) {}
+      if (!leerVoz) Voz.callar();
+      ponerVoz();
+    }
+
+    document.getElementById("btn-voz").addEventListener("click", () => {
+      if (!Voz.hay()) { alert(Voz.porQueNo()); return; }
+      alternarVoz();
+    });
+    document.querySelectorAll("#inicio .modos button").forEach(b =>
+      b.addEventListener("click", () => { if (!b.disabled) ponerModo(b.dataset.modo); }));
+    document.querySelectorAll("#inicio button[data-nivel]").forEach(b =>
+      b.addEventListener("click", () => empezar(b.dataset.nivel)));
+    document.getElementById("btn-otra").addEventListener("click", () => empezar());
+    document.getElementById("btn-nivel").addEventListener("click", mostrarInicio);
+
+    try { nivel = localStorage.getItem("cece-parejas-nivel") || "u1"; } catch (e) {}
+    if (!PAREJAS[nivel] && nivel !== "todo") nivel = "u1";
+    let modoGuardado = "texto";
+    try { modoGuardado = localStorage.getItem("cece-parejas-modo") || "texto"; } catch (e) {}
+    ponerModo(MODOS[modoGuardado] ? modoGuardado : "texto");
+    mostrarInicio();
+    Voz.alEstarLista(ponerVoz);
+    ponerVoz();
+  </script>
+</body>
+</html>

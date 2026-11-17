@@ -35,6 +35,12 @@ const Marcas = (function () {
       campos: ["puntos", "aciertos", "tiempo"] },
     { id: "sopa",       nombre: "Buchstabensalat", icono: "🔠", url: "sopa.html",
       campos: ["puntos", "aciertos", "tiempo"] },
+    { id: "parejas",     nombre: "Paare zuordnen", icono: "🧩", url: "parejas.html",
+      campos: ["puntos", "aciertos", "tiempo"] },
+    { id: "parejas-oir", nombre: "Paare hören",    icono: "👂", url: "parejas.html",
+      campos: ["puntos", "aciertos", "tiempo"] },
+    { id: "memoria",     nombre: "Memory",         icono: "🃏", url: "parejas.html",
+      campos: ["puntos", "aciertos", "tiempo"] },
   ];
 
   let datos = null;

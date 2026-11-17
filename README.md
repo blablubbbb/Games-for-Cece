@@ -22,6 +22,7 @@ hin und her, ohne dass eine Kachel dafür draufgeht.
 | [ser · estar · hay](estar.html) | Spanisch | Welches der drei Wörter in die Lücke gehört |
 | [Kreuzwort](crucigrama.html) | Spanisch | Vokabeln schreiben – Frage auf Deutsch, Wort auf Spanisch |
 | [Salat](sopa.html) | Spanisch | Dieselben Fragen, aber das Wort im Buchstabengitter finden |
+| [Paare](parejas.html) | Spanisch | Spanisch und Deutsch zuordnen — wahlweise gehört statt gelesen |
 | [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
@@ -462,3 +463,77 @@ mehr.
   unbemerkt, dass beim zweiten Salat das Gitter leer blieb.
 * `probar_sesion.js` – dieselbe Prüfung fürs Kreuzworträtsel, weil es dieselbe
   Zeichenstruktur hat.
+
+### Paare (`parejas.html`, `parejas.js`, `voz.js`)
+
+Zwölf Kästchen, sechs Paare: spanisches Wort und deutsche Bedeutung
+zusammenbringen. Die schnellste der Vokabelübungen — in einer Minute geht ein
+Dutzend Abfragen durch, wo das Kreuzworträtsel für ein Wort so lange braucht.
+
+Drei Arten:
+
+| Art | Vorderseite | übt |
+|---|---|---|
+| **Zuordnen** | `jardín` ↔ der Garten | Wort und Bedeutung, alles offen |
+| **Hören** | 🔊 ↔ der Garten | Hörverstehen; nach dem Fund erscheint die Schreibung |
+| **Memory** | alles verdeckt | das Klassische, mit Vokabeln statt Bildern |
+
+Beim Hören steht auf der einen Seite nur ein Lautsprecher. Antippen liest das
+Wort vor, so oft sie will, und gesucht ist die **deutsche** Bedeutung — nicht
+das spanische Schriftbild. Sonst könnte sie die Buchstaben zusammenlauten,
+ohne das Wort zu verstehen. Erst wenn das Paar sitzt, zeigt das Kästchen, wie
+das Wort geschrieben wird: gehört, verstanden, dann gesehen.
+
+#### Warum manche Wörter nie zusammen vorkommen
+
+„sein" passt auf `ser` **und** `estar`, „sie" auf `ella` und `ellos`. Lägen
+beide in derselben Runde, hätte sie zwei richtige Antworten und eine davon
+würde als Fehler gewertet. `parejas.py` sucht solche Wörter und steckt sie in
+Konfliktgruppen; je Runde kommt höchstens eins daraus vor.
+
+Die Gruppen zu finden ist kniffliger, als es klingt. „Teilen sich zwei Angaben
+ein Wort" ist zu grob — dann landen `abrir` („etw. öffnen") und `comer` („etw.
+essen") im selben Topf, nur wegen des Füllworts. Es zählt, ob die eine Angabe
+in der anderen **aufgeht**, und „etwas" und „jemand" zählen dabei nicht mit.
+Übrig bleiben sieben echte Gruppen, darunter `beber` („etw. trinken") gegen
+`tomar` („etwas trinken") — den habe ich beim Durchlesen aller 239 Angaben von
+Hand gefunden, keine Regel hatte ihn erwischt.
+
+#### Sprachausgabe (`voz.js`)
+
+Vorgelesen wird mit den Stimmen des Geräts über `speechSynthesis`. Der Browser
+bringt keine mit, er reicht die des Betriebssystems durch — und daraus folgen
+vier Fallstricke:
+
+1. **Die Stimmenliste kommt verzögert.** Auf Android gibt `getVoices()` beim
+   ersten Aufruf eine leere Liste zurück.
+2. **Android schreibt die Sprachkennung mit Unterstrich** — `es_ES` statt
+   `es-ES`. Wer nur auf Bindestrich prüft, findet die Stimme nie.
+3. **Ohne spanische Stimme darf nicht gesprochen werden.** Setzt man nur
+   `utterance.lang = "es-ES"` und es gibt keine spanische Stimme, nimmt das
+   Gerät die deutsche und liest `jardín` deutsch vor. Das wäre schlimmer als
+   Stille — sie lernte die falsche Aussprache, ohne dass irgendwo ein Fehler
+   sichtbar wird. Deshalb wird die Stimme ausdrücklich gesetzt und sonst
+   geschwiegen; der Hören-Modus ist dann gesperrt und erklärt, wie man unter
+   Android eine spanische Stimme nachinstalliert.
+4. **Vor dem ersten Sprechen braucht es eine Berührung.** Gesprochen wird nur
+   aus Tippereignissen heraus.
+
+Bevorzugt wird Spanien-Spanisch: ihr Buch ist auf Spanien ausgerichtet
+(`vosotros` gibt es in Lateinamerika nicht).
+
+#### Wie geprüft wird
+
+* `parejas.py` – baut die Wortpaare und die Konfliktgruppen.
+* `probar_voz.js` – schiebt dem Spiel acht verschiedene Gerätezustände unter:
+  keine Stimmen, nur deutsche, nur lateinamerikanisches Spanisch, mehrere
+  spanische, Kennung mit Unterstrich, verspätet gelieferte Stimmen. Der
+  wichtigste Fall ist „deutsche Stimmen, aber keine spanische": da muss das
+  Spiel schweigen. Der Test prüft außerdem, ob seine eigene Attrappe überhaupt
+  gegriffen hat — `window.speechSynthesis` lässt sich nicht einfach
+  überschreiben, und ohne diese Gegenprobe wären die Tests grün gewesen, weil
+  der Testbrowser selbst keine Stimmen hat.
+* `probar_parejas.js` – spielt 15 Runden in allen drei Arten und allen Stufen,
+  **ohne Neuladen**: 90 Paare zugeordnet, dazu je Runde ein absichtlicher
+  Fehlgriff. Geprüft wird auch, dass nie zwei Wörter derselben Konfliktgruppe
+  in einer Runde liegen.
