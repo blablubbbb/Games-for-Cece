@@ -456,3 +456,9 @@ mehr.
   verrät und sonst genau auf den Anfang des gesuchten Wortes zeigt.
 * `medir_sopa.js` – misst den textreichsten Salat auf fünf Bildschirmgrößen von
   320×568 bis 414×896 nach.
+* `probar_sopa3.js` – spielt mehrere Salate **ohne Neuladen** hintereinander,
+  mit Levelwechsel über den Endbildschirm. Diese Lücke hatte die erste
+  Testrunde: dort wurde vor jedem Salat neu geladen, und genau dadurch blieb
+  unbemerkt, dass beim zweiten Salat das Gitter leer blieb.
+* `probar_sesion.js` – dieselbe Prüfung fürs Kreuzworträtsel, weil es dieselbe
+  Zeichenstruktur hat.

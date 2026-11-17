@@ -279,12 +279,19 @@
 
     // Feldgröße setzen und nachmessen. Ändert sich die Höhe durch das
     // Setzen noch einmal, wird eine Runde weitergerechnet.
+    //
+    // Die Größe wird immer mindestens einmal geschrieben, auch wenn sie
+    // dieselbe wie eben ist: beim zweiten Salat in derselben Sitzung sind die
+    // Felder frisch gebaut und haben noch gar keine. Früher stieg die Funktion
+    // hier aus, und das Gitter blieb leer.
     function medir() {
+      let escrito = false;
       for (let intento = 0; intento < 4; intento++) {
         const ancho = elCampo.clientWidth - 2, alto = elCampo.clientHeight - 2;
         const nuevo = Math.max(18, Math.floor(Math.min(ancho / sopa.lado, alto / sopa.lado)));
-        if (nuevo === lado) return;
+        if (escrito && nuevo === lado) return;
         lado = nuevo;
+        escrito = true;
         elRejilla.style.width = (lado * sopa.lado) + "px";
         elRejilla.style.height = (lado * sopa.lado) + "px";
         for (let r = 0; r < sopa.lado; r++) {
