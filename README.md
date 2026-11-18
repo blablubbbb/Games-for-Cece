@@ -23,6 +23,7 @@ hin und her, ohne dass eine Kachel dafür draufgeht.
 | [Kreuzwort](crucigrama.html) | Spanisch | Vokabeln schreiben – Frage auf Deutsch, Wort auf Spanisch |
 | [Salat](sopa.html) | Spanisch | Dieselben Fragen, aber das Wort im Buchstabengitter finden |
 | [Paare](parejas.html) | Spanisch | Spanisch und Deutsch zuordnen — wahlweise gehört statt gelesen |
+| [Lücken](huecos.html) | Spanisch | Satz mit Lücke — Verbform, Artikel oder passendes Wort |
 | [Avatar](avatar.html) | — | Figur zusammenstellen, Teile mit Münzen kaufen |
 
 Alle Spiele teilen sich ein **Fehlergedächtnis** (`fallos.js`): Jedes merkt
@@ -537,3 +538,76 @@ Bevorzugt wird Spanien-Spanisch: ihr Buch ist auf Spanien ausgerichtet
   **ohne Neuladen**: 90 Paare zugeordnet, dazu je Runde ein absichtlicher
   Fehlgriff. Geprüft wird auch, dass nie zwei Wörter derselben Konfliktgruppe
   in einer Runde liegen.
+
+### Lückentext (`huecos.html`, `frases.js`)
+
+Ein Satz mit einer Lücke, vier Antworten zur Auswahl. Steht der Satz, erscheint
+die **deutsche Übersetzung** und bei Grammatikaufgaben eine kurze Begründung
+(`yo → paso (pasar)`). Ist eine spanische Stimme da, wird der fertige Satz
+vorgelesen: sie sieht ihn, füllt ihn, hört ihn und liest, was er heißt.
+
+182 Sätze in drei Arten:
+
+| Art | Beispiel | Lücke |
+|---|---|---|
+| **Verbform** (124) | Mi hermana ___ en Madrid. | vive / vivo / vives / viven |
+| **Artikel** (27) | Busco ___ libro en la estantería. | el / la / los / las |
+| **Welches Wort?** (31) | El profesor escribe en la ___. | pizarra / mochila / regla / silla |
+
+58 Sätze sind Unidad 1, 124 Unidad 2. Wählbar ist außerdem, ob nur Grammatik
+oder nur Bedeutung drankommt.
+
+#### Warum hier so wenig von Hand dasteht
+
+Das ist das erste Spiel, in dem ich ihr **falsches Spanisch beibringen** kann,
+ohne dass es jemandem auffällt. Deshalb steht in `frases.py` so wenig wie
+möglich:
+
+* Bei Verblücken schreibe ich nur **Satzrahmen, Verb und Person**. Lösung und
+  falsche Antworten holt das Skript aus `verbos_tabla.json` — derselben
+  Tabelle, die das Verbenspiel benutzt und die gegen den Anhang ihres Buches
+  geprüft ist. Eine falsch abgetippte Form kann so gar nicht entstehen. Die
+  falschen Antworten sind echte Formen desselben Verbs, nur zur falschen
+  Person: genau der Fehler, den sie macht.
+* Bei Artikellücken schreibe ich nur Satz und Nomen. Welcher Artikel richtig
+  ist, steht als Genus im Wortschatz.
+* Die **Stufe wird berechnet**, nicht vergeben: ein Satz gehört zur höchsten
+  Stufe, die eines seiner Wörter hat. So kann kein Satz in einer Stufe landen,
+  für die er zu schwer ist. Und keine falsche Antwort darf über der Stufe der
+  Aufgabe liegen — sonst rät sie zwischen Wörtern, die sie nie gesehen hat.
+  Deshalb bekommen bestimmte Artikel auch `los`/`las` als falsche Antworten
+  und nicht `un`/`una`: die lernt sie erst in Unidad 2.
+
+#### Was der Prüfer findet und was nicht
+
+`verificar_frases.py` rechnet alles unabhängig nach. Der schärfste Test liest
+aus dem Satz ab, **welche Person verlangt ist**, und vergleicht sie mit der
+eingetragenen Form — „Mi hermana vivo en Madrid" fällt keiner Wortschatzprüfung
+auf, wäre aber genau das, was sie dann lernt. Dazu: genau eine Lücke, keine
+Lücke am Satzanfang (die Antwort stünde dort klein), Fragezeichen vorn und
+hinten, falsche Antworten sind echte Formen desselben Verbs, das Nomen steht
+direkt hinter dem Artikel, und **kein Satzrahmen darf zweimal mit verschiedenen
+Lösungen vorkommen**.
+
+Der letzte Test hat drei echte Zweideutigkeiten gefunden, die mir beim
+Schreiben durchgegangen waren: „Yo ___ un zumo" geht mit `tomo` **und** `bebo`,
+„¿Tú ___ la televisión?" mit `miras` und `ves`, „Nosotros ___ en la fiesta" mit
+`tocamos` und `bailamos`.
+
+Was keine Maschine prüfen kann, ist, ob die Sätze gutes Spanisch sind und die
+Übersetzungen stimmen. Dafür habe ich alle 182 gelesen und fünf Dinge
+gefunden: `quedar` heißt „sich verabreden", nicht „bleiben" — meine Übersetzung
+war schlicht falsch; im Schwimmbad tanzt niemand; eine Schülerin beginnt nicht
+den Unterricht; vier Sätze fingen mit der Lücke an; und ein Satz sagte nichts
+aus.
+
+#### Wie geprüft wird
+
+* `construir_frases.py` – baut die Sätze und meldet jedes Wort, das nicht im
+  Wortschatz steht. Im ersten Durchlauf waren das 65 Stellen.
+* `verificar_frases.py` – rechnet das Ergebnis unabhängig nach (siehe oben).
+* `probar_huecos.js` – spielt **alle 182 Sätze** durch die Oberfläche, über
+  80 Runden ohne Neuladen, 640 Fragen davon 123 mit absichtlichem Fehlversuch.
+  Geprüft wird auch, dass die Übersetzung erst nach der Antwort erscheint,
+  dass ein Fehlversuch keine Münzen gibt und dass der vorgelesene Satz der
+  fertige Satz ist.

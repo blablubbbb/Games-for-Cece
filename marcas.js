@@ -41,6 +41,8 @@ const Marcas = (function () {
       campos: ["puntos", "aciertos", "tiempo"] },
     { id: "memoria",     nombre: "Memory",         icono: "🃏", url: "parejas.html",
       campos: ["puntos", "aciertos", "tiempo"] },
+    { id: "huecos",      nombre: "Lückentext",     icono: "✏️", url: "huecos.html",
+      campos: ["puntos", "serie", "aciertos"] },
   ];
 
   let datos = null;

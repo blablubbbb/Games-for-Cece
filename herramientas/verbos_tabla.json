@@ -1,0 +1,483 @@
+[
+ {
+  "inf": "ser",
+  "de": null,
+  "clase": "ser",
+  "formas": [
+   "soy",
+   "eres",
+   "es",
+   "somos",
+   "sois",
+   "son"
+  ]
+ },
+ {
+  "inf": "ir",
+  "de": null,
+  "clase": "irv",
+  "formas": [
+   "voy",
+   "vas",
+   "va",
+   "vamos",
+   "vais",
+   "van"
+  ]
+ },
+ {
+  "inf": "hacer",
+  "de": null,
+  "clase": "solo",
+  "formas": [
+   "hago",
+   "haces",
+   "hace",
+   "hacemos",
+   "hacéis",
+   "hacen"
+  ]
+ },
+ {
+  "inf": "salir",
+  "de": null,
+  "clase": "solo",
+  "formas": [
+   "salgo",
+   "sales",
+   "sale",
+   "salimos",
+   "salís",
+   "salen"
+  ]
+ },
+ {
+  "inf": "ver",
+  "de": null,
+  "clase": "solo",
+  "formas": [
+   "veo",
+   "ves",
+   "ve",
+   "vemos",
+   "veis",
+   "ven"
+  ]
+ },
+ {
+  "inf": "hablar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "hablo",
+   "hablas",
+   "habla",
+   "hablamos",
+   "habláis",
+   "hablan"
+  ]
+ },
+ {
+  "inf": "estudiar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "estudio",
+   "estudias",
+   "estudia",
+   "estudiamos",
+   "estudiáis",
+   "estudian"
+  ]
+ },
+ {
+  "inf": "escuchar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "escucho",
+   "escuchas",
+   "escucha",
+   "escuchamos",
+   "escucháis",
+   "escuchan"
+  ]
+ },
+ {
+  "inf": "mirar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "miro",
+   "miras",
+   "mira",
+   "miramos",
+   "miráis",
+   "miran"
+  ]
+ },
+ {
+  "inf": "tocar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "toco",
+   "tocas",
+   "toca",
+   "tocamos",
+   "tocáis",
+   "tocan"
+  ]
+ },
+ {
+  "inf": "buscar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "busco",
+   "buscas",
+   "busca",
+   "buscamos",
+   "buscáis",
+   "buscan"
+  ]
+ },
+ {
+  "inf": "charlar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "charlo",
+   "charlas",
+   "charla",
+   "charlamos",
+   "charláis",
+   "charlan"
+  ]
+ },
+ {
+  "inf": "tomar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "tomo",
+   "tomas",
+   "toma",
+   "tomamos",
+   "tomáis",
+   "toman"
+  ]
+ },
+ {
+  "inf": "quedar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "quedo",
+   "quedas",
+   "queda",
+   "quedamos",
+   "quedáis",
+   "quedan"
+  ]
+ },
+ {
+  "inf": "pasar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "paso",
+   "pasas",
+   "pasa",
+   "pasamos",
+   "pasáis",
+   "pasan"
+  ]
+ },
+ {
+  "inf": "descansar",
+  "de": null,
+  "clase": "ar",
+  "formas": [
+   "descanso",
+   "descansas",
+   "descansa",
+   "descansamos",
+   "descansáis",
+   "descansan"
+  ]
+ },
+ {
+  "inf": "comer",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "como",
+   "comes",
+   "come",
+   "comemos",
+   "coméis",
+   "comen"
+  ]
+ },
+ {
+  "inf": "beber",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "bebo",
+   "bebes",
+   "bebe",
+   "bebemos",
+   "bebéis",
+   "beben"
+  ]
+ },
+ {
+  "inf": "leer",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "leo",
+   "lees",
+   "lee",
+   "leemos",
+   "leéis",
+   "leen"
+  ]
+ },
+ {
+  "inf": "aprender",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "aprendo",
+   "aprendes",
+   "aprende",
+   "aprendemos",
+   "aprendéis",
+   "aprenden"
+  ]
+ },
+ {
+  "inf": "esconder",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "escondo",
+   "escondes",
+   "esconde",
+   "escondemos",
+   "escondéis",
+   "esconden"
+  ]
+ },
+ {
+  "inf": "responder",
+  "de": null,
+  "clase": "er",
+  "formas": [
+   "respondo",
+   "respondes",
+   "responde",
+   "respondemos",
+   "respondéis",
+   "responden"
+  ]
+ },
+ {
+  "inf": "vivir",
+  "de": null,
+  "clase": "ir",
+  "formas": [
+   "vivo",
+   "vives",
+   "vive",
+   "vivimos",
+   "vivís",
+   "viven"
+  ]
+ },
+ {
+  "inf": "escribir",
+  "de": null,
+  "clase": "ir",
+  "formas": [
+   "escribo",
+   "escribes",
+   "escribe",
+   "escribimos",
+   "escribís",
+   "escriben"
+  ]
+ },
+ {
+  "inf": "compartir",
+  "de": null,
+  "clase": "ir",
+  "formas": [
+   "comparto",
+   "compartes",
+   "comparte",
+   "compartimos",
+   "compartís",
+   "comparten"
+  ]
+ },
+ {
+  "inf": "discutir",
+  "de": null,
+  "clase": "ir",
+  "formas": [
+   "discuto",
+   "discutes",
+   "discute",
+   "discutimos",
+   "discutís",
+   "discuten"
+  ]
+ },
+ {
+  "inf": "abrir",
+  "de": null,
+  "clase": "ir",
+  "formas": [
+   "abro",
+   "abres",
+   "abre",
+   "abrimos",
+   "abrís",
+   "abren"
+  ]
+ },
+ {
+  "inf": "querer",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "quiero",
+   "quieres",
+   "quiere",
+   "queremos",
+   "queréis",
+   "quieren"
+  ]
+ },
+ {
+  "inf": "pensar",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "pienso",
+   "piensas",
+   "piensa",
+   "pensamos",
+   "pensáis",
+   "piensan"
+  ]
+ },
+ {
+  "inf": "empezar",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "empiezo",
+   "empiezas",
+   "empieza",
+   "empezamos",
+   "empezáis",
+   "empiezan"
+  ]
+ },
+ {
+  "inf": "entender",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "entiendo",
+   "entiendes",
+   "entiende",
+   "entendemos",
+   "entendéis",
+   "entienden"
+  ]
+ },
+ {
+  "inf": "preferir",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "prefiero",
+   "prefieres",
+   "prefiere",
+   "preferimos",
+   "preferís",
+   "prefieren"
+  ]
+ },
+ {
+  "inf": "poder",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "puedo",
+   "puedes",
+   "puede",
+   "podemos",
+   "podéis",
+   "pueden"
+  ]
+ },
+ {
+  "inf": "volver",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "vuelvo",
+   "vuelves",
+   "vuelve",
+   "volvemos",
+   "volvéis",
+   "vuelven"
+  ]
+ },
+ {
+  "inf": "contar",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "cuento",
+   "cuentas",
+   "cuenta",
+   "contamos",
+   "contáis",
+   "cuentan"
+  ]
+ },
+ {
+  "inf": "encontrar",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "encuentro",
+   "encuentras",
+   "encuentra",
+   "encontramos",
+   "encontráis",
+   "encuentran"
+  ]
+ },
+ {
+  "inf": "tener",
+  "de": null,
+  "clase": "dipt",
+  "formas": [
+   "tengo",
+   "tienes",
+   "tiene",
+   "tenemos",
+   "tenéis",
+   "tienen"
+  ]
+ }
+]

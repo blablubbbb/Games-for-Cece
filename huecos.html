@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Lückentext – Games for Cece</title>
+  <style>
+    html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #ffb3d9, #b3c6ff);
+      color: #2b1a4a;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.4rem 0.4rem 0.5rem; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+    .top {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .top a, .pill, .top button {
+      background: #fff8; border: none; border-radius: 999px; padding: 0.28rem 0.75rem;
+      font-size: 1.05rem; font-weight: bold; color: #2b1a4a; text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
+    }
+    .top button.apagado { opacity: 0.4; }
+    .coin { width: 1.35em; height: 1.35em; }
+    .pill.marca { opacity: 0.85; }
+
+    .barra {
+      width: 100%; max-width: 460px; flex: 0 0 auto;
+      background: #fff; border-radius: 0.8rem; box-shadow: 0 3px 0 #0002;
+      padding: 0.4rem 0.7rem; box-sizing: border-box; margin-bottom: 0.4rem;
+      display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
+    }
+    .barra .cuenta {
+      background: #7b3fe4; color: #fff; border-radius: 0.4rem;
+      font-size: 0.78rem; font-weight: bold; padding: 0.12rem 0.45rem; white-space: nowrap;
+    }
+    .barra .clase { font-weight: bold; }
+    .barra .serie { margin-left: auto; opacity: 0.7; font-size: 0.82rem; }
+
+    /* ---------- Der Satz ---------- */
+    #medio { flex: 1 1 auto; width: 100%; max-width: 460px; min-height: 0;
+             display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; }
+    .tarjeta {
+      background: #fff; border-radius: 0.9rem; box-shadow: 0 3px 0 #0002;
+      padding: 0.9rem 0.8rem; text-align: center;
+    }
+    #frase { font-size: clamp(1.02rem, 4.6vw, 1.35rem); line-height: 1.5; font-weight: 500; }
+    #frase .hueco {
+      display: inline-block; min-width: 3.4em; border-bottom: 3px solid #7b3fe4;
+      color: #7b3fe4; font-weight: bold; padding: 0 0.2em;
+    }
+    #frase .hueco.ok { border-bottom-color: #1f8a4c; color: #1f8a4c; }
+    .tarjeta.sacude { animation: sacudir 0.3s; }
+    @keyframes sacudir {
+      0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    #alem {
+      font-size: 0.92rem; line-height: 1.35; color: #2b1a4a; opacity: 0.85;
+      border-top: 1px dashed #c9bde4; margin-top: 0.7rem; padding-top: 0.6rem;
+      display: none;
+    }
+    #alem.visible { display: block; }
+    #porque {
+      font-size: 0.78rem; line-height: 1.3; background: #fff4d6; color: #6b4b00;
+      border-radius: 0.5rem; padding: 0.4rem 0.6rem; margin-top: 0.5rem; display: none;
+    }
+    #porque.visible { display: block; }
+
+    /* ---------- Antworten ---------- */
+    #opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+    #opciones button {
+      min-width: 0; font-family: inherit; font-size: clamp(0.9rem, 4vw, 1.1rem);
+      font-weight: bold; padding: 0.8rem 0.4rem; border: none; border-radius: 0.7rem;
+      background: #fff; color: #2b1a4a; box-shadow: 0 3px 0 #0002;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #opciones button:active { transform: translateY(2px); box-shadow: none; }
+    #opciones button.mala { background: #e4573f; color: #fff; }
+    #opciones button.buena { background: #7fd1a0; }
+    #opciones button.fuera { opacity: 0.35; }
+    #seguir {
+      width: 100%; font-family: inherit; font-size: 1.1rem; font-weight: bold;
+      padding: 0.75rem; border: none; border-radius: 0.7rem;
+      background: #7b3fe4; color: #fff; box-shadow: 0 4px 0 #0003; display: none;
+    }
+    #seguir.visible { display: block; }
+
+    /* ---------- Überlagerungen ---------- */
+    #inicio, #fin { position: fixed; inset: 0; background: #0009; z-index: 20;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+      box-sizing: border-box; }
+    .box {
+      background: #fff; border-radius: 1rem; padding: 1.1rem 1.2rem; text-align: center;
+      max-width: 360px; width: 100%; box-sizing: border-box; max-height: 90dvh; overflow-y: auto;
+    }
+    .box h2 { margin: 0 0 0.5rem; }
+    .box p { margin: 0 0 0.3rem; opacity: 0.75; font-size: 0.95rem; }
+    .box button {
+      display: block; width: 100%; font-size: 1.15rem; font-weight: bold; font-family: inherit;
+      padding: 0.7rem 1rem; border: none; border-radius: 14px;
+      background: #7b3fe4; color: #fff; margin-top: 0.6rem; box-shadow: 0 4px 0 #0003;
+    }
+    .box button small { display: block; font-size: 0.75rem; font-weight: normal; opacity: 0.85; }
+    .box button.otro { background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #7b3fe4; }
+    .clases { display: flex; gap: 0.3rem; margin: 0.6rem 0 0.2rem; }
+    .clases button {
+      flex: 1 1 0; margin: 0; font-size: 0.82rem; padding: 0.5rem 0.2rem;
+      background: #fff; color: #7b3fe4; box-shadow: inset 0 0 0 2px #c9bde4;
+    }
+    .clases button.puesto { background: #7b3fe4; color: #fff; box-shadow: 0 3px 0 #0003; }
+    .marcas { text-align: left; margin-top: 0.6rem; font-size: 0.92rem; }
+    .marcas div { display: flex; justify-content: space-between; padding: 0.12rem 0; }
+    .marcas b { color: #7b3fe4; display: flex; align-items: center; gap: 0.2rem; }
+    .marcas .coin { width: 1em; height: 1em; }
+    .nuevo { color: #e4573f; font-weight: bold; }
+
+    .flota {
+      position: fixed; font-size: 1.6rem; font-weight: bold; pointer-events: none;
+      animation: subir 1s forwards; text-shadow: 0 2px 0 #fff; z-index: 25;
+      display: flex; align-items: center; gap: 0.2rem;
+    }
+    .flota img { width: 1.6rem; height: 1.6rem; }
+    @keyframes subir { to { transform: translateY(-70px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">⬅︎</a>
+    <button id="btn-voz" title="Vorlesen an oder aus">🔊</button>
+    <div class="pill"><img class="coin" src="coin.svg" alt="Punkte"><span id="pts">0</span></div>
+    <div class="pill marca">🏆<span id="rec">0</span></div>
+  </div>
+
+  <div class="barra">
+    <span class="cuenta" id="cuenta">1/8</span>
+    <span class="clase" id="clase-txt">–</span>
+    <span class="serie" id="serie-txt"></span>
+  </div>
+
+  <div id="medio">
+    <div class="tarjeta" id="tarjeta">
+      <div id="frase">–</div>
+      <div id="alem"></div>
+      <div id="porque"></div>
+    </div>
+    <div id="opciones"></div>
+    <button id="seguir">Weiter</button>
+  </div>
+
+  <div id="inicio">
+    <div class="box">
+      <h2>✏️ Lückentext</h2>
+      <p id="inicio-texto">Welches Wort passt in die Lücke? Wenn der Satz steht,
+         kommt die deutsche Übersetzung dazu.</p>
+      <div class="clases">
+        <button data-clase="todo" class="puesto">Alles</button>
+        <button data-clase="gram">Grammatik<small>Verb · Artikel</small></button>
+        <button data-clase="sentido">Bedeutung<small>welches Wort?</small></button>
+      </div>
+      <div id="nota-voz"></div>
+      <div class="marcas" id="marcas-inicio"></div>
+      <button data-nivel="u1">Unidad 1<small>Stadt, Freizeit, Klassenzimmer</small></button>
+      <button data-nivel="u2">Unidad 2<small>Zimmer, Essen, Kalender</small></button>
+      <button data-nivel="todo" class="otro">Alles gemischt</button>
+    </div>
+  </div>
+
+  <div id="fin"><div class="box">
+    <h2 id="fin-titulo">¡Bravo!</h2>
+    <p id="fin-sub">–</p>
+    <div class="marcas" id="marcas-fin"></div>
+    <button id="btn-otra">Noch eine Runde</button>
+    <button id="btn-nivel" class="otro">Anderes Level</button>
+    <a class="otro" href="index.html" style="display:block;margin-top:0.6rem;padding:0.6rem;
+       border-radius:14px;background:#fff;color:#7b3fe4;box-shadow:inset 0 0 0 2px #7b3fe4;
+       text-decoration:none;font-weight:bold;text-align:center">Zurück</a>
+  </div></div>
+
+  <script src="fallos.js"></script>
+  <script src="marcas.js"></script>
+  <script src="voz.js"></script>
+  <script src="frases.js"></script>
+  <script>
+    const JUEGO = "huecos";
+    const RONDA = 8;                  // Sätze je Runde
+    const PREMIO = 2;                 // beim ersten Versuch richtig
+    const PREMIO_FINAL = 5;
+
+    const elFrase = document.getElementById("frase");
+    const elAlem = document.getElementById("alem");
+    const elPorque = document.getElementById("porque");
+    const elOpciones = document.getElementById("opciones");
+    const elSeguir = document.getElementById("seguir");
+    const elTarjeta = document.getElementById("tarjeta");
+    const elCuenta = document.getElementById("cuenta");
+    const elSerie = document.getElementById("serie-txt");
+    const elPts = document.getElementById("pts");
+    const elRec = document.getElementById("rec");
+
+    let coins = 0;
+    try { coins = Number(localStorage.getItem("cece-coins")) || 0; } catch (e) {}
+    let leerVoz = true;
+    try { leerVoz = localStorage.getItem("cece-huecos-voz") !== "no"; } catch (e) {}
+
+    let clase = "todo", nivel = "u1";
+    let ronda = [], paso = 0, monedasRonda = 0, serie = 0, mejorSerie = 0;
+    let aciertos = 0, intentada = false, resuelta = false, t0 = 0;
+
+    const ETIQUETA = { verbo: "Verbform", articulo: "Artikel", palabra: "Welches Wort?" };
+
+    function guardarMonedas() {
+      try { localStorage.setItem("cece-coins", coins); } catch (e) {}
+      elPts.textContent = monedasRonda;
+      elRec.textContent = Marcas.mejor(JUEGO, "puntos") || 0;
+    }
+
+    // ---------- Sätze aussuchen ----------
+    function vistos() {
+      try { return JSON.parse(localStorage.getItem("cece-huecos-vistos") || "[]"); }
+      catch (e) { return []; }
+    }
+    function marcarVistos(claves) {
+      let v = vistos().concat(claves);
+      if (v.length > FRASES.length * 0.7) v = v.slice(-Math.floor(FRASES.length * 0.3));
+      try { localStorage.setItem("cece-huecos-vistos", JSON.stringify(v)); } catch (e) {}
+    }
+
+    function encajan(f) {
+      if (nivel !== "todo" && f.nivel !== nivel) return false;
+      if (clase === "gram") return f.tipo === "verbo" || f.tipo === "articulo";
+      if (clase === "sentido") return f.tipo === "palabra";
+      return true;
+    }
+
+    function elegirRonda() {
+      const ya = new Set(vistos());
+      const todas = FRASES.filter(encajan);
+      // Noch nicht gesehene zuerst, darunter die mit Fehlern
+      const puntua = (f) => (ya.has(f.frase) ? 0 : 5) + Fallos.peso(JUEGO, f.frase) +
+                            Math.random() * 3;
+      return todas.slice().sort((a, b) => puntua(b) - puntua(a)).slice(0, RONDA);
+    }
+
+    // ---------- Zeichnen ----------
+    function pintar() {
+      const f = ronda[paso];
+      const partes = f.frase.split("___");
+      elFrase.innerHTML = escapar(partes[0]) +
+        '<span class="hueco' + (resuelta ? " ok" : "") + '" id="hueco">' +
+        (resuelta ? escapar(f.sol) : "&nbsp;") + "</span>" + escapar(partes[1] || "");
+      elAlem.textContent = f.de;
+      elAlem.classList.toggle("visible", resuelta);
+      elPorque.textContent = f.porque || "";
+      elPorque.classList.toggle("visible", resuelta && !!f.porque);
+      elSeguir.classList.toggle("visible", resuelta);
+      elSeguir.textContent = paso === ronda.length - 1 ? "Fertig" : "Weiter";
+      elCuenta.textContent = (paso + 1) + "/" + ronda.length;
+      document.getElementById("clase-txt").textContent = ETIQUETA[f.tipo];
+      elSerie.textContent = serie >= 2 ? serie + " in Folge" : "";
+      elPts.textContent = monedasRonda;
+    }
+
+    function escapar(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function barajar(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function mostrarPregunta() {
+      const f = ronda[paso];
+      intentada = false; resuelta = false;
+      elOpciones.innerHTML = "";
+      const opciones = barajar([f.sol].concat(f.malas));
+      for (const o of opciones) {
+        const b = document.createElement("button");
+        b.textContent = o;
+        b.dataset.palabra = o;
+        b.addEventListener("click", () => responder(b, o));
+        elOpciones.appendChild(b);
+      }
+      pintar();
+    }
+
+    function responder(boton, palabra) {
+      if (resuelta || boton.classList.contains("fuera")) return;
+      const f = ronda[paso];
+      if (palabra === f.sol) {
+        boton.classList.add("buena");
+        resuelta = true;
+        if (!intentada) {
+          aciertos++; serie++; mejorSerie = Math.max(mejorSerie, serie);
+          coins += PREMIO; monedasRonda += PREMIO;
+          guardarMonedas(); flotante("+" + PREMIO);
+          Fallos.anotar(JUEGO, f.frase, true, f.sol);
+        }
+        for (const b of elOpciones.children) if (b !== boton) b.classList.add("fuera");
+        pintar();
+        hablar(f.frase.replace("___", f.sol));
+      } else {
+        if (!intentada) { Fallos.anotar(JUEGO, f.frase, false, f.sol); serie = 0; }
+        intentada = true;
+        boton.classList.add("mala");
+        setTimeout(() => { boton.classList.remove("mala"); boton.classList.add("fuera"); }, 500);
+        elTarjeta.classList.add("sacude");
+        setTimeout(() => elTarjeta.classList.remove("sacude"), 300);
+        pintar();
+      }
+    }
+
+    function hablar(texto) {
+      if (!leerVoz || !Voz.hay()) return;
+      Voz.decir(texto.replace(/[¿¡]/g, ""));
+    }
+
+    function flotante(txt) {
+      const r = elTarjeta.getBoundingClientRect();
+      const f = document.createElement("div");
+      f.className = "flota";
+      f.innerHTML = txt + ' <img src="coin.svg" alt="">';
+      f.style.left = Math.min(r.left + r.width / 2 - 30, window.innerWidth - 100) + "px";
+      f.style.top = (r.top + r.height / 2) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1000);
+    }
+
+    elSeguir.addEventListener("click", () => {
+      if (paso === ronda.length - 1) return terminar();
+      paso++;
+      mostrarPregunta();
+    });
+
+    // ---------- Anfang und Ende ----------
+    function empezar(niv) {
+      nivel = niv || nivel;
+      try {
+        localStorage.setItem("cece-huecos-nivel", nivel);
+        localStorage.setItem("cece-huecos-clase", clase);
+      } catch (e) {}
+      ronda = elegirRonda();
+      if (!ronda.length) return;
+      marcarVistos(ronda.map(f => f.frase));
+      paso = 0; monedasRonda = 0; serie = 0; mejorSerie = 0; aciertos = 0;
+      t0 = performance.now();
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("fin").style.display = "none";
+      guardarMonedas();
+      mostrarPregunta();
+    }
+
+    function terminar() {
+      const segundos = (performance.now() - t0) / 1000;
+      coins += PREMIO_FINAL; monedasRonda += PREMIO_FINAL;
+      guardarMonedas();
+      const batidos = Marcas.registrar(JUEGO, {
+        puntos: monedasRonda, serie: mejorSerie, aciertos: aciertos,
+      });
+      document.getElementById("fin-titulo").textContent =
+        aciertos === ronda.length ? "¡Perfecto! Alles richtig!" : "¡Bravo!";
+      document.getElementById("fin-sub").textContent =
+        aciertos + " von " + ronda.length + " auf Anhieb richtig · " +
+        Math.round(segundos) + " Sekunden";
+      document.getElementById("marcas-fin").innerHTML = Marcas.lista(JUEGO, batidos);
+      document.getElementById("fin").style.display = "flex";
+    }
+
+    function mostrarInicio() {
+      document.getElementById("fin").style.display = "none";
+      document.getElementById("marcas-inicio").innerHTML = Marcas.lista(JUEGO, null);
+      document.getElementById("inicio").style.display = "flex";
+      ponerDisponibles();
+    }
+
+    // Stufen ohne passende Sätze gar nicht erst anbieten
+    function ponerDisponibles() {
+      document.querySelectorAll("#inicio button[data-nivel]").forEach(b => {
+        const guardado = nivel; nivel = b.dataset.nivel;
+        const n = FRASES.filter(encajan).length;
+        nivel = guardado;
+        b.disabled = n < RONDA;
+        b.style.opacity = b.disabled ? 0.4 : "";
+      });
+    }
+
+    // ---------- Sprachausgabe ----------
+    function alternarVoz() {
+      if (!Voz.hay()) return;
+      leerVoz = !leerVoz;
+      try { localStorage.setItem("cece-huecos-voz", leerVoz ? "si" : "no"); } catch (e) {}
+      if (!leerVoz) Voz.callar();
+      ponerVoz();
+    }
+
+    function ponerVoz() {
+      const b = document.getElementById("btn-voz");
+      const puede = Voz.hay();
+      b.classList.toggle("apagado", !leerVoz || !puede);
+      b.textContent = (leerVoz && puede) ? "🔊" : "🔇";
+      b.title = puede ? (leerVoz ? "Vorlesen aus" : "Vorlesen an") : Voz.porQueNo();
+      const nota = document.getElementById("nota-voz");
+      if (puede) {
+        nota.innerHTML = '<div style="font-size:0.78rem;line-height:1.35;background:#fff4d6;' +
+          'color:#6b4b00;border-radius:0.6rem;padding:0.5rem 0.7rem;margin-top:0.5rem;' +
+          'text-align:left"><button type="button" id="btn-voz-inicio" style="display:block;' +
+          'width:100%;margin:0 0 0.4rem;padding:0.45rem;font-family:inherit;font-size:0.9rem;' +
+          'font-weight:bold;border:none;border-radius:0.5rem;background:#ffd34d;color:#6b4b00;' +
+          'box-shadow:0 2px 0 #0002">' +
+          (leerVoz ? "🔊 Vorlesen ist an" : "🔇 Vorlesen ist aus") + "</button>" +
+          "Der fertige Satz wird vorgelesen: " + Voz.nombre() + "</div>";
+        document.getElementById("btn-voz-inicio").addEventListener("click", alternarVoz);
+      } else {
+        nota.innerHTML = "";
+      }
+    }
+
+    document.getElementById("btn-voz").addEventListener("click", () => {
+      if (!Voz.hay()) { alert(Voz.porQueNo()); return; }
+      alternarVoz();
+    });
+    document.querySelectorAll("#inicio .clases button").forEach(b =>
+      b.addEventListener("click", () => {
+        clase = b.dataset.clase;
+        document.querySelectorAll("#inicio .clases button").forEach(x =>
+          x.classList.toggle("puesto", x === b));
+        ponerDisponibles();
+      }));
+    document.querySelectorAll("#inicio button[data-nivel]").forEach(b =>
+      b.addEventListener("click", () => { if (!b.disabled) empezar(b.dataset.nivel); }));
+    document.getElementById("btn-otra").addEventListener("click", () => empezar());
+    document.getElementById("btn-nivel").addEventListener("click", mostrarInicio);
+
+    try {
+      nivel = localStorage.getItem("cece-huecos-nivel") || "u1";
+      clase = localStorage.getItem("cece-huecos-clase") || "todo";
+    } catch (e) {}
+    document.querySelectorAll("#inicio .clases button").forEach(x =>
+      x.classList.toggle("puesto", x.dataset.clase === clase));
+    mostrarInicio();
+    Voz.alEstarLista(ponerVoz);
+    ponerVoz();
+  </script>
+</body>
+</html>
